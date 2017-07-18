@@ -17,17 +17,23 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	mapGenerator.generate();
-	if(map) {
-		util.log("Map was generated")
-	}
-	fs.writeFile("/tmp/map", map, function(err) {
-    if(err) {
-        return console.log(err);
-    }
+	fs.readFile("/tmp/map", function (err, data) {
+  	if (err) {
+		mapGenerator.generate();
+		if(map) {
+			util.log("Map was generated")
+		}
+		fs.writeFile("/tmp/map", map, function(err) {
+	    if(err) {
+	        return console.log("SAVING: "+err);
+	    }
 
-    console.log("The map was saved!");
-	}); 
+	    console.log("The map was saved!");
+		}); 
+    	return console.log("LOADING: "+err);
+  	}
+  		map=data.toString();
+	});
 }
 
 //map generator start

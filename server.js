@@ -34,6 +34,7 @@ function init() {
   	}
   		map=data.toString();
 	});
+	mapGenerator.generate();
 }
 
 //map generator start

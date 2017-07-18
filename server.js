@@ -1,5 +1,6 @@
 var util = require("util"),
-	io = require("socket.io");
+	io = require("socket.io"),
+	fs = require('fs');
 
 var socket, players;
 
@@ -20,6 +21,13 @@ function init() {
 	if(map) {
 		util.log("Map was generated")
 	}
+	fs.writeFile("/tmp/map", map, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The map was saved!");
+	}); 
 }
 
 //map generator start
@@ -263,6 +271,13 @@ function onMapEdit(data) {
 	map[data.x][data.y] = data.block;
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block})
+	fs.writeFile("/tmp/map", map, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The map was saved!");
+	});
 }
 
 function onBlockBreaking(data) {

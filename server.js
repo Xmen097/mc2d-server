@@ -17,13 +17,13 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	fs.readFile("/tmp/map", function (err, data) {
+	fs.readFile("/map", function (err, data) {
   	if (err) {
 		mapGenerator.generate();
 		if(map) {
 			util.log("Map was generated")
 		}
-		fs.writeFile("/tmp/map", map, function(err) {
+		fs.writeFile("/map", map, function(err) {
 	    if(err) {
 	        return console.log("SAVING: "+err);
 	    }

@@ -5,9 +5,8 @@ var socket, players;
 
 function init() {
 	players = [];
-	var ip = process.env.IP || "0.0.0.0";
-	var port = process.env.PORT-1 || 9998;
-	port++;
+	var ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+	var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 	socket = io.listen( port, ip, function() {
     	console.log('Server is listening on port '+port);
 	});
@@ -207,7 +206,7 @@ var setEventHandlers = function() {
 };
 function onSocketConnection(client) {
     util.log("New player has connected: "+client.id);
-	this.emit("map edit", map)
+	this.emit("new map", map)
     client.on("disconnect", onClientDisconnect);
     client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
@@ -261,8 +260,8 @@ function onMovePlayer(data) {
 
 function onMapEdit(data) {
 	map[data.x][data.y] = data.block;
-	this.broadcast.emit("map edit", map)
-	this.emit("map edit", map)
+	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
+	this.emit("map edit", {x: data.x, y: data.y, block: data.block})
 }
 
 function onBlockBreaking(data) {

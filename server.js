@@ -1,7 +1,6 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pgp = require('pg-promise')(options),
-	db = pgp(process.env.DATABASE_URL);
+	pg = require('pg');
 
 var socket, players;
 

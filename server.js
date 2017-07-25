@@ -18,16 +18,16 @@ function init() {
 	});
 	setEventHandlers();
 	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-       if(err){
-           util.log("Not able to connect: "+ err);
-       } 
-       pgClient.query('SELECT * FROM map', function(err,result) {
-           if(err){
-               util.log(err);
-           }
-           if(result.rows.length<1000) {
-				mapGenerator.generate();
-				if(map) {
+        if(err){
+            util.log("Not able to connect: "+ err);
+        } 
+        pgClient.query('SELECT * FROM map', function(err,result) {
+            if(err){
+                util.log(err);
+            }
+            if(result.rows.length<1000) {
+		 		mapGenerator.generate();
+		 		if(map) {
 					util.log("Map was generated ")
 					for(var a=0;a<map.length;a++) {
 						var queryStack="";
@@ -37,7 +37,6 @@ function init() {
 							} else 
 								queryStack+=" ,("+b+", "+a+", "+map[a][b]+")"
 						}
-						util.log("Started writing map to DB"+queryStack)
 						pgClient.query("INSERT INTO map (x, y, block) VALUES"+queryStack, function(err) {
 							if(err) {
 								util.log("FAILED writing map part to database: " + err)
@@ -47,7 +46,17 @@ function init() {
 						})
 					}	
 				}
-           }
+            } else {
+	          	pgClient.query("SELECT * FROM map", function(err, result) {
+								if(err) {
+									util.log("FAILED writing map part to database: " + err)
+								} else if(result) {
+									for(var a of result.rows) {
+										util.log(a)
+									}
+								}
+				})
+            }
 		done();
        });
     });

@@ -17,7 +17,7 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	pg.connect(process.env.DATABASE_URL||"postgres://postgres:123@localhost:5432/postgres",function(err,pgClient,done) {
+	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        if(err){
            util.log("Not able to get connection "+ err);
        } 

@@ -313,7 +313,7 @@ function onMapEdit(data) {
 				util.log("Player "+this.id+ " edited map")
 			}
 		})
-	}
+	})
 }
 
 function onBlockBreaking(data) {

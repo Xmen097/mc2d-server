@@ -22,7 +22,6 @@ function init() {
            util.log("Not able to get connection "+ err);
        } 
        pgClient.query('SELECT * FROM map', function(err,result) {
-           done(); // closing the connection;
            if(err){
                util.log(err);
            }
@@ -40,7 +39,8 @@ function init() {
 								}
 							})
 						}
-					}
+					}	
+          		done();
 				}
            }
        });

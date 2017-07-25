@@ -34,7 +34,7 @@ function init() {
 						for(var b=0;b<map[a].length;b++) {
 							queryStack+=" ("+b+", "+a+", "+map[a][b]+")"
 						}
-						util.log("Started writing map to DB")
+						util.log("Started writing map to DB"+queryStack)
 						pgClient.query("INSERT INTO map (x, y, block) VALUES"+queryStack, function(err) {
 							if(err) {
 								util.log("FAILED writing map part to database: " + err)

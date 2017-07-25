@@ -32,7 +32,10 @@ function init() {
 					for(var a=0;a<map.length;a++) {
 						var queryStack="";
 						for(var b=0;b<map[a].length;b++) {
-							queryStack+=", ("+b+", "+a+", "+map[a][b]+")"
+							if(b==0){
+								queryStack+="("+b+", "+a+", "+map[a][b]+")"	
+							} else 
+								queryStack+=" ,("+b+", "+a+", "+map[a][b]+")"
 						}
 						util.log("Started writing map to DB"+queryStack)
 						pgClient.query("INSERT INTO map (x, y, block) VALUES"+queryStack, function(err) {

@@ -1,6 +1,7 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pg = require("pg");
+	pgp = require('pg-promise')(options),
+	db = pgp(process.env.DATABASE_URL);
 
 var socket, players;
 
@@ -30,20 +31,22 @@ function init() {
 				if(map) {
 					util.log("Map was generated ")
 					for(var a=0;a<map.length;a++) {
+						var queryStack="";
 						for(var b=0;b<map[a].length;b++) {
-							util.log("Started writing map to DB")
-							pgClient.query("INSERT INTO map (x, y, block) VALUES ("+b+", "+a+", "+map[a][b]+")", function(err) {
-								if(err) {
-									util.log("FAILED writing map part to database: " + err)
-								} else {
-									util.log("Writen block map part to database")
-								}
-							})
+							queryStack+=" ("+b+", "+a+", "+map[a][b]+")"
 						}
+						util.log("Started writing map to DB")
+						pgClient.query("INSERT INTO map (x, y, block) VALUES"+queryStack, function(err) {
+							if(err) {
+								util.log("FAILED writing map part to database: " + err)
+							} else {
+								util.log("Writen block map part to database")
+							}
+						})
 					}	
-          		done();
 				}
            }
+		done();
        });
     });
 }

@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "socket.io": "0.8.7",
-    "pg": "6.0.1"
+    "pg-promise": "6.3.5"
   }
 }

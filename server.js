@@ -48,16 +48,15 @@ function init() {
 				}
             } else {
 	          	pgClient.query("SELECT * FROM map", function(err, result) {
-								if(err) {
-									util.log("FAILED writing map part to database: " + err)
-								} else if(result) {
-									var map = [[]];
-									for(var m of result.rows) {
-										util.log(m.x + " " + m.y)
-										map[m.y][m.x]=m.block;
-									}
-									util.log("Map was loaded succesfully")
-								}
+					if(err) {
+						util.log("FAILED writing map part to database: " + err)
+					} else if(result) {
+						var map = [[]];
+						for(var a of result.rows) {
+							map[a.y][a.x]=a.block;
+						}
+						util.log("Map was loaded succesfully")
+					}
 				})
             }
 		done();

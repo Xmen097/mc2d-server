@@ -19,7 +19,7 @@ function init() {
 	setEventHandlers();
 	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        if(err){
-           util.log("Not able to get connection "+ err);
+           util.log("Not able to connect: "+ err);
        } 
        pgClient.query('SELECT * FROM map', function(err,result) {
            if(err){
@@ -31,6 +31,7 @@ function init() {
 					util.log("Map was generated")
 					for(var a=0;a<map.length;a++) {
 						for(var b=0;b<a.length;b++) {
+							util.log("Started writing map to DB")
 							pgClient.query('INSERT INTO map (x, y, block) VALUES ('+b+", "+a+", "+a[b], function(err) {
 								if(err) {
 									util.log("FAILED writing map part to database: " + err)

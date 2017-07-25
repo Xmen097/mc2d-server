@@ -26,6 +26,7 @@ function init() {
            if(err){
                util.log(err);
            }
+           util.log(result.rows.length)
            if(result.rows.length<1000) {
 				mapGenerator.generate();
 				if(map) {

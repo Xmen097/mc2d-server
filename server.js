@@ -28,9 +28,9 @@ function init() {
            if(result.rows.length<1000) {
 				mapGenerator.generate();
 				if(map) {
-					util.log("Map was generated")
+					util.log("Map was generated ")
 					for(var a=0;a<map.length;a++) {
-						for(var b=0;b<a.length;b++) {
+						for(var b=0;b<map[a].length;b++) {
 							util.log("Started writing map to DB")
 							pgClient.query('INSERT INTO map (x, y, block) VALUES ('+b+", "+a+", "+a[b], function(err) {
 								if(err) {

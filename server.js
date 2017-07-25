@@ -22,7 +22,7 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	client.query('SELECT * FROM map',function(err,result) {
+	pgClient.query('SELECT * FROM map',function(err,result) {
            if(err){
                util.log(err);
            }

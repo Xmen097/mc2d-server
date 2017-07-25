@@ -53,7 +53,7 @@ function init() {
 								} else if(result) {
 									var map = [];
 									for(var m of result.rows) {
-										util.log(a.x + " " + a.y)
+										util.log(m.x + " " + m.y)
 										map[m.y][m.x]=m.block;
 									}
 									util.log("Map was loaded succesfully")

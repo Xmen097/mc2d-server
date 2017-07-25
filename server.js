@@ -32,7 +32,7 @@ function init() {
 					for(var a=0;a<map.length;a++) {
 						for(var b=0;b<map[a].length;b++) {
 							util.log("Started writing map to DB")
-							pgClient.query('INSERT INTO map (x, y, block) VALUES ('+b+", "+a+", "+a[b], function(err) {
+							pgClient.query("INSERT INTO map (x, y, block) VALUES ("+b+", "+a+", "+a[b]+")", function(err) {
 								if(err) {
 									util.log("FAILED writing map part to database: " + err)
 								} else {

@@ -304,7 +304,16 @@ function onMovePlayer(data) {
 function onMapEdit(data) {
 	map[data.x][data.y] = data.block;
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
-	this.emit("map edit", {x: data.x, y: data.y, block: data.block})
+	this.emit("map edit", {x: data.x, y: data.y, block: data.block});
+	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+		pgClient.query("UPDATE map SET block=$1 WHERE x=$2 AND y=$3", [data.block, data.x, data.y], function(err) {
+			if(err) {
+				util.log("Failed map edit "+err)
+			} else {
+				util.log("Player "+this.id+ " edited map")
+			}
+		})
+	}
 }
 
 function onBlockBreaking(data) {

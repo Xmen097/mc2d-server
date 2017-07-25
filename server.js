@@ -26,13 +26,19 @@ function init() {
            if(err){
                util.log(err);
            }
-           util.log(result.rows[0].x);
+           if(result.rows.length<1000) {
+				mapGenerator.generate();
+				if(map) {
+					util.log("Map was generated")
+				}
+				for(var a=0;a<map.length;a++) {
+					for(var b=0;b<a.length;b++) {
+						pgClient.query('INSERT INTO map (x, y, block) VALUES ('+b+", "+a+", "+a[b])
+					}
+				}
+           }
        });
     });
-	mapGenerator.generate();
-	if(map) {
-		util.log("Map was generated")
-	}
 }
 
 //map generator start

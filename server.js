@@ -52,9 +52,9 @@ function init() {
 									util.log("FAILED writing map part to database: " + err)
 								} else if(result) {
 									var map = [];
-									for(var a of result.rows) {
+									for(var m of result.rows) {
 										util.log(a.x + " " + a.y)
-										map[a.y][a.x]=a.block;
+										map[m.y][m.x]=m.block;
 									}
 									util.log("Map was loaded succesfully")
 								}

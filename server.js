@@ -6,11 +6,6 @@ var socket, players;
 
 function init() {
 	players = [];
-	pgClient = new pg.Client(process.env.DATABASE_URL, function(err) {
-		if(err) {
-			util.log("Error connecting to DB "+err)
-		}
-	});
 	var ip = process.env.IP || "0.0.0.0";
 	var port = process.env.PORT-1 || 8079;
 	port++;//workaround for server port bug
@@ -22,11 +17,17 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	pgClient.query('SELECT * FROM map',function(err,result) {
+	pg.connect(process.env.DATABASE_URL||"postgres://postgres:123@localhost:5432/postgres",function(err,pgClient,done) {
+       if(err){
+           util.log("Not able to get connection "+ err);
+       } 
+       pgClient.query('SELECT * FROM map', function(err,result) {
+           done(); // closing the connection;
            if(err){
                util.log(err);
            }
-           util.log(result)
+           util.log(result);
+       });
     });
 	mapGenerator.generate();
 	if(map) {

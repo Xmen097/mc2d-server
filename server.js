@@ -26,7 +26,7 @@ function init() {
            if(err){
                util.log(err);
            }
-           util.log(result);
+           util.log(result.rows);
        });
     });
 	mapGenerator.generate();

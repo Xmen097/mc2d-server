@@ -1,6 +1,6 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pg = require('pg'); //postgres
+	pg = require('pg'); //postgresS
 
 var socket, players;
 

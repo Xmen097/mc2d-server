@@ -51,7 +51,7 @@ function init() {
 								if(err) {
 									util.log("FAILED writing map part to database: " + err)
 								} else if(result) {
-									var map = [];
+									var map = [[]];
 									for(var m of result.rows) {
 										util.log(m.x + " " + m.y)
 										map[m.y][m.x]=m.block;

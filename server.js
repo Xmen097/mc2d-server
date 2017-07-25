@@ -51,9 +51,11 @@ function init() {
 								if(err) {
 									util.log("FAILED writing map part to database: " + err)
 								} else if(result) {
+									var map;
 									for(var a of result.rows) {
-										util.log(a)
+										map[a.y][a.x]=a.block;
 									}
+									util.log("Map was loaded succesfully")
 								}
 				})
             }

@@ -307,7 +307,7 @@ function onMapEdit(data) {
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block});
 	var id=this.id;
 	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-		pgClient.query("UPDATE map SET block=$1 WHERE x=$2 AND y=$3", [data.block, data.x, data.y], function(err) {
+		pgClient.query("UPDATE map SET block="+data.block+" WHERE x="+data.x+" AND y="+data.y, function(err) {
 			if(err) {
 				util.log("Failed map edit "+err)
 			} else {

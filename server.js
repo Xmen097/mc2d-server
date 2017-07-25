@@ -1,14 +1,19 @@
 var util = require("util"),
 	io = require("socket.io"),
-	fs = require('fs');
+	pg = require("pg");
 
 var socket, players;
 
 function init() {
 	players = [];
+	pgClient = new pg.Client(process.env.DATABASE_URL, function(err) {
+		if(err) {
+			util.log("Error connecting to DB "+err)
+		}
+	});
 	var ip = process.env.IP || "0.0.0.0";
 	var port = process.env.PORT-1 || 8079;
-	port++;
+	port++;//workaround for server port bug
 	socket = io.listen(port, ip, function() {
     	console.log('Server is listening on port '+port);
 	});
@@ -17,23 +22,16 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
-	fs.readFile("/map", function (err, data) {
-  	if (err) {
-		mapGenerator.generate();
-		if(map) {
-			util.log("Map was generated")
-		}
-		fs.writeFile("/map", map, function(err) {
-	    if(err) {
-	        return console.log("SAVING: "+err);
-	    }
-
-	    console.log("The map was saved!");
-		}); 
-    	return console.log("LOADING: "+err);
-  	}
-  		map=data.toString();
-	});
+	client.query('SELECT * FROM map',function(err,result) {
+           if(err){
+               util.log(err);
+           }
+           util.log(result)
+    });
+	mapGenerator.generate();
+	if(map) {
+		util.log("Map was generated")
+	}
 }
 
 //map generator start
@@ -277,13 +275,6 @@ function onMapEdit(data) {
 	map[data.x][data.y] = data.block;
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block})
-	fs.writeFile("/tmp/map", map, function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log("The map was saved!");
-	});
 }
 
 function onBlockBreaking(data) {

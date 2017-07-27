@@ -272,7 +272,7 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
-	var newPlayer = new Player(data.x, data.y, this.id, "Player");
+	var newPlayer = new Player(data.x, data.y, this.id, data.name);
 	this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
 	var existingPlayer;
 	for (var i = 0; i < players.length; i++) {

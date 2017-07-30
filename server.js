@@ -29,7 +29,7 @@ function init() {
             if(err){
                 util.log(err);
             }
-            if(result.rows.length<1000) {
+            if(result.rows.length<10) {
 		 		mapGenerator.generate();
 		 		if(map) {
 					util.log("Map was generated ")

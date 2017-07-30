@@ -32,7 +32,7 @@ function init() {
 					for(var a=0;a<map.length;a++) {
 						var columnsStack="(y";
 						for(var x=0;x<1000;x++) {
-							columnsStack+=","+x;
+							columnsStack+=",_"+x;
 						}
 						columnsStack+=")";
 

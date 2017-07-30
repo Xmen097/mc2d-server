@@ -4,6 +4,10 @@ var util = require("util"),
 
 var socket, players;
 
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 function init() {
 	players = [];
 	var ip = process.env.IP || "0.0.0.0";
@@ -57,8 +61,10 @@ function init() {
 						util.log("FAILED writing map part to database: " + err)
 					} else if(result) {
 						map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-						for(var a of result.rows) {
-							map[a.y][a.x]=a.block;
+						
+						for(var a=0; a<result.rows.length; a++) {
+							for (var b=0; b<Object.keys(result.rows[a]).length-1;b++)
+							map[result.rows[a].y][b]=result.rows[a]["_"+b];
 						}
 						util.log("Map was loaded succesfully")
 					}

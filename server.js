@@ -69,7 +69,7 @@ function init() {
 							}
 							util.log("Loaded map part")
 						}
-						util.log("Map was loaded succesfully")
+						util.log("Map was loaded succesfully")//
 					}
 				})
             }

@@ -64,8 +64,9 @@ function init() {
 						map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 						
 						for(var a=0; a<result.rows.length; a++) {
-							for (var b=0; b<Object.keys(result.rows[a]).length-1;b++)
-							map[result.rows[a].y][b]=result.rows[a]["_"+b];
+							for (var b=0; b<1000;b++) {
+								map[result.rows[a].y][b]=result.rows[a]["_"+b];
+							}
 							util.log("Loaded map part")
 						}
 						util.log("Map was loaded succesfully")

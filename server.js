@@ -277,13 +277,7 @@ function onSocketConnection(client) {
     util.log("New player has connected: "+client.id);
 	client.salt=sha256(Math.random()+"");
 	client.emit("salt", client.salt)
-	client.emit("new map", map)
-    client.on("disconnect", onClientDisconnect);
     client.on("new player", onNewPlayer);
-    client.on("move player", onMovePlayer);
-    client.on("map edit", onMapEdit);
-    client.on("new message", onNewMessage);
-    client.on("block breaking", onBlockBreaking);
     playersTimeout[client.id] = setTimeout(function() {
     if (io.sockets.sockets[client.id]) {
     	io.sockets.sockets[client.id].disconnect();
@@ -317,6 +311,12 @@ function onNewPlayer(data) {
 			util.log("Login server offline")
 		}
 		if(body == "true") {
+			client.emit("new map", map)
+		    client.on("disconnect", onClientDisconnect);
+		    client.on("move player", onMovePlayer);
+		    client.on("map edit", onMapEdit);
+		    client.on("new message", onNewMessage);
+		    client.on("block breaking", onBlockBreaking);
 			util.log("Player "+data.name+" authorized succesfully")
 			var newPlayer = new Player(data.x, data.y, client.id, data.name);
 			client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});

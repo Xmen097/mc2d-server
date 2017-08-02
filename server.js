@@ -285,8 +285,10 @@ function onSocketConnection(client) {
     client.on("new message", onNewMessage);
     client.on("block breaking", onBlockBreaking);
     playersTimeout[client.id] = setTimeout(function() {
-    	client.disconnect();
-    	util.log("Player "+client.id+" didn't authorized in time")
+    if (io.sockets.sockets[client.id]) {
+    	io.sockets.sockets[client.id].disconnect();
+	}
+    util.log("Player "+client.id+" didn't authorized in time")
     }, 1000)
 };
 
@@ -308,7 +310,9 @@ function onNewPlayer(data) {
 	util.log("Player "+data.name+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
-			this.disconnect();
+			if (io.sockets.sockets[this.id]) {
+	    		io.sockets.sockets[this.id].disconnect();
+			}
 			util.log("Login server offline")
 		}
 		if(body == "true") {
@@ -323,7 +327,9 @@ function onNewPlayer(data) {
 			players.push(newPlayer);
 		} else {
 			util.log("Player "+data.name+" authorization failed")
-			this.disconnect();
+			if (io.sockets.sockets[this.id]) {
+	    		io.sockets.sockets[this.id].disconnect();
+			}
 		}
     })
 };

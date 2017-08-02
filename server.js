@@ -306,29 +306,30 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
+	var dis=this;
 	clearTimeout(playersTimeout[this.id])
 	util.log("Player "+data.name+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
-			if (io.sockets.sockets[this.id]) {
-	    		io.sockets.sockets[this.id].disconnect();
+			if (io.sockets.sockets[dis.id]) {
+	    		io.sockets.sockets[dis.id].disconnect();
 			}
 			util.log("Login server offline")
 		}
 		if(body == "true") {
 			util.log("Player "+data.name+" authorized succesfully")
-			var newPlayer = new Player(data.x, data.y, this.id, data.name);
-			this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
+			var newPlayer = new Player(data.x, data.y, dis.id, data.name);
+			dis.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
 			var existingPlayer;
 			for (var i = 0; i < players.length; i++) {
 		    	existingPlayer = players[i];
-		    	this.emit("new player", {id: existingPlayer.id, x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.name});
+		    	dis.emit("new player", {id: existingPlayer.id, x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.name});
 			};
 			players.push(newPlayer);
 		} else {
 			util.log("Player "+data.name+" authorization failed")
-			if (io.sockets.sockets[this.id]) {
-	    		io.sockets.sockets[this.id].disconnect();
+			if (io.sockets.sockets[dis.id]) {
+	    		io.sockets.sockets[dis.id].disconnect();
 			}
 		}
     })

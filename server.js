@@ -1,27 +1,26 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pg = require('pg');
+	pg = require('pg'),
+	request = require("request");
+	sha256 = require("sha256")
 
 var socket, players;
+var playersTimeout = {};
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
+
 function init() {
 	players = [];
-	var ip = process.env.IP || "0.0.0.0";
+	ip = process.env.IP || "0.0.0.0";
 	var port = process.env.PORT-1 || 8079;
 	port++;//workaround for server port bug
-	socket = io.listen(port, ip, function() {
-    	console.log('Server is listening on port '+port);
-	});
-	socket.configure(function() {
-    	socket.set("transports", ["websocket"]);
-    	socket.set("log level", 2);
-	});
-	setEventHandlers();
-	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+
+
+	if(process.env.DATABASE_URL) { // DB 
+		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
         if(err){
             util.log("Not able to connect: "+ err);
         } 
@@ -50,7 +49,7 @@ function init() {
 							if(err) {
 								util.log("FAILED writing map part to database: " + err)
 							} else {
-								util.log("Writen block map part to database")
+								util.log("Writen map part to database")
 							}
 						})
 					}	
@@ -76,6 +75,19 @@ function init() {
 		done();
        });
     });
+	} else {
+		mapGenerator.generate();
+	}
+
+
+	socket = io.listen(port, ip, function() {
+    	console.log('Server is listening on port '+port);
+	});
+	socket.configure(function() {
+    	socket.set("transports", ["websocket"]);
+    	socket.set("log level", 2);
+	});
+	setEventHandlers();
 }
 
 //map generator start
@@ -263,13 +275,19 @@ var setEventHandlers = function() {
 };
 function onSocketConnection(client) {
     util.log("New player has connected: "+client.id);
-	this.emit("new map", map)
+	client.salt=sha256(Math.random()+"");
+	client.emit("salt", client.salt)
+	client.emit("new map", map)
     client.on("disconnect", onClientDisconnect);
     client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
     client.on("map edit", onMapEdit);
     client.on("new message", onNewMessage);
     client.on("block breaking", onBlockBreaking);
+    playersTimeout[client.id] = setTimeout(function() {
+    	client.disconnect();
+    	util.log("Player "+client.id+" didn't authorized in time")
+    }, 1000)
 };
 
 function onClientDisconnect() {
@@ -286,6 +304,20 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
+	clearTimeout(playersTimeout[this.id])
+	util.log("Player authorized himself")
+	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){
+		if(err) {
+			this.disconnect();
+			util.log("Login server offline")
+		}
+		if(body) {
+			util.log(body)
+		}
+		if(httpResponse) {
+			util.log(httpResponse)
+		}
+    })
 	var newPlayer = new Player(data.x, data.y, this.id, data.name);
 	this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
 	var existingPlayer;
@@ -320,15 +352,17 @@ function onMapEdit(data) {
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block});
 	var id=this.id;
-	pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-		pgClient.query("UPDATE map SET _"+data.y+"="+parseInt(data.block)+" WHERE y="+data.x, function(err) {
-			if(err) {
-				util.log("Failed map edit "+err)
-			} else {
-				util.log("Player "+id+ " edited map")
-			}
-		})
-	})
+	if(process.env.DATABASE_URL) {
+		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+			pgClient.query("UPDATE map SET _"+data.y+"="+parseInt(data.block)+" WHERE y="+data.x, function(err) {
+				if(err) {
+					util.log("Failed map edit "+err)
+				} else {
+					util.log("Player "+id+ " edited map")
+				}
+			})
+		})	
+	}
 }
 
 function onBlockBreaking(data) {

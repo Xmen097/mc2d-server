@@ -1,8 +1,8 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pg = require('pg'), //
-	request = require("request");
-	sha256 = require("sha256")
+	pg = require('pg'), 
+	request = require("request"),
+	sha256 = require("sha256");
 
 var socket, players;
 var playersTimeout = {};

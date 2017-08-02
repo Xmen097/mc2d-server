@@ -237,7 +237,7 @@ function mapGeneratorConstructor() {
 				map[this.terainHeight[treePosition]-4][treePosition]=3
 				map[this.terainHeight[treePosition]-4][treePosition+1]=3
 				map[this.terainHeight[treePosition]-4][treePosition-1]=3
-			}else {
+			} else {
 				map[this.terainHeight[treePosition]-1][treePosition]=2
 				map[this.terainHeight[treePosition]-2][treePosition]=2
 				map[this.terainHeight[treePosition]-3][treePosition]=2
@@ -313,9 +313,6 @@ function onNewPlayer(data) {
 		}
 		if(body) {
 			util.log(body)
-		}
-		if(httpResponse) {
-			util.log(httpResponse)
 		}
     })
 	var newPlayer = new Player(data.x, data.y, this.id, data.name);

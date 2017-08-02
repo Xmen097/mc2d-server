@@ -5,7 +5,6 @@ var util = require("util"),
 	sha256 = require("sha256");
 
 var socket, players;
-var playersTimeout = {};
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
@@ -278,12 +277,6 @@ function onSocketConnection(client) {
 	client.salt=sha256(Math.random()+"");
 	client.emit("salt", client.salt)
     client.on("new player", onNewPlayer);
-    playersTimeout[client.id] = setTimeout(function() {
-    if (io.sockets.sockets[client.id]) {
-    	io.sockets.sockets[client.id].disconnect();
-	}
-    util.log("Player "+client.id+" didn't authorized in time")
-    }, 1000)
 };
 
 function onClientDisconnect() {
@@ -301,13 +294,9 @@ function onClientDisconnect() {
 
 function onNewPlayer(data) {
 	var client=this;
-	clearTimeout(playersTimeout[this.id])
 	util.log("Player "+data.name+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
-			if (io.sockets.sockets[client.id]) {
-	    		io.sockets.sockets[client.id].disconnect();
-			}
 			util.log("Login server offline")
 		}
 		if(body == "true") {
@@ -328,9 +317,6 @@ function onNewPlayer(data) {
 			players.push(newPlayer);
 		} else {
 			util.log("Player "+data.name+" authorization failed")
-			if (io.sockets.sockets[client.id]) {
-	    		io.sockets.sockets[client.id].disconnect();
-			}
 		}
     })
 };

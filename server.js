@@ -1,6 +1,6 @@
 var util = require("util"),
 	io = require("socket.io"),
-	pg = require('pg'),
+	pg = require('pg'), //
 	request = require("request");
 	sha256 = require("sha256")
 

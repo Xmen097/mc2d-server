@@ -322,7 +322,7 @@ function onNewPlayer(data) {
 	            			}
 	            		})
         			} else if(result) {
-        				
+        				client.emit("inventory", result.rows);
         			}
         		})
         	})

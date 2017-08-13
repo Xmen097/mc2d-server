@@ -324,7 +324,7 @@ function onNewPlayer(data) {
         			} else if(result) {
         				
         			}
-        		}
+        		})
         	})
 			client.emit("new map", map)
 		    client.on("disconnect", onClientDisconnect);

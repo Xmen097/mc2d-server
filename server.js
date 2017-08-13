@@ -1,7 +1,7 @@
 var util = require("util"),
 	io = require("socket.io"),
 	pg = require('pg'), 
-	request = require("request"),//vvo
+	request = require("request"),
 	sha256 = require("sha256");
 
 var socket, players;
@@ -315,10 +315,10 @@ function onNewPlayer(data) {
 	            			} else {
 	            				for(var a=0;a<4;a++) {
 	            					for(var b=0;b<9;b++) {
-	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, ammount, id) VALUES ('+b+', '+a+', 0, 0)');
+	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, 0)');
 	            					} 
 	            				}
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, ammount, id) VALUES (0, 4, 0, 0), (1, 4, 0, 0), (2, 4, 0, 0), (3, 4, 0, 0)');
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, 0), (1, 4, 0, 0), (2, 4, 0, 0), (3, 4, 0, 0)');
 	            			}
 	            		})
         			} else if(result) {

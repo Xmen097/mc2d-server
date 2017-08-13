@@ -6,8 +6,8 @@ var util = require("util"),
 
 var socket, players;
 
-function replaceAll(str, find, replace) {
-    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+function validateString(str) {
+	return JSON.stringify(str).replace(/\W/g, '')
 }
 
 
@@ -300,6 +300,32 @@ function onNewPlayer(data) {
 			util.log("Login server offline")
 		}
 		if(body == "true") {
+			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+       	 		if(err){
+            		util.log("Not able to connect: "+ err);
+            		return;
+        		} 
+        		pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
+        			if(err) {
+	            		util.log("Player "+data.name+" is new here!");
+	            		pgClient.query('CREATE TABLE '+validateString(data.name)+'(x smallint, y smallint, amount smallint, id smallint)', function(err) {
+	            			if(err) {
+	            				util.log("Failed creating player profile");
+	            				return;
+	            			} else {
+	            				for(var a=0;a<4;a++) {
+	            					for(var b=0;b<9;b++) {
+	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, ammount, id) VALUES ('+b+', '+a+', 0, 0)');
+	            					} 
+	            				}
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, ammount, id) VALUES (0, 4, 0, 0), (1, 4, 0, 0), (2, 4, 0, 0), (3, 4, 0, 0)');
+	            			}
+	            		})
+        			} else if(result) {
+        				
+        			}
+        		}
+        	}
 			client.emit("new map", map)
 		    client.on("disconnect", onClientDisconnect);
 		    client.on("move player", onMovePlayer);
@@ -347,7 +373,7 @@ function onMapEdit(data) {
 	var id=this.id;
 	if(process.env.DATABASE_URL) {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-			pgClient.query("UPDATE map SET _"+data.y+"="+parseInt(data.block)+" WHERE y="+data.x, function(err) {
+			pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
 				if(err) {
 					util.log("Failed map edit "+err)
 				} else {

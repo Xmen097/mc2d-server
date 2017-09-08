@@ -87,7 +87,146 @@ function init() {
     	socket.set("log level", 2);
 	});
 	setEventHandlers();
+	resetMessagesPerMinutes = setInterval(function() {
+		for(var a=0;a<players.length;a++) {
+			if(players[a].messagesPerMinute < 25)
+				players[a].messagesPerMinute=0;
+		}
+	},60000);
 }
+
+function bestInventoryPosition(item, id) {
+	var inventory =f
+	for(var a of inventory.hotbar) {
+		if(a.item == item) {
+			playerById(id).inve a.count += count;	
+		}
+	}
+	for (var m of inventory.inventory) {
+		for(var a of m) {
+			if(a.item == item) {
+				a.count += count;		
+			}
+		}				
+	}
+	for(var a of inventory.hotbar) {
+		if(a.item == undefined) {
+			a.count = count;
+			a.item = item;
+		}
+	}
+	for (var m of inventory.inventory) {
+		for(var a of m) {
+			if(a.item == undefined) {
+				a.count = count;
+				a.item = item;			
+			}
+		}				
+	}
+}
+
+function drop(item1, count1, condition, item2, count2) {
+	this.item1 = item1;
+	this.count1 = count1 || 1;
+	this.condition = condition || undefined;
+	this.item2 = item2 || undefined;
+	this.count2 = count2 || 1;
+	this.drop = function() {
+		if(activeItem.item!= undefined && this.condition != undefined && activeItem.item.type == this.condition && this.item2 != undefined) {
+			return {item: this.item2, count: this.count2};
+		} else if(item1 != undefined){
+			return {item: this.item1, count: this.count1};
+		}
+	}
+}
+
+function invSpace(item, count) {
+	this.item = item;
+	this.count = count || 0;
+} 
+
+var inventoryPreset = {
+	armor: [new invSpace(), new invSpace(), new invSpace(), new invSpace()],
+	inventory: [[new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()],
+				[new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()],
+				[new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]
+				],
+	hotbar: [new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]			
+}
+
+var items = [
+	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe"},                            					    
+	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe"},											
+	{name: "wood", durability: 300, stack: 64, x:11, favType: "axe", smelting: 1000},									
+	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 300},								
+	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel"},							
+	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel"},											
+	{name: "bedrock", durability: Infinity},																		
+	{name: "iron ore", durability: 700, stack: 64, x:3, favType:"pickaxe"},													
+	{name: "coal ore", durability: 600, stack: 64, x:0, favType:"pickaxe"},		 										
+	{name: "diamond ore", durability: 1000, stack: 64, x:1, favType:"pickaxe"},  										
+	{name: "gold ore", durability: 800, stack: 64, x:2, favType:"pickaxe"},			 										
+	{name: "wooden planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500},								
+	{name: "crafting table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000},			
+	{name: "furnace", durability: 500, stack: 64, x:4, favType: "pickaxe", active:"furnace"},								
+	{name: "Leather helmet", stack: 1, x:0, y:0, durability: 200, type: "helmet"},
+	{name: "Chain helmet", stack: 1, x:1, y:0, durability: 400, type: "helmet"},
+	{name: "Iron helmet", stack: 1, x:2, y:0, durability: 600, type: "helmet"},
+	{name: "Diamond helmet", stack: 1, x:3, y:0, durability: 800, type: "helmet"},
+	{name: "Golden helmet", stack: 1, x:4, y:0, durability: 1000, type: "helmet"},
+	{name: "Leather chestplate", stack: 1, x:0, y:1, durability: 200, type: "chestplate"},
+	{name: "Chain chestplate", stack: 1, x:1, y:1, durability: 400, type: "chestplate"},
+	{name: "Iron chestplate", stack: 1, x:2, y:1, durability: 600, type: "chestplate"},
+	{name: "Diamond chestplate", stack: 1, x:3, y:1, durability: 800, type: "chestplate"},
+	{name: "Golden chestplate", stack: 1, x:4, y:1, durability: 1000, type: "chestplate"},
+	{name: "Leather trousers", stack: 1, x:0, y:2, durability: 200, type: "trousers"},
+	{name: "Chain trousers", stack: 1, x:1, y:2, durability: 400, type: "trousers"},
+	{name: "Iron trousers", stack: 1, x:2, y:2, durability: 600, type: "trousers"},
+	{name: "Diamond trousers", stack: 1, x:3, y:2, durability: 800, type: "trousers"},
+	{name: "Golden trousers", stack: 1, x:4, y:2, durability: 1000, type: "trousers"},
+	{name: "Leather shoes", stack: 1, x:0, y:3, durability: 200, type: "shoes"},
+	{name: "Chain shoes", stack: 1, x:1, y:3, durability: 400, type: "shoes"},
+	{name: "Iron shoes", stack: 1, x:2, y:3, durability: 600, type: "shoes"},
+	{name: "Diamond shoes", stack: 1, x:3, y:3, durability: 800, type: "shoes"},
+	{name: "Golden shoes", stack: 1, x:4, y:3, durability: 1000, type: "shoes"},
+	{name: "Scissors", stack:1, x:13, y:5, durability: 200, type: "scissors", multiplier:2},
+	{name: "Wood pickaxe", stack:1, x:0, y:6, durability: 500, type: "pickaxe", multiplier:6},
+	{name: "Stone pickaxe", stack:1, x:1, y:6, durability: 500, type: "pickaxe", multiplier:8},
+	{name: "Iron pickaxe", stack:1, x:2, y:6, durability: 500, type: "pickaxe", multiplier:10},
+	{name: "Diamond pickaxe", stack:1, x:3, y:6, durability: 500, type: "pickaxe", multiplier:12},
+	{name: "Gold pickaxe", stack:1, x:4, y:6, durability: 500, type: "pickaxe", multiplier:12},
+	{name: "Wood axe", stack:1, x:0, y:7, durability: 500, type: "axe", multiplier:3},
+	{name: "Stone axe", stack:1, x:1, y:7, durability: 500, type: "axe", multiplier:4},
+	{name: "Iron axe", stack:1, x:2, y:7, durability: 500, type: "axe", multiplier:5},
+	{name: "Diamond axe", stack:1, x:3, y:7, durability: 500, type: "axe", multiplier:6},
+	{name: "Gold axe", stack:1, x:4, y:7, durability: 500, type: "axe", multiplier:6},
+	{name: "Wooden shovel", stack:1, x:0, y:5, durability: 50, type: "shovel", multiplier:2},
+	{name: "Stone shovel", stack:1, x:1, y:5, durability: 200, type: "shovel", multiplier:3},
+	{name: "Iron shovel", stack:1, x:2, y:5, durability: 500, type: "shovel", multiplier:4},
+	{name: "Diamond shovel", stack:1, x:3, y:5, durability: 1000, type: "shovel", multiplier:5},
+	{name: "Gold shovel", stack:1, x:4, y:5, durability: 100, type: "shovel", multiplier:5},
+	{name: "Diamond", stack: 64, x:7, y:3, type: "item"},
+	{name: "Coal", stack: 64, x:7, y:0, type: "item", smelting: 4000},
+	{name: "Iron ingot", stack: 64, x:7, y:1, type: "item"},
+	{name: "Gold ingot", stack: 64, x:7, y:2, type: "item"},
+	{name: "Stick", stack: 64, x:5, y:3, type: "item", smelting: 50},
+]
+
+materials[0].drop=new drop(undefined, 0, "pickaxe", materials[1]);
+materials[1].drop=new drop(undefined, 0, "pickaxe", materials[1]);
+materials[2].drop=new drop(materials[2]);
+materials[3].drop=new drop(undefined, 0, "scissors", materials[3]);
+materials[4].drop=new drop(materials[5], 1, "scissors", materials[4]);
+materials[5].drop=new drop(materials[5]);
+materials[6].drop=new drop(undefined);
+materials[7].drop=new drop(undefined, 0, "pickaxe", materials[7]);
+materials[8].drop=new drop(undefined, 0, "pickaxe", items.coal);
+materials[9].drop=new drop(undefined, 0, "pickaxe", items.diamond);
+materials[10].drop=new drop(undefined, 0, "pickaxe", materials[10]);
+materials[11].drop=new drop(materials[11]);
+materials[12].drop=new drop(materials[12]);
+materials[13].drop=new drop(undefined, 0, "pickaxe", materials[13]);
+
 
 //map generator start
 
@@ -254,11 +393,13 @@ mapGenerator = new mapGeneratorConstructor();
 
 //Map generator end
 
-function Player(gtX, gtY, gtID, gtName) {
+function Player(gtX, gtY, gtID, gtName, gtInv) {
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
 	this.y = gtY;
+	this.inventory = gtInv;
+	this.messagesPerMinute=0;
 
 }
 
@@ -315,14 +456,40 @@ function onNewPlayer(data) {
 	            			} else {
 	            				for(var a=0;a<4;a++) {
 	            					for(var b=0;b<9;b++) {
-	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, 0)');
+	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, -1)');
 	            					} 
 	            				}
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, 0), (1, 4, 0, 0), (2, 4, 0, 0), (3, 4, 0, 0)');
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)');
+								var newInv=inventoryPreset;
 	            			}
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
+        				var newInv=inventoryPreset;
+        				for(var a of result.rows) {
+							if(data.amount) {
+								if(a.id < materials.length) {
+									var item=materials[a.id];	
+								} else {
+									for(var b of items) {
+										if(b.id == a.id) {
+											item = b;
+											break;
+										}
+									}
+								}
+							}
+							if(a.y < 3) {
+								newInv.inventory[a.y][a.x].item=item;
+								newInv.inventory[a.y][a.x].count=data.amount;
+							} else if(a.y == 3) {
+								newInv.hotbar[a.x].item=item;
+								newInv.hotbar[a.x].count=data.amount;
+							} else if(a.y == 4) {
+								newInv.armor[a.x].item=item;
+								newInv.armor[a.x].count=data.amount;
+							}
+						}
         			}
         		})
         	})
@@ -333,7 +500,7 @@ function onNewPlayer(data) {
 		    client.on("new message", onNewMessage);
 		    client.on("block breaking", onBlockBreaking);
 			util.log("Player "+data.name+" authorized succesfully")
-			var newPlayer = new Player(data.x, data.y, client.id, data.name);
+			var newPlayer = new Player(data.x, data.y, client.id, data.name, newInv);
 			client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
 			var existingPlayer;
 			for (var i = 0; i < players.length; i++) {
@@ -348,8 +515,18 @@ function onNewPlayer(data) {
 };
 
 function onNewMessage(data) {
-	this.broadcast.emit("new message", {name: playerById(this.id).name, message: data})
-	this.emit("new message", {name: "You", message: data})
+	var sender = playerById(this.id);
+	if(sender.messagesPerMinute < 20) {
+		players.indexOf(sender).messagesPerMinute++;
+		this.broadcast.emit("new message", {name: playerById(this.id).name, message: data})
+		this.emit("new message", {name: "You", message: data})
+	} else if(sender.messagesPerMinute < 25) {
+		players.indexOf(sender).messagesPerMinute++;
+		this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
+	}else {
+		this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
+	}
+		
 }
 
 function onMovePlayer(data) {
@@ -367,6 +544,9 @@ function onMovePlayer(data) {
 
 
 function onMapEdit(data) {
+	if(data.block == -1) {
+		playerById(this.id).inventory
+	}
 	map[data.x][data.y] = data.block;
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block});

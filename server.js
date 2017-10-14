@@ -458,6 +458,7 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
+	var newInv;
 	var client=this;
 	util.log("Player "+data.name+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){

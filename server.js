@@ -99,7 +99,7 @@ function bestInventoryPosition(item, id) {
 	var inventory =f
 	for(var a of inventory.hotbar) {
 		if(a.item == item) {
-			playerById(id).inve a.count += count;	
+			playerById(id).inventory.count += count;	
 		}
 	}
 	for (var m of inventory.inventory) {

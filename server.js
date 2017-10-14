@@ -410,6 +410,13 @@ function playerById(id) {
     };
 }
 
+function playerByName(name) {
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].name == name)
+            return players[i];
+    };
+}
+
 var setEventHandlers = function() {
     socket.sockets.on("connection", onSocketConnection);
 };
@@ -516,15 +523,38 @@ function onNewPlayer(data) {
 
 function onNewMessage(data) {
 	var sender = playerById(this.id);
-	if(sender.messagesPerMinute < 20) {
-		players.indexOf(sender).messagesPerMinute++;
-		this.broadcast.emit("new message", {name: playerById(this.id).name, message: data})
-		this.emit("new message", {name: "You", message: data})
-	} else if(sender.messagesPerMinute < 25) {
-		players.indexOf(sender).messagesPerMinute++;
-		this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
-	}else {
-		this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
+	if(data[0] == "/") {
+		var data = data.split("/")[data.split("/").length]
+		var command = data.split(" ")[0]
+		var argument = data.split(" ")[1]
+		switch(command) {
+			case "ban":
+				if(sender.role > 3) {
+					if(playerByName(argument)) {
+						if(sender.role > playerByName(argument).role) {
+							this.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+						} else {
+							this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
+						}
+					} else {
+						this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist, make sure the name is written properly"})
+					}
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You dont have permission to use this command"})
+				}
+				break;
+		}
+	} else {
+		if(sender.messagesPerMinute < 20) {
+			players.indexOf(sender).messagesPerMinute++;
+			this.broadcast.emit("new message", {name: playerById(this.id).name, message: data})
+			this.emit("new message", {name: "You", message: data})
+		} else if(sender.messagesPerMinute < 25) {
+			players.indexOf(sender).messagesPerMinute++;
+			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
+		}else {
+			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
+		}		
 	}
 		
 }

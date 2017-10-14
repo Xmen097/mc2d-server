@@ -484,12 +484,12 @@ function onNewPlayer(data) {
 	            					} 
 	            				}
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)');
-								var newInv=inventoryPreset;
+								newInv=inventoryPreset;
 	            			}
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
-        				var newInv=inventoryPreset;
+        				newInv=inventoryPreset;
         				for(var a of result.rows) {
 							if(data.amount) {
 								if(a.id < materials.length) {

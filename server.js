@@ -494,25 +494,24 @@ function onNewPlayer(data) {
 								newInv.armor[a.x].count=data.amount;
 							}
 						}
-						util.log(newInv)
+						client.emit("new map", map)
+					    client.on("disconnect", onClientDisconnect);
+					    client.on("move player", onMovePlayer);
+					    client.on("map edit", onMapEdit);
+					    client.on("new message", onNewMessage);
+					    client.on("block breaking", onBlockBreaking);
+						util.log("Player "+data.name+" authorized successfully")
+						var newPlayer = new Player(data.x, data.y, client.id, data.name, newInv);
+						client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
+						var existingPlayer;
+						for (var i = 0; i < players.length; i++) {
+					    	existingPlayer = players[i];
+					    	client.emit("new player", {id: existingPlayer.id, x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.name});
+						};
+						players.push(newPlayer);
         			}
         		})
         	})
-			client.emit("new map", map)
-		    client.on("disconnect", onClientDisconnect);
-		    client.on("move player", onMovePlayer);
-		    client.on("map edit", onMapEdit);
-		    client.on("new message", onNewMessage);
-		    client.on("block breaking", onBlockBreaking);
-			util.log("Player "+data.name+" authorized successfully")
-			var newPlayer = new Player(data.x, data.y, client.id, data.name, newInv);
-			client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
-			var existingPlayer;
-			for (var i = 0; i < players.length; i++) {
-		    	existingPlayer = players[i];
-		    	client.emit("new player", {id: existingPlayer.id, x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.name});
-			};
-			players.push(newPlayer);
 		} else {
 			util.log("Player "+data.name+" authorization failed")
 		}

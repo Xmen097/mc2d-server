@@ -129,19 +129,12 @@ function giveItemToBestInventoryPosition(item, count, id) {
 }
 
 function drop(item1, count1, condition, item2, count2, activeItem) {
-	this.item1 = item1;
-	this.count1 = count1 || 1;
-	this.condition = condition || undefined;
-	this.item2 = item2 || undefined;
-	this.count2 = count2 || 1;
-	this.drop = function() {
-		if(activeItem != undefined && this.condition != undefined && items[activeItem].type == this.condition && this.item2 != undefined) {
-			return {item: this.item2, count: this.count2};
-		} else if(item1 != undefined){
-			return {item: this.item1, count: this.count1};
-		} else {
-			return {item: undefined, count: 0};
-		}
+	if(activeItem != undefined && condition != undefined && items[activeItem].type == condition && item2 != undefined) {
+		return {item: item2, count: count2};
+	} else if(item1 != undefined){
+		return {item: item1, count: count1};
+	} else {
+		return {item: undefined, count: 0};
 	}
 }
 
@@ -572,7 +565,6 @@ function onMovePlayer(data) {
 
 function onMapEdit(data) {
 	if(data.block == -1) {
-		util.log(playerById(this.id));
 		var dropped = drop(items[map[data.x][data.y]].drop[0], items[map[data.x][data.y]].drop[1], items[map[data.x][data.y]].drop[2], items[map[data.x][data.y]].drop[3], items[map[data.x][data.y]].drop[4], playerById(this.id).inventory.hotbar[data.active].item)
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
 	} else if(materials.indexOf(playerById(this.id).inventory.hotbar[data.active]) == data.block && playerById(this.id).inventory.hotbar[data.active].count > 0) {

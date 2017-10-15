@@ -67,7 +67,7 @@ function init() {
 							}
 							util.log("Loaded map part")
 						}
-						util.log("Map was loaded succesfully")
+						util.log("Map was loaded successfully")
 					}
 				})
             }
@@ -498,14 +498,13 @@ function onNewPlayer(data) {
         			}
         		})
         	})
-        	util.log(newInv);
 			client.emit("new map", map)
 		    client.on("disconnect", onClientDisconnect);
 		    client.on("move player", onMovePlayer);
 		    client.on("map edit", onMapEdit);
 		    client.on("new message", onNewMessage);
 		    client.on("block breaking", onBlockBreaking);
-			util.log("Player "+data.name+" authorized succesfully")
+			util.log("Player "+data.name+" authorized successfully")
 			var newPlayer = new Player(data.x, data.y, client.id, data.name, newInv);
 			client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
 			var existingPlayer;

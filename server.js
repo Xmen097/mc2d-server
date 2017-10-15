@@ -570,7 +570,7 @@ function onMovePlayer(data) {
 }
 
 
-function onMapEdit(data) {//abc
+function onMapEdit(data) {
 	if(data.block == -1) {
 		var dropped = drop(items[map[data.x][data.y]].drop[0], items[map[data.x][data.y]].drop[1], items[map[data.x][data.y]].drop[2], items[map[data.x][data.y]].drop[3], items[map[data.x][data.y]].drop[4], playerById(this.id).inventory.hotbar[data.active].item)
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);

@@ -95,47 +95,52 @@ function init() {
 	},60000);
 }
 
-function bestInventoryPosition(item, id) {
-	var inventory =f
-	for(var a of inventory.hotbar) {
+function giveItemToBestInventoryPosition(item, count, id) {
+	for(var a of playerById(id).inventory.hotbar) {
 		if(a.item == item) {
-			playerById(id).inventory.count += count;	
+			a.count += count;	
+			return;	
 		}
 	}
-	for (var m of inventory.inventory) {
+	for (var m of playerById(id).inventory.inventory) {
 		for(var a of m) {
 			if(a.item == item) {
-				a.count += count;		
+				a.count += count;	
+				return;		
 			}
 		}				
 	}
-	for(var a of inventory.hotbar) {
+	for(var a of playerById(id).inventory.hotbar) {
 		if(a.item == undefined) {
 			a.count = count;
-			a.item = item;
+			a.item = item;	
+			return;
 		}
 	}
-	for (var m of inventory.inventory) {
+	for (var m of playerById(id).inventory.inventory) {
 		for(var a of m) {
 			if(a.item == undefined) {
 				a.count = count;
-				a.item = item;			
+				a.item = item;	
+				return;		
 			}
 		}				
 	}
 }
 
-function drop(item1, count1, condition, item2, count2) {
+function drop(item1, count1, condition, item2, count2, activeItem) {
 	this.item1 = item1;
 	this.count1 = count1 || 1;
 	this.condition = condition || undefined;
 	this.item2 = item2 || undefined;
 	this.count2 = count2 || 1;
 	this.drop = function() {
-		if(activeItem.item!= undefined && this.condition != undefined && activeItem.item.type == this.condition && this.item2 != undefined) {
+		if(activeItem != undefined && this.condition != undefined && items[activeItem].type == this.condition && this.item2 != undefined) {
 			return {item: this.item2, count: this.count2};
 		} else if(item1 != undefined){
 			return {item: this.item1, count: this.count1};
+		} else {
+			return {item: undefined, count: 0};
 		}
 	}
 }
@@ -212,37 +217,20 @@ var items = [
 	{name: "Stick", stack: 64, x:5, y:3, type: "item", smelting: 50},
 ]
 
-var materials = [
-	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", id:0},                            					    
-	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe", id:1},											
-	{name: "wood", durability: 300, stack: 64, x:11, favType: "axe", smelting: 1000, id:2},										
-	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 300, id:3},									
-	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel", id:4},								
-	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel", id:5},														
-	{name: "bedrock", durability: Infinity, x:6, id:6},																			
-	{name: "iron ore", durability: 700, stack: 64, x:3, favType:"pickaxe", id:7},												
-	{name: "coal ore", durability: 600, stack: 64, x:0, favType:"pickaxe", id:8},		 										
-	{name: "diamond ore", durability: 1000, stack: 64, x:1, favType:"pickaxe", id:9},  											
-	{name: "gold ore", durability: 800, stack: 64, x:2, favType:"pickaxe", id:10},			 									
-	{name: "wooden planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500, id:11},								
-	{name: "crafting table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000, id:12},			
-	{name: "furnace", durability: 500, stack: 64, x:4, favType: "pickaxe", active:"furnace", id:13},								
-]
-
-materials[0].drop=new drop(undefined, 0, "pickaxe", materials[1]);
-materials[1].drop=new drop(undefined, 0, "pickaxe", materials[1]);
-materials[2].drop=new drop(materials[2]);
-materials[3].drop=new drop(undefined, 0, "scissors", materials[3]);
-materials[4].drop=new drop(materials[5], 1, "scissors", materials[4]);
-materials[5].drop=new drop(materials[5]);
-materials[6].drop=new drop(undefined);
-materials[7].drop=new drop(undefined, 0, "pickaxe", materials[7]);
-materials[8].drop=new drop(undefined, 0, "pickaxe", items.coal);
-materials[9].drop=new drop(undefined, 0, "pickaxe", items.diamond);
-materials[10].drop=new drop(undefined, 0, "pickaxe", materials[10]);
-materials[11].drop=new drop(materials[11]);
-materials[12].drop=new drop(materials[12]);
-materials[13].drop=new drop(undefined, 0, "pickaxe", materials[13]);
+items[0].drop=[undefined, 0, "pickaxe", 1];
+items[1].drop=[undefined, 0, "pickaxe", 1];
+items[2].drop=[2];
+items[3].drop=[undefined, 0, "scissors", 3];
+items[4].drop=[5, 1, "scissors", 4];
+items[5].drop=[5];
+items[6].drop=[undefined];
+items[7].drop=[undefined, 0, "pickaxe", 7];
+items[8].drop=[undefined, 0, "pickaxe", 51];
+items[9].drop=[undefined, 0, "pickaxe", 50];
+items[10].drop=[undefined, 0, "pickaxe", 10];
+items[11].drop=[11];
+items[12].drop=[12];
+items[13].drop=[undefined, 0, "pickaxe", 13];
 
 
 //map generator start
@@ -493,16 +481,7 @@ function onNewPlayer(data) {
         				newInv=inventoryPreset;
         				for(var a of result.rows) {
 							if(data.amount) {
-								if(a.id < materials.length) {
-									var item=materials[a.id];	
-								} else {
-									for(var b of items) {
-										if(b.id == a.id) {
-											item = b;
-											break;
-										}
-									}
-								}
+								var item=a.id;
 							}
 							if(a.y < 3) {
 								newInv.inventory[a.y][a.x].item=item;
@@ -593,8 +572,14 @@ function onMovePlayer(data) {
 
 function onMapEdit(data) {
 	if(data.block == -1) {
-		playerById(this.id).inventory
-	}
+		var dropped = drop(items[map[data.x][data.y]].drop[0], items[map[data.x][data.y]].drop[1], items[map[data.x][data.y]].drop[2], items[map[data.x][data.y]].drop[3], items[map[data.x][data.y].drop][4], playerById(this.id).inventory.hotbar[data.active].item)
+		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
+	} else if(materials.indexOf(playerById(this.id).inventory.hotbar[data.active]) == data.block && playerById(this.id).inventory.hotbar[data.active].count > 0) {
+		players[playerById(this.id)].inventory.hotbar[data.active].count--;
+		if(playerById(this.id).inventory.hotbar[data.active].count == 0)
+			players[playerById(this.id)].inventory.hotbar[data.active].item = undefined;	
+	} else 
+		return;
 	map[data.x][data.y] = data.block;
 	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
 	this.emit("map edit", {x: data.x, y: data.y, block: data.block});

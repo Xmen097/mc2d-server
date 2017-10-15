@@ -478,9 +478,7 @@ function onNewPlayer(data) {
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
-        				util.log(inventoryPreset)
         				newInv=inventoryPreset;
-        				util.log(newInv);
         				for(var a of result.rows) {
 							if(data.amount) {
 								var item=a.id;
@@ -496,9 +494,11 @@ function onNewPlayer(data) {
 								newInv.armor[a.x].count=data.amount;
 							}
 						}
+						util.log(newInv)
         			}
         		})
         	})
+        	util.log(newInv);
 			client.emit("new map", map)
 		    client.on("disconnect", onClientDisconnect);
 		    client.on("move player", onMovePlayer);

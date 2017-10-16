@@ -99,14 +99,14 @@ function giveItemToBestInventoryPosition(item, count, id) {
 	for(var a of playerById(id).inventory.hotbar) {
 		if(a.item == item) {
 			a.count += count;	
-			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count + count};	
+			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count};	
 		}
 	}
 	for (var m of playerById(id).inventory.inventory) {
 		for(var a of m) {
 			if(a.item == item) {
 				a.count += count;	
-				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count + count};		
+				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count};		
 			}
 		}				
 	}
@@ -114,7 +114,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		if(a.item == undefined) {
 			a.count = count;
 			a.item = item;	
-			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count + count};
+			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: count};
 		}
 	}
 	for (var m of playerById(id).inventory.inventory) {
@@ -122,7 +122,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			if(a.item == undefined) {
 				a.count = count;
 				a.item = item;	
-				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count + count};		
+				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: count};		
 			}
 		}				
 	}
@@ -591,7 +591,7 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+" , y="+dat.y, function(err) {
+			pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+" AND y="+dat.y, function(err) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
 					util.log(validateString(playerById(id).name));

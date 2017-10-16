@@ -594,6 +594,11 @@ function onMapEdit(data) {
 			pgClient.query("UPDATE "+validateString(id)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+", y="+dat.y, function(err) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
+					util.log(validateString(id));
+					util.log(dat.item);
+					util.log(dat.amount);
+					util.log(dat.x);
+					util.log(dat.y);
 				} else {
 					util.log("Players "+id+ " inventory was updated");
 				}

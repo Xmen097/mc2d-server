@@ -591,7 +591,7 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE "+validateString(playerById(this.id))+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+", y="+dat.y, function(err) {
+			pgClient.query("UPDATE "+validateString(this.id)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+", y="+dat.y, function(err) {
 
 			})
 		})	

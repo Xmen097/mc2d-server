@@ -586,6 +586,9 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
+			pgClient.query("UPDATE", function(err) {
+
+			})
 		})	
 	}
 }

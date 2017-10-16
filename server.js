@@ -570,7 +570,7 @@ function onMapEdit(data) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
 		var dat = {x: positions.x, y: positions.y, amount: positions.amount, item:dropped.item}
-	} else if(items.indexOf(playerById(this.id).inventory.hotbar[parseInt(data.active)]) == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
+	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[playerById(this.id)].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
 		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {
@@ -579,8 +579,9 @@ function onMapEdit(data) {
 		}
 		var dat = {x: parseInt(data.active), y: 3, amount: playerById(this.id).inventory.hotbar[parseInt(data.active)].count-1, item:item}
 	} else {
-		util.log(items.indexOf(playerById(this.id).inventory.hotbar[parseInt(data.active)]))
+		util.log(playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		util.log(parseInt(data.block))
+		util.log(data.active)
 		util.log(playerById(this.id).inventory.hotbar[parseInt(data.active)].count)//d
 		return;
 	}

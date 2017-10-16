@@ -581,6 +581,7 @@ function onMapEdit(data) {
 	} else {
 		util.log(playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		util.log(parseInt(data.block))
+		util.log(data);
 		util.log(data.active)
 		util.log(playerById(this.id).inventory.hotbar[parseInt(data.active)].count)//d
 		return;

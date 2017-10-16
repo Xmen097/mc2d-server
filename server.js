@@ -591,10 +591,10 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+", y="+dat.y, function(err) {
+			pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+" , y="+dat.y, function(err) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
-					util.log(validateString(id));
+					util.log(validateString(playerById(id).name));
 					util.log(dat.item);
 					util.log(dat.amount);
 					util.log(dat.x);

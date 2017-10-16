@@ -592,7 +592,11 @@ function onMapEdit(data) {
 				}
 			})
 			pgClient.query("UPDATE "+validateString(id)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+", y="+dat.y, function(err) {
-
+				if(err) {
+					util.log("Failed saving player inventory "+err);
+				} else {
+					util.log("Players "+id+ " inventory was updated");
+				}
 			})
 		})	
 	}

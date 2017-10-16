@@ -114,7 +114,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		if(a.item == undefined) {
 			a.count = count;
 			a.item = item;	
-			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: count};
+			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count};
 		}
 	}
 	for (var m of playerById(id).inventory.inventory) {
@@ -122,13 +122,15 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			if(a.item == undefined) {
 				a.count = count;
 				a.item = item;	
-				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: count};		
+				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count};		
 			}
 		}				
 	}
 }
 
 function drop(item1, count1, condition, item2, count2, activeItem) {
+	count1 = count1 || 1;
+	count2 = count2 || 1;
 	if(activeItem != undefined && condition != undefined && items[activeItem].type == condition && item2 != undefined) {
 		return {item: item2, count: count2};
 	} else if(item1 != undefined){

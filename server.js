@@ -566,7 +566,6 @@ function onMovePlayer(data) {
 
 
 function onMapEdit(data) {
-	util.log(data);
 	if(parseInt(data.block) == -1) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);

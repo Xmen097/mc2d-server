@@ -99,14 +99,14 @@ function giveItemToBestInventoryPosition(item, count, id) {
 	for(var a of playerById(id).inventory.hotbar) {
 		if(a.item == item) {
 			a.count += count;	
-			return;	
+			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count += count};	
 		}
 	}
 	for (var m of playerById(id).inventory.inventory) {
 		for(var a of m) {
 			if(a.item == item) {
 				a.count += count;	
-				return;		
+				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count += count};		
 			}
 		}				
 	}
@@ -114,7 +114,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		if(a.item == undefined) {
 			a.count = count;
 			a.item = item;	
-			return;
+			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count += count};
 		}
 	}
 	for (var m of playerById(id).inventory.inventory) {
@@ -122,7 +122,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			if(a.item == undefined) {
 				a.count = count;
 				a.item = item;	
-				return;		
+				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count += count};		
 			}
 		}				
 	}
@@ -441,8 +441,8 @@ function onClientDisconnect() {
 function onNewPlayer(data) {
 	var newInv;
 	var client=this;
-	util.log("Player "+data.name+" send authorization token")
-	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: data.name, token: data.token, salt: this.salt}}, function(err,httpResponse,body){
+	util.log("Player "+String(data.name)+" send authorization token")
+	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: String(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
 			util.log("Login server offline")
 		}
@@ -454,7 +454,7 @@ function onNewPlayer(data) {
         		} 
         		pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
         			if(err) {
-	            		util.log("Player "+data.name+" is new here!");
+	            		util.log("Player "+String(data.name)+" is new here!");
 	            		pgClient.query('CREATE TABLE '+validateString(data.name)+'(x smallint, y smallint, amount smallint, id smallint)', function(err) {
 	            			if(err) {
 	            				util.log("Failed creating player profile");
@@ -473,18 +473,18 @@ function onNewPlayer(data) {
         				client.emit("inventory", result.rows);
         				newInv=inventoryPreset;
         				for(var a of result.rows) {
-							if(data.amount) {
+							if(a.amount) {
 								var item=a.id;
-							}
-							if(a.y < 3) {
-								newInv.inventory[a.y][a.x].item=item;
-								newInv.inventory[a.y][a.x].count=data.amount;
-							} else if(a.y == 3) {
-								newInv.hotbar[a.x].item=item;
-								newInv.hotbar[a.x].count=data.amount;
-							} else if(a.y == 4) {
-								newInv.armor[a.x].item=item;
-								newInv.armor[a.x].count=data.amount;
+								if(a.y < 3) {
+									newInv.inventory[a.y][a.x].item=item;
+									newInv.inventory[a.y][a.x].count=a.amount;
+								} else if(a.y == 3) {
+									newInv.hotbar[a.x].item=item;
+									newInv.hotbar[a.x].count=a.amount;
+								} else if(a.y == 4) {
+									newInv.armor[a.x].item=item;
+									newInv.armor[a.x].count=a.amount;
+								}
 							}
 						}
 						client.emit("new map", map)
@@ -493,20 +493,20 @@ function onNewPlayer(data) {
 					    client.on("map edit", onMapEdit);
 					    client.on("new message", onNewMessage);
 					    client.on("block breaking", onBlockBreaking);
-						util.log("Player "+data.name+" authorized successfully")
-						var newPlayer = new Player(data.x, data.y, client.id, data.name, newInv);
-						client.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.x, y: newPlayer.y, name: newPlayer.name});
+						util.log("Player "+String(data.name)+" authorized successfully")
+						var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv);
+						client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
 						var existingPlayer;
 						for (var i = 0; i < players.length; i++) {
 					    	existingPlayer = players[i];
-					    	client.emit("new player", {id: existingPlayer.id, x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.name});
+					    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
 						};
 						players.push(newPlayer);
         			}
         		})
         	})
 		} else {
-			util.log("Player "+data.name+" authorization failed")
+			util.log("Player "+String(data.name)+" authorization failed")
 		}
     })
 };
@@ -514,9 +514,9 @@ function onNewPlayer(data) {
 function onNewMessage(data) {
 	var sender = playerById(this.id);
 	if(data[0] == "/") {
-		var data = data.split("/")[data.split("/").length]
-		var command = data.split(" ")[0]
-		var argument = data.split(" ")[1]
+		var data = String(data).split("/")[String(data).split("/").length]
+		var command = String(data).split(" ")[0]
+		var argument = String(data).split(" ")[1]
 		switch(command) {
 			case "ban":
 				if(sender.role > 3) {
@@ -537,8 +537,8 @@ function onNewMessage(data) {
 	} else {
 		if(sender.messagesPerMinute < 20) {
 			players.indexOf(sender).messagesPerMinute++;
-			this.broadcast.emit("new message", {name: playerById(this.id).name, message: data})
-			this.emit("new message", {name: "You", message: data})
+			this.broadcast.emit("new message", {name: playerById(this.id).name, message: String(data)})
+			this.emit("new message", {name: "You", message: String(data)})
 		} else if(sender.messagesPerMinute < 25) {
 			players.indexOf(sender).messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
@@ -557,25 +557,30 @@ function onMovePlayer(data) {
 	    return;
 	};
 
-	movePlayer.x = data.x;
-	movePlayer.y = data.y;
-	this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.x, y: movePlayer.y, texture: data.texture});
+	movePlayer.x = parseInt(data.x);
+	movePlayer.y = parseInt(data.y);
+	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x, y: parseInt(movePlayer.y), texture: parseInt(data.texture)});
 }
 
 
 function onMapEdit(data) {
 	if(data.block == -1) {
-		var dropped = drop(items[map[data.x][data.y]].drop[0], items[map[data.x][data.y]].drop[1], items[map[data.x][data.y]].drop[2], items[map[data.x][data.y]].drop[3], items[map[data.x][data.y]].drop[4], playerById(this.id).inventory.hotbar[data.active].item)
-		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
-	} else if(items.indexOf(playerById(this.id).inventory.hotbar[data.active]) == data.block && playerById(this.id).inventory.hotbar[data.active].count > 0) {
-		players[playerById(this.id)].inventory.hotbar[data.active].count--;
-		if(playerById(this.id).inventory.hotbar[data.active].count == 0)
-			players[playerById(this.id)].inventory.hotbar[data.active].item = undefined;	
+		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
+		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
+		var dat = {x: positions.x, y: position.y, amount: position.amount, item:dropped.item}
+	} else if(items.indexOf(playerById(this.id).inventory.hotbar[parseInt(data.active)]) == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
+		players[playerById(this.id)].inventory.hotbar[parseInt(data.active)].count--;
+		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
+		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {
+			players[playerById(this.id)].inventory.hotbar[parseInt(data.active)].item = undefined;	
+			item = 0;
+		}
+		var dat = {x: parseInt(data.active), y: 3, amount: playerById(this.id).inventory.hotbar[parseInt(data.active)].count-1, item:item}
 	} else 
 		return;
-	map[data.x][data.y] = data.block;
-	this.broadcast.emit("map edit", {x: data.x, y: data.y, block: data.block})
-	this.emit("map edit", {x: data.x, y: data.y, block: data.block});
+	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);
+	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
+	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
 	var id=this.id;
 	if(process.env.DATABASE_URL) {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
@@ -586,7 +591,7 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE", function(err) {
+			pgClient.query("UPDATE "+validateString(playerById(this.id))+" SET id="++" , amount="++" WHERE x="++", y="+, function(err) {
 
 			})
 		})	
@@ -594,7 +599,7 @@ function onMapEdit(data) {
 }
 
 function onBlockBreaking(data) {
-	this.broadcast.emit("block breaking", {x: data.x, y: data.y, progress: data.progress, id: this.id})
+	this.broadcast.emit("block breaking", {x: parseInt(data.x), y: parseInt(data.y), progress: parseInt(data.progress), id: this.id})
 }
 
 init();

@@ -559,7 +559,7 @@ function onMovePlayer(data) {
 
 	movePlayer.x = parseInt(data.x);
 	movePlayer.y = parseInt(data.y);
-	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x, y: parseInt(movePlayer.y), texture: parseInt(data.texture)});
+	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture)});
 }
 
 

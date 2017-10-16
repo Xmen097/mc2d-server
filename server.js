@@ -575,10 +575,10 @@ function onMapEdit(data) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
 		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {
-			players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].item = undefined;	
+			players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].item = 0;	
 			item = 0;
 		}
-		var dat = {x: parseInt(data.active), y: 3, amount: playerById(this.id).inventory.hotbar[parseInt(data.active)].count-1, item:item}
+		var dat = {x: parseInt(data.active), y: 3, amount: playerById(this.id).inventory.hotbar[parseInt(data.active)].count, item:item}
 	} else {
 		return;
 	}

@@ -552,7 +552,7 @@ function onNewMessage(data) {
 		
 }
 
-function onMovePlayer(data) {
+function onMovePlayer(data) {//t
 	var movePlayer = playerById(this.id);
 
 	if (!movePlayer) {

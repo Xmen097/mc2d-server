@@ -616,6 +616,10 @@ function onMoveItem(data) {
 				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
+						util.log(parseInt(item))
+						util.log(parseInt(count.end))
+						util.log(parseInt(data.end.x))
+						util.log(parseInt(data.end.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}

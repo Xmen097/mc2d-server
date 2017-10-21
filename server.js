@@ -613,7 +613,7 @@ function onMoveItem(data) {
 						util.log("Players "+id+ " inventory was updated");
 					}
 				})
-				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET item="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
+				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {

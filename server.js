@@ -495,6 +495,7 @@ function onNewPlayer(data) {
 					    client.on("map edit", onMapEdit);
 					    client.on("new message", onNewMessage);
 					    client.on("block breaking", onBlockBreaking);
+					    client.on("move item", onMoveItem);
 						util.log("Player "+String(data.name)+" authorized successfully")
 						var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv);
 						client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
@@ -564,9 +565,67 @@ function onMovePlayer(data) {
 	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture)});
 }
 
+function onMoveItem(data) {
+	if(parseInt(data.count) && parseInt(data.start.x) && parseInt(data.start.y) && parseInt(data.end.x) && parseInt(data.end.y)) {
+		var playerID = players.indexOf(playerById(this.id));
+		var item;
+		var count = {start:0, end:0};
+		if(start.y < 3) {
+			if(players[playerID].inventory[start.y][start.x].count >= data.count)
+				players[playerID].inventory[start.y][start.x].count-=data.count;
+			item = players[playerID].inventory[start.y][start.x].item;
+			count.start=players[playerID].inventory[start.y][start.x].count;
+		} else if(start.y == 3) {
+			if(players[playerID].hotbar[start.x].count >= data.count)
+				players[playerID].hotbar[start.x].count-=data.count;
+			item = players[playerID].hotbar[start.x].count.item;
+			count.start=players[playerID].hotbar[start.x].count;
+		} else if(start.y == 4) {
+			if(players[playerID].armor[start.x].count >= data.count)
+				players[playerID].armor[start.x].count-=data.count;
+			item = players[playerID].armor[start.x].item;
+			count.start=players[playerID].armor[start.x].count;
+		} else {
+			return;
+		}
+		if(end.y < 3) {
+			players[playerID].inventory[end.y][end.x].item=item;
+			players[playerID].inventory[end.y][end.x].count+=data.count;
+			count.end = players[playerID].inventory[end.y][end.x].count;
+		} else if(end.y == 3) {
+			players[playerID].hotbar[end.x].item=item;
+			players[playerID].hotbar[start.x].count+=data.count;
+			count.end = players[playerID].hotbar[start.x].count;
+		} else if(end.y == 4) {
+			players[playerID].armor[end.x].item=item;
+			players[playerID].armor[start.x].count+=data.count;
+			count.end = players[playerID].armor[start.x].count;
+		} else {
+			return;
+		}	
+		var id=this.id;
+		if(process.env.DATABASE_URL) {
+			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+				pgClient.query("UPDATE "+validateString(playerById(id).name)+" amount="+parseInt(count.start)+" WHERE x="+parseInt(data.start.x)+" AND y="+parseInt(data.start.y), function(err) {
+					if(err) {
+						util.log("Failed saving player inventory "+err);
+					} else {
+						util.log("Players "+id+ " inventory was updated");
+					}
+				})
+				pgClient.query("UPDATE "+validateString(playerById(id).name)+" item="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
+					if(err) {
+						util.log("Failed saving player inventory "+err);
+					} else {
+						util.log("Players "+id+ " inventory was updated");
+					}
+				})
+			})	
+		}	
+	}
+}
 
 function onMapEdit(data) {
-	util.log(data);
 	if(parseInt(data.block) == -1) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);

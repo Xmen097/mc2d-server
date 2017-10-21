@@ -588,6 +588,8 @@ function onMoveItem(data) {
 		} else {
 			return;
 		}
+		util.log(item);
+		util.log(players[playerID].inventory)
 		if(data.end.y < 3) {
 			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;

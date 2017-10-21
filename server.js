@@ -566,7 +566,6 @@ function onMovePlayer(data) {
 }
 
 function onMoveItem(data) {
-	util.log(data);
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;
@@ -610,6 +609,9 @@ function onMoveItem(data) {
 				pgClient.query("UPDATE "+validateString(playerById(id).name)+" amount="+parseInt(count.start)+" WHERE x="+parseInt(data.start.x)+" AND y="+parseInt(data.start.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
+						util.log(parseInt(count.start))
+						util.log(parseInt(data.start.x))
+						util.log(parseInt(data.start.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}
@@ -617,6 +619,10 @@ function onMoveItem(data) {
 				pgClient.query("UPDATE "+validateString(playerById(id).name)+" item="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
+						util.log(parseInt(item))
+						util.log(parseInt(count.end))
+						util.log(parseInt(data.end.x))
+						util.log(parseInt(data.end.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}

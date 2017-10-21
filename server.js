@@ -578,7 +578,7 @@ function onMoveItem(data) {
 		} else if(data.start.y == 3) {
 			if(players[playerID].inventory.hotbar[data.start.x].count >= data.count)
 				players[playerID].inventory.hotbar[data.start.x].count-=data.count;
-			item = players[playerID].inventory.hotbar[data.start.x].count.item;
+			item = players[playerID].inventory.hotbar[data.start.x].item;
 			count.start=players[playerID].inventory.hotbar[data.start.x].count;
 		} else if(data.start.y == 4) {
 			if(players[playerID].inventory.armor[data.start.x].count >= data.count)

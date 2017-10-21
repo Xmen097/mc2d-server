@@ -570,6 +570,7 @@ function onMoveItem(data) {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;
 		var count = {start:0, end:0};
+		util.log(data.start)
 		if(data.start.y < 3) {
 			if(players[playerID].inventory.inventory[data.start.y][data.start.x].count >= data.count)
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;

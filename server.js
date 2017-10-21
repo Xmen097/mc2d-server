@@ -566,7 +566,7 @@ function onMovePlayer(data) {
 }
 
 function onMoveItem(data) {
-	util.log(data);
+	util.log(data);//
 	if(parseInt(data.count) && parseInt(data.start.x) && parseInt(data.start.y) && parseInt(data.end.x) && parseInt(data.end.y)) {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;

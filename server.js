@@ -588,8 +588,6 @@ function onMoveItem(data) {
 		} else {
 			return;
 		}
-		util.log(item);
-		util.log(players[playerID].inventory)
 		if(data.end.y < 3) {
 			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
@@ -608,23 +606,16 @@ function onMoveItem(data) {
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE "+validateString(playerById(id).name)+" amount="+parseInt(count.start)+" WHERE x="+parseInt(data.start.x)+" AND y="+parseInt(data.start.y), function(err) {
+				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET amount="+parseInt(count.start)+" WHERE x="+parseInt(data.start.x)+" AND y="+parseInt(data.start.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
-						util.log(parseInt(count.start))
-						util.log(parseInt(data.start.x))
-						util.log(parseInt(data.start.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}
 				})
-				pgClient.query("UPDATE "+validateString(playerById(id).name)+" item="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
+				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET item="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
-						util.log(parseInt(item))
-						util.log(parseInt(count.end))
-						util.log(parseInt(data.end.x))
-						util.log(parseInt(data.end.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}

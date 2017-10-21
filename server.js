@@ -572,35 +572,35 @@ function onMoveItem(data) {
 		var item;
 		var count = {start:0, end:0};
 		if(data.start.y < 3) {
-			if(players[playerID].inventory[data.start.y][data.start.x].count >= data.count)
-				players[playerID].inventory[data.start.y][data.start.x].count-=data.count;
-			item = players[playerID].inventory[data.start.y][data.start.x].item;
-			count.start=players[playerID].inventory[data.start.y][data.start.x].count;
+			if(players[playerID].inventory.inventory[data.start.y][data.start.x].count >= data.count)
+				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
+			item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
+			count.start=players[playerID].inventory.inventory[data.start.y][data.start.x].count;
 		} else if(data.start.y == 3) {
-			if(players[playerID].hotbar[data.start.x].count >= data.count)
-				players[playerID].hotbar[data.start.x].count-=data.count;
-			item = players[playerID].hotbar[data.start.x].count.item;
-			count.start=players[playerID].hotbar[data.start.x].count;
+			if(players[playerID].inventory.hotbar[data.start.x].count >= data.count)
+				players[playerID].inventory.hotbar[data.start.x].count-=data.count;
+			item = players[playerID].inventory.hotbar[data.start.x].count.item;
+			count.start=players[playerID].inventory.hotbar[data.start.x].count;
 		} else if(data.start.y == 4) {
-			if(players[playerID].armor[data.start.x].count >= data.count)
-				players[playerID].armor[data.start.x].count-=data.count;
-			item = players[playerID].armor[data.start.x].item;
-			count.start=players[playerID].armor[data.start.x].count;
+			if(players[playerID].inventory.armor[data.start.x].count >= data.count)
+				players[playerID].inventory.armor[data.start.x].count-=data.count;
+			item = players[playerID].inventory.armor[data.start.x].item;
+			count.start=players[playerID].inventory.armor[data.start.x].count;
 		} else {
 			return;
 		}
 		if(data.end.y < 3) {
-			players[playerID].inventory[data.end.y][data.end.x].item=item;
-			players[playerID].inventory[data.end.y][data.end.x].count+=data.count;
-			count.end = players[playerID].inventory[data.end.y][data.end.x].count;
+			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
+			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
+			count.end = players[playerID].inventory.inventory[data.end.y][data.end.x].count;
 		} else if(data.end.y == 3) {
-			players[playerID].hotbar[data.end.x].item=item;
-			players[playerID].hotbar[data.end.x].count+=data.count;
-			count.end = players[playerID].hotbar[data.end.x].count;
+			players[playerID].inventory.hotbar[data.end.x].item=item;
+			players[playerID].inventory.hotbar[data.end.x].count+=data.count;
+			count.end = players[playerID].inventory.hotbar[data.end.x].count;
 		} else if(data.end.y == 4) {
-			players[playerID].armor[data.end.x].item=item;
-			players[playerID].armor[data.end.x].count+=data.count;
-			count.end = players[playerID].armor[data.end.x].count;
+			players[playerID].inventory.armor[data.end.x].item=item;
+			players[playerID].inventory.armor[data.end.x].count+=data.count;
+			count.end = players[playerID].inventory.armor[data.end.x].count;
 		} else {
 			return;
 		}	

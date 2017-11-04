@@ -47,7 +47,7 @@ function init() {
 							if(err) {
 								util.log("FAILED writing map part to database: " + err)
 							} else {
-								util.log("Writen map part to database")//feuewidweindwend
+								util.log("Writen map part to database")
 							}
 						})
 					}	
@@ -470,6 +470,7 @@ function onNewPlayer(data) {
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 4)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
+								onNewPlayer(data);
 	            			}
 	            		})
         			} else if(result) {

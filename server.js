@@ -538,7 +538,7 @@ function onNewMessage(data) {
 				break;
 		}
 	} else {
-		util.log(players.indexOf(sender).messagesPerMinute)
+		util.log(sender.messagesPerMinute)
 		if(sender.messagesPerMinute < 20) {
 			players.indexOf(sender).messagesPerMinute++;
 			this.broadcast.emit("new message", {name: playerById(this.id).name, message: String(data)})

@@ -491,7 +491,7 @@ function onNewPlayer(data) {
 									newInv.armor[a.x].count=a.amount;
 								} 
 							} else if(a.y == 5) {
-								role = a.id;	
+								role = a.id;//a	
 							}
 						}
 						client.emit("new map", map)

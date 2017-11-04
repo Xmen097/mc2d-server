@@ -441,7 +441,8 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
-	var newInv;
+	var newInv=inventoryPreset;
+	var role=1;
 	var client=this;
 	util.log("Player "+String(data.name)+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: String(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
@@ -469,7 +470,6 @@ function onNewPlayer(data) {
 	            				}
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
-								newInv=inventoryPreset;
 								role=1;
 								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
 									if(err)
@@ -482,7 +482,6 @@ function onNewPlayer(data) {
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
-        				newInv=inventoryPreset;
         				role=0;
         				for(var a of result.rows) {
 							if(a.amount) {

@@ -538,13 +538,12 @@ function onNewMessage(data) {
 				break;
 		}
 	} else {
-		util.log(sender.messagesPerMinute)
 		if(sender.messagesPerMinute < 20) {
-			players.indexOf(sender).messagesPerMinute++;
+			players[players.indexOf(sender)].messagesPerMinute++;
 			this.broadcast.emit("new message", {name: playerById(this.id).name, message: String(data)})
 			this.emit("new message", {name: "You", message: String(data)})
 		} else if(sender.messagesPerMinute < 25) {
-			players.indexOf(sender).messagesPerMinute++;
+			players[players.indexOf(sender)].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
 		}else {
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})

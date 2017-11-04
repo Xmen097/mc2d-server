@@ -470,13 +470,13 @@ function onNewPlayer(data) {
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
+								role=1;
 								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
 									if(err)
 										return;
 									if(result) {
         								client.emit("inventory", result.rows);
 									}
-									role=1;
 								});
 	            			}
 	            		})

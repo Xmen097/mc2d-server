@@ -473,7 +473,7 @@ function onNewPlayer(data) {
 								onNewPlayer(data);
 								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
 									if(err)
-										break;
+										return;
 									if(result) {
         								client.emit("inventory", result.rows);
 									}

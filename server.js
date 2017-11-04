@@ -468,7 +468,7 @@ function onNewPlayer(data) {
 	            					} 
 	            				}
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 4)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
 								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
 									if(err)
@@ -535,10 +535,11 @@ function onNewMessage(data) {
 		var argument = String(data).split(" ")[1]
 		switch(command) {
 			case "ban":
-				if(sender.role > 3) {
+				if(sender.role > 2) {
 					if(playerByName(argument)) {
 						if(sender.role > playerByName(argument).role) {
-							this.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+							this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+							this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+playerById(this.id).name})
 						} else {
 							this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
 						}

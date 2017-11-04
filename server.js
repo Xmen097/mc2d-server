@@ -539,7 +539,7 @@ function onNewMessage(data) {
 					if(playerByName(argument)) {
 						if(sender.role > playerByName(argument).role) {
 							this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
-							this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+playerById(this.id).name})
+							this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 						} else {
 							this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
 						}

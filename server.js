@@ -47,7 +47,7 @@ function init() {
 							if(err) {
 								util.log("FAILED writing map part to database: " + err)
 							} else {
-								util.log("Writen map part to database")
+								util.log("Writen map part to database")//feuewidweindwend
 							}
 						})
 					}	

@@ -530,7 +530,7 @@ function onNewPlayer(data) {
 function onNewMessage(data) {
 	var sender = playerById(this.id);
 	if(data[0] == "/") {
-		var data = String(data).split("/")[String(data).split("/").length]
+		var data = String(data).split("/")[1]
 		var command = String(data).split(" ")[0]
 		var argument = String(data).split(" ")[1]
 		switch(command) {

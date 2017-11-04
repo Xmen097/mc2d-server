@@ -393,13 +393,14 @@ mapGenerator = new mapGeneratorConstructor();
 
 //Map generator end
 
-function Player(gtX, gtY, gtID, gtName, gtInv) {
+function Player(gtX, gtY, gtID, gtName, gtInv, gtRole) {
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
 	this.y = gtY;
 	this.inventory = gtInv;
 	this.messagesPerMinute=0;
+	this.role = gtRole;
 
 }
 
@@ -464,16 +465,18 @@ function onNewPlayer(data) {
 	            			} else {
 	            				for(var a=0;a<4;a++) {
 	            					for(var b=0;b<9;b++) {
-	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, -1)');
+	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, -1)'); //inventory + hotbar
 	            					} 
 	            				}
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)');
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
 	            			}
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
-        				newInv=inventoryPreset;
+        				var newInv=inventoryPreset;
+        				var role;
         				for(var a of result.rows) {
 							if(a.amount) {
 								var item=a.id;
@@ -486,7 +489,9 @@ function onNewPlayer(data) {
 								} else if(a.y == 4) {
 									newInv.armor[a.x].item=item;
 									newInv.armor[a.x].count=a.amount;
-								}
+								} 
+							} else if(a.y == 5) {
+								role = a.id;	
 							}
 						}
 						client.emit("new map", map)
@@ -497,7 +502,7 @@ function onNewPlayer(data) {
 					    client.on("block breaking", onBlockBreaking);
 					    client.on("move item", onMoveItem);
 						util.log("Player "+String(data.name)+" authorized successfully")
-						var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv);
+						var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role);
 						client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
 						var existingPlayer;
 						for (var i = 0; i < players.length; i++) {

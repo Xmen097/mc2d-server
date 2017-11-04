@@ -545,7 +545,7 @@ function onNewMessage(data) {
 		} else if(sender.messagesPerMinute < 25) {
 			players[players.indexOf(sender)].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
-		}else {
+		}else if(sender.messagesPerMinute == 25){
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
 		}		
 	}

@@ -471,6 +471,13 @@ function onNewPlayer(data) {
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 4)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
 								onNewPlayer(data);
+								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
+									if(err)
+										break;
+									if(result) {
+        								client.emit("inventory", result.rows);
+									}
+								});
 	            			}
 	            		})
         			} else if(result) {
@@ -496,23 +503,23 @@ function onNewPlayer(data) {
 								role = a.id;
 							}
 						}
-						client.emit("new map", map)
-					    client.on("disconnect", onClientDisconnect);
-					    client.on("move player", onMovePlayer);
-					    client.on("map edit", onMapEdit);
-					    client.on("new message", onNewMessage);
-					    client.on("block breaking", onBlockBreaking);
-					    client.on("move item", onMoveItem);
-						util.log("Player "+String(data.name)+" authorized successfully")
-						var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role);
-						client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
-						var existingPlayer;
-						for (var i = 0; i < players.length; i++) {
-					    	existingPlayer = players[i];
-					    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
-						};
-						players.push(newPlayer);
         			}
+        			client.emit("new map", map)
+				    client.on("disconnect", onClientDisconnect);
+				    client.on("move player", onMovePlayer);
+				    client.on("map edit", onMapEdit);
+				    client.on("new message", onNewMessage);
+				    client.on("block breaking", onBlockBreaking);
+				    client.on("move item", onMoveItem);
+					util.log("Player "+String(data.name)+" authorized successfully")
+					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role);
+					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
+					var existingPlayer;
+					for (var i = 0; i < players.length; i++) {
+				    	existingPlayer = players[i];
+				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
+					};
+					players.push(newPlayer);
         		})
         	})
 		} else {

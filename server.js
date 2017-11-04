@@ -552,6 +552,7 @@ function onNewMessage(data) {
 		}
 	} else {
 		if(sender.messagesPerMinute < 20) {
+			util.log(players[players.indexOf(sender)].role);
 			players[players.indexOf(sender)].messagesPerMinute++;
 			var role="";
 			switch(sender.role) {

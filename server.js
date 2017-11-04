@@ -7,7 +7,7 @@ var util = require("util"),
 var socket, players;
 
 function validateString(str) {
-	return JSON.stringify(str).replace(/\W/g, '')
+	return JSON.stringify(str).replace(/[^A-Za-z0-9]/g, '')
 }
 
 
@@ -538,15 +538,16 @@ function onNewMessage(data) {
 				break;
 		}
 	} else {
+		util.log(players.indexOf(sender).messagesPerMinute)
 		if(sender.messagesPerMinute < 20) {
 			players.indexOf(sender).messagesPerMinute++;
 			this.broadcast.emit("new message", {name: playerById(this.id).name, message: String(data)})
 			this.emit("new message", {name: "You", message: String(data)})
 		} else if(sender.messagesPerMinute < 25) {
 			players.indexOf(sender).messagesPerMinute++;
-			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
-		}else {
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
+		}else {
+			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
 		}		
 	}
 		
@@ -680,3 +681,4 @@ function onBlockBreaking(data) {
 }
 
 init();
+

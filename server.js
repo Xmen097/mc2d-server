@@ -24,10 +24,9 @@ function init() {
             util.log("Not able to connect: "+ err);
         } 
         pgClient.query('SELECT * FROM map', function(err,result) {
-            if(err){
-                util.log(err);
-            }
-            if(result.rows.length<10) {
+            if(err || result.rows.length<10){
+            	if(err)
+                	util.log(err);
 		 		mapGenerator.generate();
 		 		if(map) {
 					util.log("Map was generated ")

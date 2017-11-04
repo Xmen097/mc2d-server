@@ -476,6 +476,7 @@ function onNewPlayer(data) {
 									if(result) {
         								client.emit("inventory", result.rows);
 									}
+									role=1;
 								});
 	            			}
 	            		})

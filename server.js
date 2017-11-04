@@ -481,8 +481,8 @@ function onNewPlayer(data) {
 	            		})
         			} else if(result) {
         				client.emit("inventory", result.rows);
-        				var newInv=inventoryPreset;
-        				var role;
+        				newInv=inventoryPreset;
+        				role=0;
         				for(var a of result.rows) {
 							if(a.amount) {
 								var item=a.id;
@@ -553,7 +553,7 @@ function onNewMessage(data) {
 	} else {
 		if(sender.messagesPerMinute < 20) {
 			players[players.indexOf(sender)].messagesPerMinute++;
-			var role;
+			var role="";
 			switch(sender.role) {
 				case "2":
 					role="[VIP]"

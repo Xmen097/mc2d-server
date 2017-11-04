@@ -556,13 +556,13 @@ function onNewMessage(data) {
 			players[players.indexOf(sender)].messagesPerMinute++;
 			var role="";
 			switch(sender.role) {
-				case "2":
+				case 2:
 					role="[VIP]"
 					break;
-				case "3":
+				case 3:
 					role="[MODERATOR]"
 					break;
-				case "4":
+				case 4:
 					role="[ADMIN]"
 					break;
 			}

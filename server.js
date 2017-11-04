@@ -469,7 +469,7 @@ function onNewPlayer(data) {
 	            					} 
 	            				}
 								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
+								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 4)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
 								newInv=inventoryPreset;
 	            			}
 	            		})
@@ -491,7 +491,9 @@ function onNewPlayer(data) {
 									newInv.armor[a.x].count=a.amount;
 								} 
 							} else if(a.y == 5) {
-								role = a.id;//a	
+								if(a.id == 0) 
+									return;
+								role = a.id;
 							}
 						}
 						client.emit("new map", map)
@@ -545,7 +547,19 @@ function onNewMessage(data) {
 	} else {
 		if(sender.messagesPerMinute < 20) {
 			players[players.indexOf(sender)].messagesPerMinute++;
-			this.broadcast.emit("new message", {name: playerById(this.id).name, message: String(data)})
+			var role;
+			switch(sender.role) {
+				case "2":
+					role="[VIP]"
+					break;
+				case "3":
+					role="[MODERATOR]"
+					break;
+				case "4":
+					role="[ADMIN]"
+					break;
+			}
+			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: String(data)})
 			this.emit("new message", {name: "You", message: String(data)})
 		} else if(sender.messagesPerMinute < 25) {
 			players[players.indexOf(sender)].messagesPerMinute++;

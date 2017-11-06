@@ -536,28 +536,24 @@ function onNewMessage(data) {
 		switch(command) {
 			case "ban":
 				if(sender.role > 2) {
-					if(sender.role > playerByName(argument).role) {
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(err) {
-									this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist, make sure the name is written properly"})
-									return;
-								} else {
-									util.log(result);
-								}
-							});
-							/*pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
-								if(err) {
-									util.log("Failed map edit "+err)
-								} else {
-									this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
-									this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
-								}
-							})*/
-						})
-					} else {
-						this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
-					}
+					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
+							if(err) {
+								this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist, make sure the name is written properly"})
+								return;
+							} else {
+								util.log(result);
+							}
+						});
+						/*pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
+							if(err) {
+								util.log("Failed map edit "+err)
+							} else {
+								this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+								this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
+							}
+						})*/
+					})
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You dont have permission to use this command"})
 				}

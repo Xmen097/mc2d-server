@@ -543,24 +543,27 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(err || !result) {
+								if(result){
+									if(result.rows[0].id < sender.role) {
+										pgClient.query("UPDATE "+validateString(argument)+" SET id=0 WHERE y=5", function(err) {
+											if(err) {
+												util.log("Failed map edit "+err)
+											} else {
+												this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+												this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
+											}
+										})
+									} else {
+										this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})	
+									}
+								} else {
 									this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
 									return;
-								} else if(result){
-									util.log(result.rows[0].id);
 								}
 							});
-							/*pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
-								if(err) {
-									util.log("Failed map edit "+err)
-								} else {
-									this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
-									this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
-								}
-							})*/
 						})
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You dont have permission to use this command"})
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 		}
 	} else {

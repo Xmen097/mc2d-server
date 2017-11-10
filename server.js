@@ -569,21 +569,23 @@ function onNewMessage(data) {
 				}
 		}
 	} else {
-		util.log(data);
 		if(playerById(sender.id).messagesPerMinute < 20) {
-			util.log("<20");
 			util.log(players[players.indexOf(playerById(sender.id))].role);
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			var role="";
 			switch(playerById(sender.id).role) {
 				case 2:
-					role="[VIP]"
+					role="[VIP] "
+					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 				case 3:
-					role="[MODERATOR]"
+					role="[MODERATOR] "
 					break;
 				case 4:
-					role="[ADMIN]"
+					role="[ADMIN] "
+					break;
+				default:
+					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 			}
 			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: String(data)})

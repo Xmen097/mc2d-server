@@ -549,7 +549,7 @@ function onNewMessage(data) {
 											if(err) {
 												util.log("Failed map edit "+err)
 											} else {
-												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 											}
 										})

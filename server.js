@@ -570,12 +570,12 @@ function onNewMessage(data) {
 		}
 	} else {
 		util.log(data);
-		if(sender.messagesPerMinute < 20) {
+		if(playerById(sender.id).messagesPerMinute < 20) {
 			util.log("<20");
-			util.log(players[players.indexOf(sender)].role);
-			players[players.indexOf(sender)].messagesPerMinute++;
+			util.log(players[players.indexOf(playerById(sender.id))].role);
+			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			var role="";
-			switch(sender.role) {
+			switch(playerById(sender.id).role) {
 				case 2:
 					role="[VIP]"
 					break;
@@ -588,13 +588,13 @@ function onNewMessage(data) {
 			}
 			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: String(data)})
 			this.emit("new message", {name: "You", message: String(data)})
-		} else if(sender.messagesPerMinute < 25) {
-			players[players.indexOf(sender)].messagesPerMinute++;
+		} else if(playerById(sender.id).messagesPerMinute < 25) {
+			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
-		}else if(sender.messagesPerMinute == 25){
-			players[players.indexOf(sender)].messagesPerMinute++;
+		}else if(playerById(sender.id).messagesPerMinute == 25){
+			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
-		}		
+		}
 	}
 		
 }

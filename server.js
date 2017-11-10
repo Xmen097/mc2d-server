@@ -528,36 +528,36 @@ function onNewPlayer(data) {
 };
 
 function onNewMessage(data) {
-	var sender = playerById(this.id);
+	var sender = this;
 	if(data[0] == "/") {
 		var data = String(data).split("/")[1]
 		var command = String(data).split(" ")[0]
 		var argument = String(data).split(" ")[1]
 		switch(command) {
 			case "ban":
-				if(sender.role > 2) {
+				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 							if(err) {
-								this.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
 								if(result){
-									if(result.rows[0].id < sender.role) {
+									if(result.rows[0].id < playerById(sender.id).role) {
 										pgClient.query("UPDATE "+validateString(argument)+" SET id=0 WHERE y=5", function(err) {
 											if(err) {
 												util.log("Failed map edit "+err)
 											} else {
-												this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
-												this.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
+												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(this.id).name})
+												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 											}
 										})
 									} else {
-										this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})	
+										sender.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})	
 									}
 								} else {
-									this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
+									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
 									return;
 								}
 							});

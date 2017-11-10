@@ -570,8 +570,6 @@ function onNewMessage(data) {
 		}
 	} else {
 		if(playerById(sender.id).messagesPerMinute < 20) {
-			util.log(players[players.indexOf(playerById(sender.id))].role);
-			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			var role="";
 			switch(playerById(sender.id).role) {
 				case 2:
@@ -596,6 +594,7 @@ function onNewMessage(data) {
 		}else if(playerById(sender.id).messagesPerMinute == 25){
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
+			this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(sender.id).name+" was muted"})
 		}
 	}
 		

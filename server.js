@@ -503,8 +503,8 @@ function onNewPlayer(data) {
 								role = a.id;
 							}
 						}
+        				client.emit("inventory", result.rows);
         			}
-        			client.emit("inventory", result.rows);
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);
 				    client.on("move player", onMovePlayer);

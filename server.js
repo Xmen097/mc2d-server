@@ -543,11 +543,11 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(err) {
-									this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist, make sure the name is written properly"})
+								if(err || !result) {
+									this.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
 									return;
-								} else {
-									util.log(result);
+								} else if(result){
+									util.log(result.rows[0].id);
 								}
 							});
 							/*pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {

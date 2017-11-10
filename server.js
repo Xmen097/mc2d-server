@@ -569,7 +569,9 @@ function onNewMessage(data) {
 				}
 		}
 	} else {
+		util.log(data);
 		if(sender.messagesPerMinute < 20) {
+			util.log("<20");
 			util.log(players[players.indexOf(sender)].role);
 			players[players.indexOf(sender)].messagesPerMinute++;
 			var role="";

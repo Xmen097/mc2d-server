@@ -481,7 +481,6 @@ function onNewPlayer(data) {
 	            			}
 	            		})
         			} else if(result) {
-        				client.emit("inventory", result.rows);
         				role=0;
         				for(var a of result.rows) {
 							if(a.amount) {
@@ -497,12 +496,15 @@ function onNewPlayer(data) {
 									newInv.armor[a.x].count=a.amount;
 								} 
 							} else if(a.y == 5) {
-								if(a.id == 0) 
+								if(a.id == 0) {
+									util.log("Player "+String(data.name)+" is banned")
 									return;
+								}
 								role = a.id;
 							}
 						}
         			}
+        			client.emit("inventory", result.rows);
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);
 				    client.on("move player", onMovePlayer);

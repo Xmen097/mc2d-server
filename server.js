@@ -607,7 +607,7 @@ function onNewMessage(data) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
-											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
+											sender.emit("new message", {name: "[SERVER]", message: "Successfully promoted "+argument})
 										}
 									})
 								} else if(result) {

@@ -628,6 +628,7 @@ function onNewMessage(data) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
+											players[players.indexOf(playerByName(argument))].role++;
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully promoted "+argument})
 											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was promoted by "+playerById(sender.id).name})
 										}
@@ -659,6 +660,7 @@ function onNewMessage(data) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
+											players[players.indexOf(playerByName(argument))].role--;
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully demoted "+argument})
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was demoted by "+playerById(sender.id).name})
 										}

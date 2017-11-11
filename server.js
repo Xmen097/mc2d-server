@@ -546,7 +546,7 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
 								if(result){
-									if(result.rows[0].id < playerById(sender.id).role) {
+									if(result && result.rows[0].id < playerById(sender.id).role) {
 										pgClient.query("UPDATE "+validateString(argument)+" SET id=0 WHERE y=5", function(err) {
 											if(err) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -577,7 +577,7 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(result){
+								if(result && result.rows[0].id == 0){
 									pgClient.query("UPDATE "+validateString(argument)+" SET id=1 WHERE y=5", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -585,7 +585,9 @@ function onNewMessage(data) {
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
 										}
 									})
-								} else {
+								} else if(result) {
+									sender.emit("new message", {name: "[SERVER]", message: "This player is not banned"})
+								}else {
 									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
 									return;
 								}

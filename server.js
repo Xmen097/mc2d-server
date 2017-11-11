@@ -439,7 +439,7 @@ function onClientDisconnect() {
 
 	players.splice(players.indexOf(removePlayer), 1);
 	this.broadcast.emit("remove player", {id: this.id});
-	client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" has disconnected"})
+	this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" has disconnected"})
 };
 
 function onNewPlayer(data) {

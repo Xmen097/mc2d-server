@@ -554,6 +554,7 @@ function onNewMessage(data) {
 											} else {
 												if(playerByName(argument)){
 													playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
+													playerByName(argument).client.emit("disconnect", "You were banned from the server");
 													playerByName(argument).client.disconnect(0);
 												}
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
@@ -665,6 +666,7 @@ function onNewMessage(data) {
 			case "kick":
 				if(playerById(sender.id).role > 2) {
 					if(playerByName(argument) && playerByName(argument).role < playerById(sender.id).role) {
+						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
 						playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
 						playerByName(argument).client.disconnect(0);
 					} else {

@@ -430,6 +430,7 @@ function onSocketConnection(client) {
 
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
+	this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(this.id).name+" has disconnected"})
 	var removePlayer = playerById(this.id);
 
 	if (!removePlayer) {
@@ -439,7 +440,6 @@ function onClientDisconnect() {
 
 	players.splice(players.indexOf(removePlayer), 1);
 	this.broadcast.emit("remove player", {id: this.id});
-	this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" has disconnected"})
 };
 
 function onNewPlayer(data) {

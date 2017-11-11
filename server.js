@@ -567,6 +567,7 @@ function onNewMessage(data) {
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
+				break;
 			case "unban":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
@@ -593,6 +594,7 @@ function onNewMessage(data) {
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
+				break;
 			case "promote":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
@@ -622,6 +624,7 @@ function onNewMessage(data) {
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
+				break;
 		}
 	} else {
 		if(playerById(sender.id).messagesPerMinute < 20) {

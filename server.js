@@ -549,7 +549,7 @@ function onNewMessage(data) {
 									if(result.rows[0].id < playerById(sender.id).role) {
 										pgClient.query("UPDATE "+validateString(argument)+" SET id=0 WHERE y=5", function(err) {
 											if(err) {
-												util.log("Failed map edit "+err)
+												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
@@ -558,6 +558,61 @@ function onNewMessage(data) {
 									} else {
 										sender.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})	
 									}
+								} else {
+									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
+									return;
+								}
+							});
+						})
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+			case "unban":
+				if(playerById(sender.id).role > 2) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+							if(err) {
+								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								return;
+							}
+							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
+								if(result){
+									pgClient.query("UPDATE "+validateString(argument)+" SET id=1 WHERE y=5", function(err) {
+										if(err) {
+											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+										} else {
+											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
+										}
+									})
+								} else {
+									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
+									return;
+								}
+							});
+						})
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+			case "promote":
+				if(playerById(sender.id).role > 2) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+							if(err) {
+								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								return;
+							}
+							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
+								if(result && result.rows[0].id+1 < playerById(sender.id).role){
+									pgClient.query("UPDATE "+validateString(argument)+" SET id="+(result.rows[0].id+1)+" WHERE y=5", function(err) {
+										if(err) {
+											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+										} else {
+											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
+										}
+									})
+								} else if(result) {
+									sender.emit("new message", {name: "[SERVER]", message: "You can't promote this player"})
+									return;
 								} else {
 									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
 									return;

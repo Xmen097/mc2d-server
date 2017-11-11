@@ -612,7 +612,7 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
 								if(result && result.rows[0].id+1 < playerById(sender.id).role){
-									pgClient.query("UPDATE "+validateString(argument)+" SET id="+(result.rows[0].id+1)+" WHERE y=5", function(err) {
+									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].id+1)+" WHERE y=5", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -628,6 +628,48 @@ function onNewMessage(data) {
 								}
 							});
 						})
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "demote":
+				if(playerById(sender.id).role > 2) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+							if(err) {
+								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								return;
+							}
+							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
+								if(result && result.rows[0].id < playerById(sender.id).role && result.rows[0].id>1 && playerById(sender.id).name != argument){
+									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].id-1)+" WHERE y=5", function(err) {
+										if(err) {
+											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+										} else {
+											sender.emit("new message", {name: "[SERVER]", message: "Successfully demoted "+argument})
+										}
+									})
+								} else if(result) {
+									sender.emit("new message", {name: "[SERVER]", message: "You can't demote this player"})
+									return;
+								} else {
+									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
+									return;
+								}
+							});
+						})
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "kick":
+				if(playerById(sender.id).role > 2) {
+					if(playerByName(argument) && playerByName(argument) < playerById(sender.id).role) {
+						playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
+						playerByName(argument).client.disconnect(0);
+					} else {
+						this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}

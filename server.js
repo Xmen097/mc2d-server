@@ -392,7 +392,7 @@ mapGenerator = new mapGeneratorConstructor();
 
 //Map generator end
 
-function Player(gtX, gtY, gtID, gtName, gtInv, gtRole) {
+function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient) {
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
@@ -400,6 +400,7 @@ function Player(gtX, gtY, gtID, gtName, gtInv, gtRole) {
 	this.inventory = gtInv;
 	this.messagesPerMinute=0;
 	this.role = gtRole;
+	this.client = gtClient;
 
 }
 
@@ -513,7 +514,7 @@ function onNewPlayer(data) {
 				    client.on("block breaking", onBlockBreaking);
 				    client.on("move item", onMoveItem);
 					util.log("Player "+String(data.name)+" authorized successfully")
-					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role);
+					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role, client);
 					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
@@ -551,6 +552,7 @@ function onNewMessage(data) {
 											if(err) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
+												playerByName(argument).client.close();
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 											}

@@ -552,7 +552,10 @@ function onNewMessage(data) {
 											if(err) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
-												playerByName(argument).client.close();
+												if(playerByName(argument)){
+													playerByName(argument).broadcast.emit("remove player", {id: this.id});
+													playerByName(argument).client.close();
+												}
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 											}

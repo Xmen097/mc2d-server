@@ -556,7 +556,14 @@ function onNewMessage(data) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
 												if(playerByName(argument)){
-													playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
+													playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
+													var removePlayer = playerById(sender.id);
+													if (!removePlayer) {
+													    util.log("Player not found: "+sender.id);
+													    return;
+													};
+
+													players.splice(players.indexOf(removePlayer), 1);
 													playerByName(argument).client.emit("disconnect", "You were banned from the server");
 													playerByName(argument).client.disconnect(0);
 												}
@@ -670,7 +677,7 @@ function onNewMessage(data) {
 				if(playerById(sender.id).role > 2) {
 					if(playerByName(argument) && playerByName(argument).role < playerById(sender.id).role) {
 						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
-						playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
+						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
 						playerByName(argument).client.disconnect(0);
 					} else {
 						this.emit("new message", {name: "[SERVER]", message: "You can't kick this player"})

@@ -515,6 +515,8 @@ function onNewPlayer(data) {
 				    client.on("block breaking", onBlockBreaking);
 				    client.on("move item", onMoveItem);
 					util.log("Player "+String(data.name)+" authorized successfully")
+					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
+					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
 					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role, client);
 					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
 					var existingPlayer;

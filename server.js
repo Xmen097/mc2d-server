@@ -664,11 +664,11 @@ function onNewMessage(data) {
 				break;
 			case "kick":
 				if(playerById(sender.id).role > 2) {
-					if(playerByName(argument) && playerByName(argument) < playerById(sender.id).role) {
+					if(playerByName(argument) && playerByName(argument).role < playerById(sender.id).role) {
 						playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
 						playerByName(argument).client.disconnect(0);
 					} else {
-						this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+						this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
 					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

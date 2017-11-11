@@ -670,7 +670,7 @@ function onNewMessage(data) {
 						playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
 						playerByName(argument).client.disconnect(0);
 					} else {
-						this.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})
+						this.emit("new message", {name: "[SERVER]", message: "You can't kick this player"})
 					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

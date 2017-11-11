@@ -629,6 +629,7 @@ function onNewMessage(data) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully promoted "+argument})
+											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was promoted by "+playerById(sender.id).name})
 										}
 									})
 								} else if(result) {
@@ -659,6 +660,7 @@ function onNewMessage(data) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully demoted "+argument})
+												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was demoted by "+playerById(sender.id).name})
 										}
 									})
 								} else if(result) {

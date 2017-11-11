@@ -554,7 +554,7 @@ function onNewMessage(data) {
 											} else {
 												if(playerByName(argument)){
 													playerByName(argument).client.broadcast.emit("remove player", {id: this.id});
-													util.log(playerByName(argument).client);
+													playerByName(argument).client.disconnect(0);
 												}
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})

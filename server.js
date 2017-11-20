@@ -527,6 +527,7 @@ function onNewPlayer(data) {
 					};
 					players.push(newPlayer);
         		})
+			done();
         	})
 		} else {
 			util.log("Player "+String(data.name)+" authorization failed")
@@ -581,6 +582,7 @@ function onNewMessage(data) {
 									return;
 								}
 							});
+						done();
 						})
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
@@ -610,6 +612,7 @@ function onNewMessage(data) {
 									return;
 								}
 							});
+						done();
 						})
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
@@ -642,6 +645,7 @@ function onNewMessage(data) {
 									return;
 								}
 							});
+						done();
 						})
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
@@ -674,6 +678,7 @@ function onNewMessage(data) {
 									return;
 								}
 							});
+						done();
 						})
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
@@ -798,6 +803,7 @@ function onMoveItem(data) {
 						util.log("Players "+id+ " inventory was updated");
 					}
 				})
+			done();
 			})	
 		}	
 	}
@@ -844,6 +850,7 @@ function onMapEdit(data) {
 					util.log("Players "+id+ " inventory was updated");
 				}
 			})
+		done();
 		})	
 	}
 }

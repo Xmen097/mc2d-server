@@ -536,6 +536,7 @@ function onNewPlayer(data) {
 
 function onNewMessage(data) {
 	var sender = this;
+	util.log(data);
 	if(data[0] == "/") {
 		var data = String(data).split("/")[1]
 		var command = String(data).split(" ")[0]

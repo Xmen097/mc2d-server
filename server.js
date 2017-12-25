@@ -522,6 +522,7 @@ function onNewPlayer(data) {
 					if(playerByName(validateString(data.name))) {
 						client.broadcast.emit("remove player", {id: sender.id});
 						client.disconnect(0);
+						return;
 					}
 					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role, client);
 					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});

@@ -526,8 +526,13 @@ function onNewPlayer(data) {
 				    	existingPlayer = players[i];
 				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
 					};
-					if(!playerByName(validateString(data.name)))
+					if(!playerByName(validateString(data.name))) {
 						players.push(newPlayer);
+					} else {
+						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
+						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
+						client.disconnect(0);
+					}
         		})
 			done();
         	})

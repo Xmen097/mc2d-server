@@ -518,31 +518,19 @@ function onNewPlayer(data) {
 					util.log("Player "+String(data.name)+" authorized successfully")
 					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
-					var newPlayer = new Player(parseInt(data.x), parseInt(data.y), parseInt(client.id), validateString(data.name), newInv, role, client);
+					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client);
 					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
 				    	existingPlayer = players[i];
 				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
 					};
-					if(!playerByName(validateString(data.name))) {
-						players.push(newPlayer);
-					for (var i = 0; i < players.length; i++) {
-				    	util.log(players[i].name);
-				    	};
-					} else {
-						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
-						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
-						client.disconnect(0);
-					}
+					players.push(newPlayer);
         		})
 			done();
         	})
 		} else {
 			util.log("Player "+String(data.name)+" authorization failed")
-					for (var i = 0; i < players.length; i++) {
-				    	util.log(players[i].name);
-					};
 		}
     })
 };

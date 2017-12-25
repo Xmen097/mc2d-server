@@ -452,7 +452,6 @@ function onNewPlayer(data) {
 			util.log("Login server offline")
 		}
 		if(body == "true" && !playerByName(validateString(data.name))) {
-
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        	 		if(err){
             		util.log("Not able to connect: "+ err);
@@ -527,10 +526,12 @@ function onNewPlayer(data) {
 				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
 					};
 					if(!playerByName(validateString(data.name))) {
+						util.log("Player conection succes");
 						players.push(newPlayer);
 					} else {
 						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
 						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
+						util.log("Player multiple connection error");
 						client.disconnect(0);
 					}
         		})

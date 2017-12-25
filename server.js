@@ -526,12 +526,13 @@ function onNewPlayer(data) {
 				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
 					};
 					if(!playerByName(validateString(data.name))) {
-						util.log("Player conection succes");
 						players.push(newPlayer);
+					for (var i = 0; i < players.length; i++) {
+				    	util.log(players[i].name);
+				    	};
 					} else {
 						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
 						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
-						util.log("Player multiple connection error");
 						client.disconnect(0);
 					}
         		})
@@ -539,6 +540,9 @@ function onNewPlayer(data) {
         	})
 		} else {
 			util.log("Player "+String(data.name)+" authorization failed")
+					for (var i = 0; i < players.length; i++) {
+				    	util.log(players[i].name);
+					};
 		}
     })
 };

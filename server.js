@@ -531,7 +531,7 @@ function onNewPlayer(data) {
         	})
 		} else {
 			util.log("Player "+String(data.name)+" authorization failed")
-			client.emit("disconnect", "Already connected to this server")
+			client.emit("disconnect", "Your token is invalid(If the problem persist, try restarting the game)")
 			client.disconnect(0)
 		}
     })
@@ -562,7 +562,7 @@ function onNewMessage(data) {
 											} else {
 												if(playerByName(argument)){
 													playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
-													var removePlayer = playerById(sender.id);
+													var removePlayer = playerByName(argument);
 													if (!removePlayer) {
 													    util.log("Player not found: "+sender.id);
 													    return;
@@ -571,9 +571,9 @@ function onNewMessage(data) {
 													players.splice(players.indexOf(removePlayer), 1);
 													playerByName(argument).client.emit("disconnect", "You were banned from the server");
 													playerByName(argument).client.disconnect(0);
-												}
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
+												}
 											}
 										})
 									} else {

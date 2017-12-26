@@ -531,6 +531,8 @@ function onNewPlayer(data) {
         	})
 		} else {
 			util.log("Player "+String(data.name)+" authorization failed")
+			client.emit("disconnect", "Already connected to this server")
+			client.disconnect(0)
 		}
     })
 };

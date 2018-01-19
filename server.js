@@ -501,6 +501,7 @@ function onNewPlayer(data) {
 								if(a.id == 0) {
 									util.log("Player "+String(data.name)+" is banned");
 									client.emit("disconnect", "You are banned")
+									client.disconnect(0);
 									return;
 								}
 								role = a.id;

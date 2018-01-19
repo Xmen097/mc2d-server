@@ -562,6 +562,8 @@ function onNewMessage(data) {
 											} else {
 												if(playerByName(argument)){
 													playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
+													playerByName(argument).client.emit("disconnect", "You were banned from the server");
+													playerByName(argument).client.disconnect(0);
 													var removePlayer = playerByName(argument);
 													if (!removePlayer) {
 													    util.log("Player not found: "+sender.id);
@@ -569,8 +571,6 @@ function onNewMessage(data) {
 													};
 
 													players.splice(players.indexOf(removePlayer), 1);
-													playerByName(argument).client.emit("disconnect", "You were banned from the server");
-													playerByName(argument).client.disconnect(0);
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 												}

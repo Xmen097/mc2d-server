@@ -501,7 +501,6 @@ function onNewPlayer(data) {
 								if(a.id == 0) {
 									util.log("Player "+String(data.name)+" is banned");
 									client.emit("disconnect", "You are banned")
-									client.disconnect(0);
 									return;
 								}
 								role = a.id;
@@ -562,15 +561,15 @@ function onNewMessage(data) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
 												if(playerByName(argument)){
-													playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
-													playerByName(argument).client.emit("disconnect", "You were banned from the server");
-													playerByName(argument).client.disconnect(0);
+													playerByName(argument).client.broadcast.emit("remove player", {id: playerByName(argument).id});
 													var removePlayer = playerByName(argument);
 													if (!removePlayer) {
-													    util.log("Player not found: "+sender.id);
+													    util.log("Player not found: "+argument);
 													    return;
 													};
 
+													playerByName(argument).client.emit("disconnect", "You were banned from the server");
+													playerByName(argument).client.disconnect(0);
 													players.splice(players.indexOf(removePlayer), 1);
 												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
 												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
@@ -688,13 +687,86 @@ function onNewMessage(data) {
 				}
 				break;
 			case "kick":
-				if(playerById(sender.id).role > 2) {
+				var findPlayer = playerById(sender.id);
+				if(findPlayer && findPlayer.role > 2) {
 					if(playerByName(argument) && playerByName(argument).role < playerById(sender.id).role) {
 						playerByName(argument).client.emit("disconnect", "You were kicked from the server")
-						playerByName(argument).client.broadcast.emit("remove player", {id: sender.id});
+						playerByName(argument).client.broadcast.emit("remove player", {id: playerByName(argument).id});
 						playerByName(argument).client.disconnect(0);
 					} else {
 						this.emit("new message", {name: "[SERVER]", message: "You can't kick this player"})
+					}
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "reset":
+				var findPlayer = playerById(sender.id);
+				if(findPlayer && findPlayer.role > 3) {
+					if(argument == "map") {
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
+						setTimeout(function () {
+							for(var a of Players) {
+								a.client.emit("disconnect", "Server was restarted")
+								a.client.disconnect(0);
+							}
+						}, 5000);
+						setTimeout(function () {
+							if(process.env.DATABASE_URL)
+								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pgClient.query("TRUNCATE map")
+								done();
+								})
+							process.kill();
+						}, 10000);
+					} else if (argument == "players") {
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
+						setTimeout(function () {
+							for(var a of Players) {
+								a.client.emit("disconnect", "Server was restarted")
+								a.client.disconnect(0);
+							}
+							var removePlayer = playerById(sender.id);
+							if (removePlayer)
+								players.splice(players.indexOf(removePlayer), 1);
+						}, 5000);
+						setTimeout(function () {
+							if(process.env.DATABASE_URL)
+								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								for(var a of Players) {
+									pgClient.query("TRUNCATE "+a.name)
+								}
+								done();
+								})
+							process.kill();
+						}, 10000);
+					} else if(argument == "all") {
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
+						setTimeout(function () {
+							for(var a of players) {
+								a.client.emit("disconnect", "Server was restarted")
+								a.client.disconnect(0);
+							}
+							var removePlayer = playerById(sender.id);
+							if (removePlayer)
+								players.splice(players.indexOf(removePlayer), 1);
+						}, 5000);
+						setTimeout(function () {
+							if(process.env.DATABASE_URL)
+								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pgClient.query("TRUNCATE map")
+								for(var a of players) {
+									pgClient.query("TRUNCATE "+a.name)
+								}
+								done();
+								})
+							process.kill();
+						}, 10000);
+					}else {
+						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})
 					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

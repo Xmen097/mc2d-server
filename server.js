@@ -744,7 +744,6 @@ function onNewMessage(data) {
 						setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted")
-								a.client.disconnect(0);
 							}
 							var removePlayer = playerById(sender.id);
 							if (removePlayer)

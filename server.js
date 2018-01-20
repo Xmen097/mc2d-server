@@ -716,7 +716,7 @@ function onNewMessage(data) {
 								pgClient.query("TRUNCATE map")
 								done();
 								})
-							process.kill(process.pid);
+							process.abort()
 						}, 10000);
 					} else if (argument == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
@@ -736,7 +736,7 @@ function onNewMessage(data) {
 								}
 								done();
 								})
-							process.kill(process.pid);
+							process.abort()
 						}, 10000);
 					} else if(argument == "all") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
@@ -757,7 +757,7 @@ function onNewMessage(data) {
 								}
 								done();
 								})
-							process.kill(process.pid);
+							process.abort()
 						}, 10000);
 					}else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})

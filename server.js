@@ -716,8 +716,8 @@ function onNewMessage(data) {
 								pgClient.query("TRUNCATE map")
 								done();
 								})
-							process.kill();
-						}, 5000);
+							process.kill(process.pid);
+						}, 10000);
 					} else if (argument == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
@@ -729,8 +729,6 @@ function onNewMessage(data) {
 							var removePlayer = playerById(sender.id);
 							if (removePlayer)
 								players.splice(players.indexOf(removePlayer), 1);
-						}, 5000);
-						setTimeout(function () {
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 								for(var a of players) {
@@ -738,7 +736,7 @@ function onNewMessage(data) {
 								}
 								done();
 								})
-							process.kill();
+							process.kill(process.pid);
 						}, 10000);
 					} else if(argument == "all") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
@@ -751,8 +749,6 @@ function onNewMessage(data) {
 							var removePlayer = playerById(sender.id);
 							if (removePlayer)
 								players.splice(players.indexOf(removePlayer), 1);
-						}, 5000);
-						setTimeout(function () {
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 								pgClient.query("TRUNCATE map")
@@ -761,7 +757,7 @@ function onNewMessage(data) {
 								}
 								done();
 								})
-							process.kill();
+							process.kill(process.pid);
 						}, 10000);
 					}else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})

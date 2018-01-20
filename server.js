@@ -707,24 +707,22 @@ function onNewMessage(data) {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						setTimeout(function () {
-							for(var a of Players) {
+							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted")
 								a.client.disconnect(0);
 							}
-						}, 5000);
-						setTimeout(function () {
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 								pgClient.query("TRUNCATE map")
 								done();
 								})
 							process.kill();
-						}, 10000);
+						}, 5000);
 					} else if (argument == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						setTimeout(function () {
-							for(var a of Players) {
+							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted")
 								a.client.disconnect(0);
 							}
@@ -735,7 +733,7 @@ function onNewMessage(data) {
 						setTimeout(function () {
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-								for(var a of Players) {
+								for(var a of players) {
 									pgClient.query("TRUNCATE "+a.name)
 								}
 								done();

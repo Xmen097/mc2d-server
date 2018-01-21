@@ -725,9 +725,6 @@ function onNewMessage(data) {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");
 							}
-							var removePlayer = playerById(sender.id);
-							if (removePlayer)
-								players.splice(players.indexOf(removePlayer), 1);
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='map' AND table_name!='"+validateString(playerById(sender.id))+"'", function(err, result) {

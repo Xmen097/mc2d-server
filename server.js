@@ -743,17 +743,17 @@ function onNewMessage(data) {
 						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
 						setTimeout(function () {
 							for(var a of players) {
-								a.client.emit("disconnect", "Server was restarted")
+								a.client.emit("disconnect", "Server was restarted");
 							}
-							var removePlayer = playerById(sender.id);
-							if (removePlayer)
-								players.splice(players.indexOf(removePlayer), 1);
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-								pgClient.query("TRUNCATE map")
-								for(var a of players) {
-									pgClient.query("TRUNCATE "+a.name)
-								}
+									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='"+validateString(playerById(sender.id).name)+"'", function(err, result) {
+										if(!err && result) {
+											for(var a of result.rows) {
+												pgClient.query("TRUNCATE "+ validateString(a.table_name))
+											}
+										}
+									})
 								done();
 								})
 							init()

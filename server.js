@@ -723,8 +723,7 @@ function onNewMessage(data) {
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						setTimeout(function () {
 							for(var a of players) {
-								a.client.emit("disconnect", "Server was restarted")
-								a.client.disconnect(0);
+								a.client.emit("disconnect", "Server was restarted");
 							}
 							var removePlayer = playerById(sender.id);
 							if (removePlayer)
@@ -733,6 +732,7 @@ function onNewMessage(data) {
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 								for(var a of players) {
 									pgClient.query("TRUNCATE "+a.name)
+									util.log(a.name);
 								}
 								done();
 								})

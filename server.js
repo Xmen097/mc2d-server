@@ -727,7 +727,7 @@ function onNewMessage(data) {
 							}
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='map' AND table_name!='"+validateString(playerById(sender.id))+"'", function(err, result) {
+									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='map' AND table_name!='"+validateString(playerById(sender.id).name)+"'", function(err, result) {
 										if(!error && result) {
 											for(var a of result.rows) {
 												util.log(a);

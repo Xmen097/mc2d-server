@@ -13,6 +13,7 @@ function validateString(str) {
 
 function init() {
 	players = [];
+	resetTimer=0;
 	ip = process.env.IP || "0.0.0.0";
 	var port = process.env.PORT-1 || 8079;
 	port++;//workaround for server port bug
@@ -706,6 +707,7 @@ function onNewMessage(data) {
 					if(argument == "map") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
+						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted")
@@ -721,6 +723,7 @@ function onNewMessage(data) {
 					} else if (argument == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
+						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");
@@ -741,6 +744,7 @@ function onNewMessage(data) {
 					} else if(argument == "all") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
+						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");

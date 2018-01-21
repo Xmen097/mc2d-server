@@ -706,7 +706,7 @@ function onNewMessage(data) {
 					if(argument == "map") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
-						setTimeout(function () {
+						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted")
 								a.client.disconnect(0);
@@ -721,7 +721,7 @@ function onNewMessage(data) {
 					} else if (argument == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
-						setTimeout(function () {
+						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");
 							}
@@ -741,7 +741,7 @@ function onNewMessage(data) {
 					} else if(argument == "all") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
-						setTimeout(function () {
+						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");
 							}

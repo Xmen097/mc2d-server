@@ -86,7 +86,7 @@ function init() {
     	socket.set("transports", ["websocket"]);
     	socket.set("log level", 2);
 	});
-	setEventHandlers();
+    socket.sockets.on("connection", onSocketConnection);
 	resetMessagesPerMinutes = setInterval(function() {
 		for(var a=0;a<players.length;a++) {
 			if(players[a].messagesPerMinute < 25)
@@ -419,9 +419,6 @@ function playerByName(name) {
     };
 }
 
-var setEventHandlers = function() {
-    socket.sockets.on("connection", onSocketConnection);
-};
 function onSocketConnection(client) {
     util.log("New player has connected: "+client.id);
 	client.salt=sha256(Math.random()+"");

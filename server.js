@@ -154,15 +154,15 @@ var inventoryPreset = {
 	hotbar: [new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]			
 }
 var craftingPreset=[
-		new inventorySpace(236, 75),
-		new inventorySpace(268, 75), 
-		new inventorySpace(236, 100), 
-		new inventorySpace(268, 100),
-		new inventorySpace(338, 90)]; // crafting result field
+		new invSpace(236, 75),
+		new invSpace(268, 75), 
+		new invSpace(236, 100), 
+		new invSpace(268, 100),
+		new invSpace(338, 90)]; // crafting result field
 var craftingTablePreset =[
-		new inventorySpace(122, 78),new inventorySpace(154, 78),new inventorySpace(187, 78),
-		new inventorySpace(122, 103),new inventorySpace(154, 103),new inventorySpace(187, 103),
-		new inventorySpace(122, 128),new inventorySpace(154, 128),new inventorySpace(187, 128), new inventorySpace(291, 103)]
+		new invSpace(122, 78),new invSpace(154, 78),new invSpace(187, 78),
+		new invSpace(122, 103),new invSpace(154, 103),new invSpace(187, 103),
+		new invSpace(122, 128),new invSpace(154, 128),new invSpace(187, 128), new invSpace(291, 103)]
 
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    

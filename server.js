@@ -153,22 +153,32 @@ var inventoryPreset = {
 				],
 	hotbar: [new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]			
 }
+var craftingPreset=[
+		new inventorySpace(236, 75),
+		new inventorySpace(268, 75), 
+		new inventorySpace(236, 100), 
+		new inventorySpace(268, 100),
+		new inventorySpace(338, 90)]; // crafting result field
+var craftingTablePreset =[
+		new inventorySpace(122, 78),new inventorySpace(154, 78),new inventorySpace(187, 78),
+		new inventorySpace(122, 103),new inventorySpace(154, 103),new inventorySpace(187, 103),
+		new inventorySpace(122, 128),new inventorySpace(154, 128),new inventorySpace(187, 128), new inventorySpace(291, 103)]
 
 var items = [
-	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe"},                            					    
-	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe"},											
-	{name: "wood", durability: 300, stack: 64, x:11, favType: "axe", smelting: 1000},									
-	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 300},								
-	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel"},							
-	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel"},											
-	{name: "bedrock", durability: Infinity},																		
-	{name: "iron ore", durability: 700, stack: 64, x:3, favType:"pickaxe"},													
-	{name: "coal ore", durability: 600, stack: 64, x:0, favType:"pickaxe"},		 										
-	{name: "diamond ore", durability: 1000, stack: 64, x:1, favType:"pickaxe"},  										
-	{name: "gold ore", durability: 800, stack: 64, x:2, favType:"pickaxe"},			 										
-	{name: "wooden planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500},								
-	{name: "crafting table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000},			
-	{name: "furnace", durability: 500, stack: 64, x:4, favType: "pickaxe", active:"furnace"},								
+	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
+	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},											
+	{name: "wood", durability: 300, stack: 64, x:11, favType: "axe", smelting: 1000, drop: [2]},									
+	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 300, drop: [undefined, 0, "scissors", 3]},								
+	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel", drop: [5, 1, "scissors", 4]},							
+	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel", drop: [5]},											
+	{name: "bedrock", durability: Infinity, drop: [undefined]},																		
+	{name: "iron ore", durability: 700, stack: 64, x:3, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 7]},													
+	{name: "coal ore", durability: 600, stack: 64, x:0, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 51]},		 										
+	{name: "diamond ore", durability: 1000, stack: 64, x:1, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 50]},  										
+	{name: "gold ore", durability: 800, stack: 64, x:2, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 10]},			 										
+	{name: "wooden planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500, drop: [11]},								
+	{name: "crafting table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000, drop: [12]},			
+	{name: "furnace", durability: 500, stack: 64, x:4, favType: "pickaxe", active:"furnace", drop: [undefined, 0, "pickaxe", 13]},								
 	{name: "Leather helmet", stack: 1, x:0, y:0, durability: 200, type: "helmet"},
 	{name: "Chain helmet", stack: 1, x:1, y:0, durability: 400, type: "helmet"},
 	{name: "Iron helmet", stack: 1, x:2, y:0, durability: 600, type: "helmet"},
@@ -211,22 +221,6 @@ var items = [
 	{name: "Gold ingot", stack: 64, x:7, y:2, type: "item"},
 	{name: "Stick", stack: 64, x:5, y:3, type: "item", smelting: 50},
 ]
-
-items[0].drop=[undefined, 0, "pickaxe", 1];
-items[1].drop=[undefined, 0, "pickaxe", 1];
-items[2].drop=[2];
-items[3].drop=[undefined, 0, "scissors", 3];
-items[4].drop=[5, 1, "scissors", 4];
-items[5].drop=[5];
-items[6].drop=[undefined];
-items[7].drop=[undefined, 0, "pickaxe", 7];
-items[8].drop=[undefined, 0, "pickaxe", 51];
-items[9].drop=[undefined, 0, "pickaxe", 50];
-items[10].drop=[undefined, 0, "pickaxe", 10];
-items[11].drop=[11];
-items[12].drop=[12];
-items[13].drop=[undefined, 0, "pickaxe", 13];
-
 
 //map generator start
 
@@ -393,7 +387,7 @@ mapGenerator = new mapGeneratorConstructor();
 
 //Map generator end
 
-function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient) {
+function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting) {
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
@@ -402,6 +396,7 @@ function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient) {
 	this.messagesPerMinute=0;
 	this.role = gtRole;
 	this.client = gtClient;
+	this.crafting = gtCrafting;
 
 }
 
@@ -444,8 +439,8 @@ function onNewPlayer(data) {
 	var newInv=inventoryPreset;
 	var role=1;
 	var client=this;
-	util.log("Player "+String(data.name)+" send authorization token")
-	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: String(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
+	util.log("Player "+validateString(data.name)+" send authorization token")
+	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: validateString(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
 			util.log("Login server offline")
 		}
@@ -455,56 +450,25 @@ function onNewPlayer(data) {
             		util.log("Not able to connect: "+ err);
             		return;
         		} 
-        		pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
+        		pgClient.query('SELECT * FROM users WHERE name='+validateString(data.name), function(err,result) {
         			if(err) {
-	            		util.log("Player "+String(data.name)+" is new here!");
-	            		pgClient.query('CREATE TABLE '+validateString(data.name)+'(x smallint, y smallint, amount smallint, id smallint)', function(err) {
+	            		util.log("Player "+validateString(data.name)+" is new here!");
+	            		pgClient.query('INSERT INTO users(name, role, inventory, crafting) VALUES ('+validateString(data.name)+',1 ,'+JSON.stringify(inventoryPreset)+', '+JSON.stringify(craftingPreset)+')', function(err) {
 	            			if(err) {
 	            				util.log("Failed creating player profile");
 	            				return;
-	            			} else {
-	            				for(var a=0;a<4;a++) {
-	            					for(var b=0;b<9;b++) {
-	            						pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES ('+b+', '+a+', 0, -1)'); //inventory + hotbar
-	            					} 
-	            				}
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 4, 0, -1), (1, 4, 0, -1), (2, 4, 0, -1), (3, 4, 0, -1)'); //Armor
-								pgClient.query('INSERT INTO '+validateString(data.name)+'(x, y, amount, id) VALUES (0, 5, 0, 1)'); // roles - banned:0, player: 1, vip: 2, moderator: 3, admin: 4
-								role=1;
-								pgClient.query('SELECT * FROM '+validateString(data.name), function(err,result) {
-									if(err)
-										return;
-									if(result) {
-        								client.emit("inventory", result.rows);
-									}
-								});
 	            			}
 	            		})
         			} else if(result) {
-        				role=0;
-        				for(var a of result.rows) {
-							if(a.amount) {
-								var item=a.id;
-								if(a.y < 3) {
-									newInv.inventory[a.y][a.x].item=item;
-									newInv.inventory[a.y][a.x].count=a.amount;
-								} else if(a.y == 3) {
-									newInv.hotbar[a.x].item=item;
-									newInv.hotbar[a.x].count=a.amount;
-								} else if(a.y == 4) {
-									newInv.armor[a.x].item=item;
-									newInv.armor[a.x].count=a.amount;
-								} 
-							} else if(a.y == 5) {
-								if(a.id == 0) {
-									util.log("Player "+String(data.name)+" is banned");
-									client.emit("disconnect", "You are banned")
-									return;
-								}
-								role = a.id;
-							}
+        				role=result.rows[0].role|0;
+        				newInv = JSON.parse(result.rows[0].inventory);
+        				newCrafting = JSON.parse(result.rows[0].crafting);
+        				if(role == 0) {
+							util.log("Player "+validateString(data.name)+" is banned");
+							client.emit("disconnect", "You are banned")
+							return;
 						}
-        				client.emit("inventory", result.rows);
+        				client.emit("inventory", result.rows[0]);
         			}
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);
@@ -513,22 +477,22 @@ function onNewPlayer(data) {
 				    client.on("new message", onNewMessage);
 				    client.on("block breaking", onBlockBreaking);
 				    client.on("move item", onMoveItem);
-					util.log("Player "+String(data.name)+" authorized successfully")
+					util.log("Player "+validateString(data.name)+" authorized successfully")
 					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
-					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client);
-					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: String(newPlayer.name)});
+					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client, newCrafting);
+					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: validateString(newPlayer.name)});
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
 				    	existingPlayer = players[i];
-				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: String(existingPlayer.name)});
+				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: validateString(existingPlayer.name)});
 					};
 					players.push(newPlayer);
         		})
 			done();
         	})
 		} else {
-			util.log("Player "+String(data.name)+" authorization failed")
+			util.log("Player "+validateString(data.name)+" authorization failed")
 			client.emit("disconnect", "Your token is invalid(If the problem persist, try restarting the game)")
 			client.disconnect(0)
 		}
@@ -539,9 +503,9 @@ function onNewMessage(data) {
 	var sender = this;
 	util.log(data);
 	if(data[0] == "/") {
-		var data = String(data).split("/")[1]
-		var command = String(data).split(" ")[0]
-		var argument = String(data).split(" ")[1]
+		var data = validateString(data).split("/")[1]
+		var command = validateString(data).split(" ")[0]
+		var argument = validateString(data).split(" ")[1]
 		switch(command) {
 			case "ban":
 				if(playerById(sender.id).role > 2) {
@@ -551,10 +515,10 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
+							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
 								if(result){
-									if(result && result.rows[0].id < playerById(sender.id).role) {
-										pgClient.query("UPDATE "+validateString(argument)+" SET id=0 WHERE y=5", function(err) {
+									if(result && result.rows[0].role < playerById(sender.id).role) {
+										pgClient.query("UPDATE users SET role=0 WHERE name="+validateString(argument), function(err) {
 											if(err) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 											} else {
@@ -596,9 +560,9 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(result && result.rows[0].id == 0){
-									pgClient.query("UPDATE "+validateString(argument)+" SET id=1 WHERE y=5", function(err) {
+							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
+								if(result && result.rows[0].role == 0){
+									pgClient.query("UPDATE users SET role=0 WHERE name="+validateString(argument), function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -626,9 +590,9 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(result && result.rows[0].id+1 < playerById(sender.id).role){
-									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].id+1)+" WHERE y=5", function(err) {
+							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
+								if(result && result.rows[0].role+1 < playerById(sender.id).role){
+									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role+1)+" WHERE name="+validateString(argument), function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -659,9 +623,9 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT id FROM "+validateString(argument)+" WHERE y=5", function(err, result) { 
-								if(result && result.rows[0].id < playerById(sender.id).role && result.rows[0].id>1 && playerById(sender.id).name != argument){
-									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].id-1)+" WHERE y=5", function(err) {
+							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
+								if(result && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
+									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].role-1)+" WHERE y=5", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -727,13 +691,7 @@ function onNewMessage(data) {
 							}
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='map' AND table_name!='"+validateString(playerById(sender.id).name)+"'", function(err, result) {
-										if(!err && result) {
-											for(var a of result.rows) {
-												pgClient.query("DROP TABLE "+ validateString(a.table_name))
-											}
-										}
-									})
+									pgClient.query("TRUNCATE users")
 								done();
 								})
 							init()
@@ -748,14 +706,8 @@ function onNewMessage(data) {
 							}
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-									pgClient.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name!='map' AND table_name!='"+validateString(playerById(sender.id).name)+"'", function(err, result) {
-										if(!err && result) {
-											for(var a of result.rows) {
-												pgClient.query("DROP TABLE "+ validateString(a.table_name))
-											}
-										}
-									})
 									pgClient.query("TRUNCATE map");
+									pgClient.query("TRUNCATE users");
 								done();
 								})
 							init()
@@ -786,8 +738,8 @@ function onNewMessage(data) {
 					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 			}
-			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: String(data)})
-			this.emit("new message", {name: "You", message: String(data)})
+			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: validateString(data)})
+			this.emit("new message", {name: "You", message: validateString(data)})
 		} else if(playerById(sender.id).messagesPerMinute < 25) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
@@ -855,20 +807,9 @@ function onMoveItem(data) {
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET amount="+parseInt(count.start)+" WHERE x="+parseInt(data.start.x)+" AND y="+parseInt(data.start.y), function(err) {
+				pgClient.query("UPDATE users SET inventory="+JSON.stringify(players[playerID].inventory)+" WHERE name="+validateString(playerById(id).name), function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
-					} else {
-						util.log("Players "+id+ " inventory was updated");
-					}
-				})
-				pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+parseInt(item)+" ,  amount="+parseInt(count.end)+" WHERE x="+parseInt(data.end.x)+" AND y="+parseInt(data.end.y), function(err) {
-					if(err) {
-						util.log("Failed saving player inventory "+err);
-						util.log(parseInt(item))
-						util.log(parseInt(count.end))
-						util.log(parseInt(data.end.x))
-						util.log(parseInt(data.end.y))
 					} else {
 						util.log("Players "+id+ " inventory was updated");
 					}
@@ -880,7 +821,7 @@ function onMoveItem(data) {
 }
 
 function onMapEdit(data) {
-	if(parseInt(data.block) == -1) {
+	if(parseInt(data.block) == -1 && map[parseInt(data.x)][parseInt(data.y)] && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
 		var dat = {x: positions.x, y: positions.y, amount: positions.amount, item:dropped.item}

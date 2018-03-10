@@ -437,6 +437,7 @@ function onClientDisconnect() {
 
 function onNewPlayer(data) {
 	var newInv=inventoryPreset;
+    var newCrafting = craftingPreset;
 	var role=1;
 	var client=this;
 	util.log("Player "+validateString(data.name)+" send authorization token")
@@ -469,10 +470,6 @@ function onNewPlayer(data) {
 							return;
 						}
         				client.emit("inventory", result.rows[0]);
-        			} else {
-        				role = 0;
-        				newInv = inventoryPreset;
-        				newCrafting = craftingPreset;
         			}
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);

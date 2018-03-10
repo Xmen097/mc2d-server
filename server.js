@@ -453,9 +453,11 @@ function onNewPlayer(data) {
         		} 
         		pgClient.query('SELECT * FROM users WHERE name='+validateString(data.name), function(err,result) {
         			if(err) {
+        				util.log(err);
 	            		util.log("Player "+validateString(data.name)+" is new here!");
 	            		pgClient.query('INSERT INTO users(name, role, inventory, crafting) VALUES ('+validateString(data.name)+',1 ,'+JSON.stringify(inventoryPreset)+', '+JSON.stringify(craftingPreset)+')', function(err) {
 	            			if(err) {
+        						util.log(err);
 	            				util.log("Failed creating player profile");
 	            				return;
 	            			}

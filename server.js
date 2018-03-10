@@ -469,6 +469,10 @@ function onNewPlayer(data) {
 							return;
 						}
         				client.emit("inventory", result.rows[0]);
+        			} else {
+        				role = 0;
+        				newInv = inventoryPreset;
+        				newCrafting = craftingPreset;
         			}
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);

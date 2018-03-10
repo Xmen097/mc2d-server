@@ -455,7 +455,7 @@ function onNewPlayer(data) {
         			if(err) {
         				util.log(err);
 	            		util.log("Player "+validateString(data.name)+" is new here!");
-	            		pgClient.query('INSERT INTO users(name, role, inventory, crafting) VALUES ('+validateString(data.name)+',1 ,'+JSON.stringify(inventoryPreset)+', '+JSON.stringify(craftingPreset)+')', function(err) {
+	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
 	            			if(err) {
         						util.log(err);
 	            				util.log("Failed creating player profile");

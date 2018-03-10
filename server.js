@@ -154,15 +154,15 @@ var inventoryPreset = {
 	hotbar: [new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]			
 }
 var craftingPreset=[
-		new invSpace(236, 75),
-		new invSpace(268, 75), 
-		new invSpace(236, 100), 
-		new invSpace(268, 100),
-		new invSpace(338, 90)]; // crafting result field
+		new invSpace(),
+		new invSpace(), 
+		new invSpace(), 
+		new invSpace(),
+		new invSpace()]; // crafting result field
 var craftingTablePreset =[
-		new invSpace(122, 78),new invSpace(154, 78),new invSpace(187, 78),
-		new invSpace(122, 103),new invSpace(154, 103),new invSpace(187, 103),
-		new invSpace(122, 128),new invSpace(154, 128),new invSpace(187, 128), new invSpace(291, 103)]
+		new invSpace(),new invSpace(),new invSpace(),
+		new invSpace(),new invSpace(),new invSpace(),
+		new invSpace(),new invSpace(),new invSpace(), new invSpace()]
 
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
@@ -453,11 +453,9 @@ function onNewPlayer(data) {
         		} 
         		pgClient.query('SELECT * FROM users WHERE name='+validateString(data.name), function(err,result) {
         			if(err) {
-        				util.log(err);
 	            		util.log("Player "+validateString(data.name)+" is new here!");
 	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
 	            			if(err) {
-        						util.log(err);
 	            				util.log("Failed creating player profile");
 	            				return;
 	            			}

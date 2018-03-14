@@ -842,7 +842,7 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE users SET inventory='"+JSON.parse(playerById(id).inventory)+"' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
+			pgClient.query("UPDATE users SET inventory='"+JSON.stringify(playerById(id).inventory)+"' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
 					util.log(validateString(playerById(id).name));
@@ -850,7 +850,7 @@ function onMapEdit(data) {
 					util.log("Players "+id+ " inventory was updated");
 				}
 			})
-		done();//d
+		done();
 		})	
 	}
 }

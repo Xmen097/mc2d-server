@@ -850,7 +850,7 @@ function onMapEdit(data) {
 					util.log("Players "+id+ " inventory was updated");
 				}
 			})
-		done();
+		done();//d
 		})	
 	}
 }

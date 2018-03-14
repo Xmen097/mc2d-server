@@ -706,7 +706,7 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, 10000);
+						}, 10000);//f
 					}else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})
 					}

@@ -96,33 +96,27 @@ function init() {
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
-	for(var a of playerById(id).inventory.hotbar) {
-		if(a.item == item) {
-			a.count += count;	
-			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count};	
-		}
+	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
+		if(playerById(id).inventory.hotbar[a].item == item)
+			playerById(id).inventory.hotbar[a].count += count;	
 	}
-	for (var m of playerById(id).inventory.inventory) {
-		for(var a of m) {
-			if(a.item == item) {
-				a.count += count;	
-				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count};		
-			}
+	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
+		for(var a=0; a< m.count;a++) {
+			if(playerById(id).inventory.inventory[m][a].item == item)
+				playerById(id).inventory.inventory[m][a].count += count;		
 		}				
 	}
-	for(var a of playerById(id).inventory.hotbar) {
-		if(a.item == undefined) {
-			a.count = count;
-			a.item = item;	
-			return {x:playerById(id).inventory.hotbar.indexOf(a), y:3, amount: a.count};
+	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
+		if(playerById(id).inventory.hotbar[a].item == undefined) {
+			playerById(id).inventory.hotbar[a].count.count = count;
+			playerById(id).inventory.hotbar[a].count.item = item;
 		}
 	}
-	for (var m of playerById(id).inventory.inventory) {
-		for(var a of m) {
-			if(a.item == undefined) {
-				a.count = count;
-				a.item = item;	
-				return {x:m.indexOf(a), y:playerById(id).inventory.inventory.indexOf(m), amount: a.count};		
+	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
+		for(var a=0; a< m.count;a++) {
+			if(playerById(id).inventory.inventory[m][a].item == undefined) {
+				playerById(id).inventory.inventory[m][a].count = count;
+				playerById(id).inventory.inventory[m][a].item = item;			
 			}
 		}				
 	}
@@ -824,8 +818,7 @@ function onMoveItem(data) {
 function onMapEdit(data) {
 	if(parseInt(data.block) == -1 && map[parseInt(data.x)][parseInt(data.y)] && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
-		var positions = giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
-		var dat = {x: positions.x, y: positions.y, amount: positions.amount, item:dropped.item}
+		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
 	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
@@ -833,7 +826,6 @@ function onMapEdit(data) {
 			players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].item = 0;	
 			item = 0;
 		}
-		var dat = {x: parseInt(data.active), y: 3, amount: playerById(this.id).inventory.hotbar[parseInt(data.active)].count, item:item}
 	} else {
 		return;
 	}
@@ -854,10 +846,6 @@ function onMapEdit(data) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
 					util.log(validateString(playerById(id).name));
-					util.log(dat.item);
-					util.log(dat.amount);
-					util.log(dat.x);
-					util.log(dat.y);
 				} else {
 					util.log("Players "+id+ " inventory was updated");
 				}

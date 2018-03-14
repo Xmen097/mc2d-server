@@ -516,7 +516,7 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
+							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result){
 									if(result && result.rows[0].role < playerById(sender.id).role) {
 										pgClient.query("UPDATE users SET role=0 WHERE name="+validateString(argument), function(err) {
@@ -563,7 +563,7 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
 								if(result && result.rows[0].role == 0){
-									pgClient.query("UPDATE users SET role=0 WHERE name="+validateString(argument), function(err) {
+									pgClient.query("UPDATE users SET role=0 WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -593,7 +593,7 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
 								if(result && result.rows[0].role+1 < playerById(sender.id).role){
-									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role+1)+" WHERE name="+validateString(argument), function(err) {
+									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role+1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
@@ -624,7 +624,7 @@ function onNewMessage(data) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
 							}
-							pgClient.query("SELECT role FROM users WHERE name="+validateString(argument), function(err, result) { 
+							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
 									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].role-1)+" WHERE y=5", function(err) {
 										if(err) {
@@ -850,7 +850,7 @@ function onMapEdit(data) {
 					util.log("Player "+id+ " edited map")
 				}
 			})
-			pgClient.query("UPDATE "+validateString(playerById(id).name)+" SET id="+dat.item+" , amount="+dat.amount+" WHERE x="+dat.x+" AND y="+dat.y, function(err) {
+			pgClient.query("UPDATE users SET inventory='"+JSON.parse(playerById(id).inventory)+"' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
 				if(err) {
 					util.log("Failed saving player inventory "+err);
 					util.log(validateString(playerById(id).name));

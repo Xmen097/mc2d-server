@@ -446,15 +446,7 @@ function onNewPlayer(data) {
             		return;
         		} 
         		pgClient.query("SELECT * FROM users WHERE name='"+validateString(data.name)+"'", function(err,result) {
-        			if(err) {
-	            		util.log("Player "+validateString(data.name)+" is new here!");
-	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
-	            			if(err) {
-	            				util.log("Failed creating player profile");
-	            				return;
-	            			}
-	            		})
-        			} else if(result) {
+        			if(result.rows[0]) {
         				role=result.rows[0].role|0;
         				newInv = JSON.parse(result.rows[0].inventory);
         				newCrafting = JSON.parse(result.rows[0].crafting);
@@ -464,6 +456,14 @@ function onNewPlayer(data) {
 							return;
 						}
         				client.emit("inventory", result.rows[0]);
+        			} else {
+	            		util.log("Player "+validateString(data.name)+" is new here!");
+	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
+	            			if(err) {
+	            				util.log("Failed creating player profile");
+	            				return;
+	            			}
+	            		})
         			}
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);
@@ -706,7 +706,7 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, 10000);//f
+						}, 10000);
 					}else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})
 					}

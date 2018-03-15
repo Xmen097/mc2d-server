@@ -464,6 +464,7 @@ function onNewPlayer(data) {
         				client.emit("inventory", result.rows[0]);
         			} else {
 	            		util.log("Player "+validateString(data.name)+" is new here!");
+        				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: inventoryPreset, crafting: craftingPreset});
 	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
 	            			if(err) {
 	            				util.log("Failed creating player profile");
@@ -775,7 +776,7 @@ function onMoveItem(data) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
 				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
 					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-			} else if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {//d
+			} else if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;

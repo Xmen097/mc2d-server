@@ -833,6 +833,7 @@ function onMapEdit(data) {
 	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
 	var id=this.id;
+	util.log(players[players.indexOf(playerById(this.id))].inventory);
 	if(process.env.DATABASE_URL) {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 			pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {

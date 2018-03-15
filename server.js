@@ -98,25 +98,25 @@ function init() {
 function giveItemToBestInventoryPosition(item, count, id) {
 	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
 		if(playerById(id).inventory.hotbar[a].item == item)
-			playerById(id).inventory.hotbar[a].count += count;	
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;	
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
 		for(var a=0; a< m.count;a++) {
 			if(playerById(id).inventory.inventory[m][a].item == item)
-				playerById(id).inventory.inventory[m][a].count += count;		
+				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;		
 		}				
 	}
 	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
 		if(playerById(id).inventory.hotbar[a].item == undefined) {
-			playerById(id).inventory.hotbar[a].count.count = count;
-			playerById(id).inventory.hotbar[a].count.item = item;
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].count.count = count;
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].count.item = item;
 		}
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
 		for(var a=0; a< m.count;a++) {
 			if(playerById(id).inventory.inventory[m][a].item == undefined) {
-				playerById(id).inventory.inventory[m][a].count = count;
-				playerById(id).inventory.inventory[m][a].item = item;			
+				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count = count;
+				players[players.indexOf(playerById(id))].inventory.inventory[m][a].item = item;			
 			}
 		}				
 	}
@@ -819,7 +819,7 @@ function onMapEdit(data) {
 	if(parseInt(data.block) == -1 && map[parseInt(data.x)][parseInt(data.y)] && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
-		util.log("A");
+		util.log(dropped);
 	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;

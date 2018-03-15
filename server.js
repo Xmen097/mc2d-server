@@ -775,7 +775,7 @@ function onMoveItem(data) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
 				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
 					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-			} else if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
+			} else if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {//d
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;

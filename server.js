@@ -96,19 +96,20 @@ function init() {
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
-	util.log(item);
 	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {
-		if(playerById(id).inventory.hotbar[a].item == item)
+		if(playerById(id).inventory.hotbar[a].item == item) {
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;
-			util.log(playerById(id).inventory.hotbar[a].item);
+			util.log("1")
 			return;
+		}
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.length; m++) {
 		for(var a=0; a< m.count;a++) {
-			if(playerById(id).inventory.inventory[m][a].item == item)
+			if(playerById(id).inventory.inventory[m][a].item == item) {
 				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;	
-			util.log("2");
+				util.log("2");
 				return;	
+			}
 		}				
 	}
 	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {

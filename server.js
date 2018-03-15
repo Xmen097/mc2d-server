@@ -99,7 +99,6 @@ function giveItemToBestInventoryPosition(item, count, id) {
 	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {
 		if(playerById(id).inventory.hotbar[a].item == item) {
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;
-			util.log("1")
 			return;
 		}
 	}
@@ -107,7 +106,6 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		for(var a=0; a< m.count;a++) {
 			if(playerById(id).inventory.inventory[m][a].item == item) {
 				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;	
-				util.log("2");
 				return;	
 			}
 		}				
@@ -116,7 +114,6 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		if(playerById(id).inventory.hotbar[a].item == undefined) {
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].count = count;
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].item = item;
-			util.log("3");
 			return;
 		}
 	}
@@ -125,7 +122,6 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			if(playerById(id).inventory.inventory[m][a].item == undefined) {
 				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count = count;
 				players[players.indexOf(playerById(id))].inventory.inventory[m][a].item = item;	
-				util.log("4");	
 				return;	
 			}
 		}				
@@ -775,44 +771,36 @@ function onMoveItem(data) {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;
 		var count = {start:0, end:0};
-		util.log(data.start)
-		if(data.start.y < 3) {
-			if(players[playerID].inventory.inventory[data.start.y][data.start.x].count >= data.count)
-				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
-			item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
-			count.start=players[playerID].inventory.inventory[data.start.y][data.start.x].count;
-		} else if(data.start.y == 3) {
-			if(players[playerID].inventory.hotbar[data.start.x].count >= data.count)
-				players[playerID].inventory.hotbar[data.start.x].count-=data.count;
-			item = players[playerID].inventory.hotbar[data.start.x].item;
-			count.start=players[playerID].inventory.hotbar[data.start.x].count;
-		} else if(data.start.y == 4) {
-			if(players[playerID].inventory.armor[data.start.x].count >= data.count)
-				players[playerID].inventory.armor[data.start.x].count-=data.count;
-			item = players[playerID].inventory.armor[data.start.x].item;
-			count.start=players[playerID].inventory.armor[data.start.x].count;
-		} else {
-			return;
-		}
-		if(data.end.y < 3) {
-			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
-			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
-			count.end = players[playerID].inventory.inventory[data.end.y][data.end.x].count;
-		} else if(data.end.y == 3) {
-			players[playerID].inventory.hotbar[data.end.x].item=item;
-			players[playerID].inventory.hotbar[data.end.x].count+=data.count;
-			count.end = players[playerID].inventory.hotbar[data.end.x].count;
-		} else if(data.end.y == 4) {
-			players[playerID].inventory.armor[data.end.x].item=item;
-			players[playerID].inventory.armor[data.end.x].count+=data.count;
-			count.end = players[playerID].inventory.armor[data.end.x].count;
-		} else {
-			return;
-		}	
+		try {
+			if(data.start.y < 3) {
+				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count >= data.count)
+					players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
+				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
+				count.start=players[playerID].inventory.inventory[data.start.y][data.start.x].count;
+			} else  {
+				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count >= data.count)
+					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
+				item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
+				count.start=players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count;
+			}
+
+			if(data.end.y < 3) {
+				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
+				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
+				count.end = players[playerID].inventory.inventory[data.end.y][data.end.x].count;
+			} else {
+				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
+				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
+				count.end = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].count;
+			}
+		} catch(err) {
+			util.log("move item error: "+err);
+		} 
+		
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE users SET inventory="+JSON.stringify(players[playerID].inventory)+" WHERE name="+validateString(playerById(id).name), function(err) {
+				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"'' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {
@@ -839,7 +827,6 @@ function onMapEdit(data) {
 	} else {
 		return;
 	}
-	util.log(playerById(this.id).inventory);
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);
 	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});

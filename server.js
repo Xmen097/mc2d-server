@@ -96,10 +96,11 @@ function init() {
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
+	util.log(item);
 	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {
 		if(playerById(id).inventory.hotbar[a].item == item)
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;
-			util.log("1");	
+			util.log(playerById(id).inventory.hotbar[a].item);
 			return;
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.length; m++) {

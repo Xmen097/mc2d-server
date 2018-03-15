@@ -815,7 +815,7 @@ function onMapEdit(data) {
 	if(parseInt(data.block) == -1 && map[parseInt(data.x)][parseInt(data.y)] && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
-	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
+	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)] && playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
 		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {

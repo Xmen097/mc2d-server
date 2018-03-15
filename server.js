@@ -98,25 +98,33 @@ function init() {
 function giveItemToBestInventoryPosition(item, count, id) {
 	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
 		if(playerById(id).inventory.hotbar[a].item == item)
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;	
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;
+			util.log("1");	
+			return;
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
 		for(var a=0; a< m.count;a++) {
 			if(playerById(id).inventory.inventory[m][a].item == item)
-				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;		
+				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;	
+			util.log("2");
+				return;	
 		}				
 	}
 	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
 		if(playerById(id).inventory.hotbar[a].item == undefined) {
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].count = count;
 			players[players.indexOf(playerById(id))].inventory.hotbar[a].item = item;
+			util.log("3");
+			return;
 		}
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {
 		for(var a=0; a< m.count;a++) {
 			if(playerById(id).inventory.inventory[m][a].item == undefined) {
 				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count = count;
-				players[players.indexOf(playerById(id))].inventory.inventory[m][a].item = item;			
+				players[players.indexOf(playerById(id))].inventory.inventory[m][a].item = item;	
+				util.log("4");	
+				return;	
 			}
 		}				
 	}

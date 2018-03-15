@@ -819,9 +819,11 @@ function onMapEdit(data) {
 	if(parseInt(data.block) == -1 && map[parseInt(data.x)][parseInt(data.y)] && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]) {
 		var dropped = drop(items[map[parseInt(data.x)][parseInt(data.y)]].drop[0], items[map[parseInt(data.x)][parseInt(data.y)]].drop[1], items[map[parseInt(data.x)][parseInt(data.y)]].drop[2], items[map[parseInt(data.x)][parseInt(data.y)]].drop[3], items[map[parseInt(data.x)][parseInt(data.y)]].drop[4], playerById(this.id).inventory.hotbar[parseInt(data.active)].item)
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
+		util.log("A");
 	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
 		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
+		util.log("B");
 		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {
 			players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].item = 0;	
 			item = 0;
@@ -833,7 +835,6 @@ function onMapEdit(data) {
 	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
 	var id=this.id;
-	util.log(players[players.indexOf(playerById(this.id))].inventory);
 	if(process.env.DATABASE_URL) {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 			pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {

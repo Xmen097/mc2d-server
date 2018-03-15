@@ -108,8 +108,8 @@ function giveItemToBestInventoryPosition(item, count, id) {
 	}
 	for(var a=0;a < playerById(id).inventory.hotbar.count; a++) {
 		if(playerById(id).inventory.hotbar[a].item == undefined) {
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].count.count = count;
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].count.item = item;
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].count = count;
+			players[players.indexOf(playerById(id))].inventory.hotbar[a].item = item;
 		}
 	}
 	for (var m=0;m < playerById(id).inventory.inventory.count; m++) {

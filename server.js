@@ -557,8 +557,8 @@ function onNewMessage(data) {
 													playerByName(argument).client.emit("disconnect", "You were banned from the server");
 													playerByName(argument).client.disconnect(0);
 													players.splice(players.indexOf(removePlayer), 1);
-												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned by "+playerById(sender.id).name})
-												sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
+													sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned"})
+													sender.emit("new message", {name: "[SERVER]", message: "Successfully banned "+argument})
 												}
 											}
 										})

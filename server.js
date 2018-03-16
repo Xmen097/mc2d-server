@@ -586,7 +586,7 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result && result.rows[0].role == 0){
-									pgClient.query("UPDATE users SET role=0 WHERE name='"+validateString(argument)+"'", function(err) {
+									pgClient.query("UPDATE users SET role=1 WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {

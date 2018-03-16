@@ -743,6 +743,9 @@ function onNewMessage(data) {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
+			default:
+				this.emit("new message", {name: "[SERVER]", message: "Unknown command"})
+				break;
 		}
 	} else {
 		if(playerById(sender.id).messagesPerMinute < 20) {

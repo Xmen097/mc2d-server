@@ -527,9 +527,9 @@ function onNewMessage(data) {
 	var sender = this;
 	util.log(data);
 	if(data[0] == "/") {
-		var data = validateString(data).split("/")[1]
-		var command = validateString(data).split(" ")[0]
-		var argument = validateString(data).split(" ")[1]
+		var data = data.split("/")[1]
+		var command = data.split(" ")[0]
+		var argument = data.split(" ")[1]
 		switch(command) {
 			case "ban":
 				if(playerById(sender.id).role > 2) {

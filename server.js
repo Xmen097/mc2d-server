@@ -477,8 +477,7 @@ function onNewPlayer(data) {
         				role=result.rows[0].role|0;
         				newInv = JSON.parse(result.rows[0].inventory);
         				newCrafting = JSON.parse(result.rows[0].crafting);
-        				util.log(result.rows[0].craftingTable);
-        				newCraftingTable = JSON.parse(result.rows[0].craftingTable);
+        				newCraftingTable = JSON.parse(result.rows[0].craftingtable);
         				if(role == 0) {
 							util.log("Player "+validateString(data.name)+" is banned");
 							client.emit("disconnect", "You are banned")

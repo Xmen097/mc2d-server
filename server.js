@@ -387,7 +387,7 @@ mapGenerator = new mapGeneratorConstructor();
 
 //Map generator end
 
-function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting) {
+function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting, gtCraftingTable) {
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
@@ -397,7 +397,27 @@ function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting) {
 	this.role = gtRole;
 	this.client = gtClient;
 	this.crafting = gtCrafting;
+	this.craftingTable = gtCraftingTable;
 
+}
+
+function copyArr(arr){
+	if(arr == undefined || arr.constructor == String || arr.constructor == Number|| arr.constructor == Boolean) {
+		return arr;
+	} else if(arr.constructor == Array) {
+	    var newArr = arr.slice(0);
+	    for(var i = 0; i<newArr.length; i++)
+	            newArr[i] = copyArr(arr[i]);
+	    return newArr;
+	} else if(arr.constructor != Function) {
+		var newArr = new arr.constructor();
+		for(var a in arr) {
+			newArr[a] = copyArr(arr[a]);
+		}
+		return newArr;
+	} else {
+		return arr;
+	}
 }
 
 function playerById(id) {
@@ -436,8 +456,9 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
-	var newInv=inventoryPreset;
-    var newCrafting = craftingPreset;
+	var newInv = copyArr(inventoryPreset);
+    var newCrafting = copyArr(craftingPreset);
+    var newCraftingTable = copyArr(craftingTablePreset);
 	var role=1;
 	var client=this;
 	util.log("Player "+validateString(data.name)+" send authorization token")
@@ -456,6 +477,7 @@ function onNewPlayer(data) {
         				role=result.rows[0].role|0;
         				newInv = JSON.parse(result.rows[0].inventory);
         				newCrafting = JSON.parse(result.rows[0].crafting);
+        				newCraftingTable = JSON.parse(result.rows[0].craftingTable);
         				if(role == 0) {
 							util.log("Player "+validateString(data.name)+" is banned");
 							client.emit("disconnect", "You are banned")
@@ -465,7 +487,7 @@ function onNewPlayer(data) {
         			} else {
 	            		util.log("Player "+validateString(data.name)+" is new here!");
         				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset)});
-	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"')", function(err) {
+	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
 	            			if(err) {
 	            				util.log("Failed creating player profile");
 	            				return;
@@ -482,7 +504,7 @@ function onNewPlayer(data) {
 					util.log("Player "+validateString(data.name)+" authorized successfully")
 					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
-					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client, newCrafting);
+					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client, newCrafting, newCraftingTable);
 					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: validateString(newPlayer.name)});
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {

@@ -947,7 +947,8 @@ function onMoveItem(data) {
 				}
 				item = craftedItem.item;
 			}
-
+			util.log(data)
+			util.log(item);
 			if(data.end.y < 3) {
 				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;

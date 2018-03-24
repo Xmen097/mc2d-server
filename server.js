@@ -128,6 +128,41 @@ function giveItemToBestInventoryPosition(item, count, id) {
 	}
 }
 
+function invSpace(item, count) {
+	this.item = item;
+	this.count = count || 0;
+}
+
+function countItemsInRecipe(recipe) {
+	var count = 0;
+	for(var x of recipe) {
+		if(x != undefined)
+			count++;
+	}
+	return count-2;
+}
+
+function checkSmallCraftingResult(playerCrafting) {
+	for(var a of smallRecipes) {
+		var itemCount=0;
+		var item;
+		for(var m of playerCrafting) {
+			if(m.item != undefined) {
+				if(item == undefined)
+					item=m;
+				itemCount++;
+			}
+		}		
+		if(a.length == 3 && itemCount==1 && item.item==a[0]) {
+			return new invSpace(a[1], a[2])
+		} else if(a.length == 5 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2]) {
+			return new invSpace(a[3], a[4]);
+		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[3]) {
+			return new invSpace(a[4], a[5]);
+		}	
+	}
+}
+
 function drop(item1, count1, condition, item2, count2, activeItem) {
 	count1 = count1 || 1;
 	count2 = count2 || 1;
@@ -139,11 +174,6 @@ function drop(item1, count1, condition, item2, count2, activeItem) {
 		return {item: undefined, count: 0};
 	}
 }
-
-function invSpace(item, count) {
-	this.item = item;
-	this.count = count || 0;
-} 
 
 var inventoryPreset = {
 	armor: [new invSpace(), new invSpace(), new invSpace(), new invSpace()],
@@ -163,6 +193,76 @@ var craftingTablePreset =[
 		new invSpace(),new invSpace(),new invSpace(),
 		new invSpace(),new invSpace(),new invSpace(),
 		new invSpace(),new invSpace(),new invSpace(), new invSpace()]
+
+var smallRecipes=[[items[2], items[11], 4],
+				 [items[11], items[11], items[11], items[11], items[12], 1],
+				 [items[11],undefined ,items[11], items[54], 4],
+				 [items[52], undefined, undefined, items[52], items[34], 1]]
+
+var bigRecipes=[[items[1],items[1],items[1],
+				 items[1],undefined,      items[1],
+				 items[1],items[1],items[1],
+				 items[13], 1],
+				[items[11],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[45], 1],
+				[items[1],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[46], 1],
+				[items[52],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[47], 1],
+				[items[50],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[48], 1],
+				[items[53],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[54],undefined,undefined,
+				 items[49], 1],				
+				 [items[11],items[11],items[11],
+				 undefined,items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[35], 1],
+				[items[1],items[1],items[1],
+				 undefined,items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[36], 1],
+				[items[52],items[52],items[52],
+				 undefined,items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[37], 1],
+				[items[50],items[50],items[50],
+				 undefined,items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[38], 1],
+				[items[53],items[53],items[53],
+				 undefined,items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[39], 1],				
+				 [items[11],items[11],undefined,
+				 items[11],items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[40], 1],
+				[items[1],items[1],undefined,
+				 items[1],items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[41], 1],
+				[items[52],items[52],undefined,
+				 items[52],items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[42], 1],
+				[items[50],items[50],undefined,
+				 items[50],items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[43], 1],
+				[items[53],items[53],undefined,
+				 items[53],items[54],undefined,
+				 undefined,items[54],undefined,
+				 items[44], 1]]
 
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
@@ -809,12 +909,19 @@ function onMoveItem(data) {
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
 			} else if(players[playerID].crafting[data.start.x].count-data.count >= 0){
-				players[playerID].crafting[data.start.x].count-=data.count;
-				item = players[playerID].crafting[data.start.x].item;
-				if(players[playerID].crafting[data.start.x].count < 1)
-					players[playerID].crafting[data.start.x].item = undefined;
+				if(data.start.x != 4) {
+					players[playerID].crafting[data.start.x].count-=data.count;
+					item = players[playerID].crafting[data.start.x].item;
+					if(players[playerID].crafting[data.start.x].count < 1)
+						players[playerID].crafting[data.start.x].item = undefined;
+				} else {
+					var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
+					players[playerID].crafting = copyArr(craftingPreset);
+					item = craftedItem.item;
+					data.count = craftedItem.count;
+				}
 			} else {
-				return;
+				throw new Error;
 			}
 
 			if(data.end.y < 3) {
@@ -829,6 +936,7 @@ function onMoveItem(data) {
 			}
 		} catch(err) {
 			util.log("move item error: "+err);
+			return
 		} 
 		
 		var id=this.id;

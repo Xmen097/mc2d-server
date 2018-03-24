@@ -796,18 +796,22 @@ function onMoveItem(data) {
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;
-		util.log(data);
 		try {
 			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
 				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
 				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
 					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-			} else if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
+			} else if(data.end.y != 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
 				item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
+			} else if(players[playerID].crafting[data.start.x].count-data.count >= 0){
+				players[playerID].crafting[data.start.x].count-=data.count;
+				item = players[playerID].crafting[data.start.x].item;
+				if(players[playerID].crafting[data.start.x].count < 1)
+					players[playerID].crafting[data.start.x].item = undefined;
 			} else {
 				return;
 			}
@@ -815,16 +819,18 @@ function onMoveItem(data) {
 			if(data.end.y < 3) {
 				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
-			} else {
+			} else if(data.end.y != 5){
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
+			} else {
+				players[playerID].crafting[data.end.x].item=item;
+				players[playerID].crafting[data.end.x].count+=data.count;
 			}
 		} catch(err) {
 			util.log("move item error: "+err);
 		} 
 		
 		var id=this.id;
-		util.log("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"' WHERE name='"+validateString(players[playerID].name)+"'");
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {

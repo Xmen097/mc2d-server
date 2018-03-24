@@ -154,12 +154,35 @@ function checkSmallCraftingResult(playerCrafting) {
 			}
 		}		
 		if(a.length == 3 && itemCount==1 && item.item==a[0]) {
+			for(var a=0;a<players[playerID].crafting.length) {
+				if(players[playerID].crafting[a].count > 0) {
+					players[playerID].crafting[a].count--;
+					if(players[playerID].crafting[a].count == 0)
+						players[playerID].crafting[a].item = undefined;
+				}
+			}
 			return new invSpace(a[1], a[2])
 		} else if(a.length == 5 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2]) {
+			for(var a=0;a<players[playerID].crafting.length) {
+				if(players[playerID].crafting[a].count > 0) {
+					players[playerID].crafting[a].count--;
+					if(players[playerID].crafting[a].count == 0)
+						players[playerID].crafting[a].item = undefined;
+				}
+			}
 			return new invSpace(a[3], a[4]);
 		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[3]) {
+			for(var a=0;a<players[playerID].crafting.length) {
+				if(players[playerID].crafting[a].count > 0) {
+					players[playerID].crafting[a].count--;
+					if(players[playerID].crafting[a].count == 0)
+						players[playerID].crafting[a].item = undefined;
+				}
+			}
 			return new invSpace(a[4], a[5]);
-		}	
+		} else {
+			return new invSpace(-1, 0);
+		}
 	}
 }
 
@@ -915,7 +938,15 @@ function onMoveItem(data) {
 					players[playerID].crafting[data.start.x].item = undefined;
 			} else {
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
-				players[playerID].crafting = copyArr(craftingPreset);
+				var craftingLimit=0;
+				while(craftingLimit<1000 && craftedItem.count != data.count) {
+					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting); 
+					if(newCraftedItem.item == craftedItem.item) {
+						craftedItem.count += newCraftedItem;
+						craftingLimit++;
+					} else
+						break;
+				}
 				item = craftedItem.item;
 				data.count = craftedItem.count;
 			}

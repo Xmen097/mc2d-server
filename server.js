@@ -939,7 +939,8 @@ function onMoveItem(data) {
 			} else {
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
 				var craftingLimit=0;
-				while(craftingLimit<1000 && craftedItem.count != data.count) {
+				util.log(players[playerID].crafting)
+				while(craftingLimit<10 && craftedItem.count != data.count) {
 					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting); 
 					util.log(newCraftedItem);
 					if(newCraftedItem.item == craftedItem.item) {

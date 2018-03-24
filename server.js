@@ -908,20 +908,16 @@ function onMoveItem(data) {
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
-			} else if(players[playerID].crafting[data.start.x].count-data.count >= 0){
-				if(data.start.x != 4) {
-					players[playerID].crafting[data.start.x].count-=data.count;
-					item = players[playerID].crafting[data.start.x].item;
-					if(players[playerID].crafting[data.start.x].count < 1)
-						players[playerID].crafting[data.start.x].item = undefined;
-				} else {
-					var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
-					players[playerID].crafting = copyArr(craftingPreset);
-					item = craftedItem.item;
-					data.count = craftedItem.count;
-				}
+			} else if(data.start.x != 4 && players[playerID].crafting[data.start.x].count-data.count >= 0) {
+				players[playerID].crafting[data.start.x].count-=data.count;
+				item = players[playerID].crafting[data.start.x].item;
+				if(players[playerID].crafting[data.start.x].count < 1)
+					players[playerID].crafting[data.start.x].item = undefined;
 			} else {
-				throw new Error;
+				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
+				players[playerID].crafting = copyArr(craftingPreset);
+				item = craftedItem.item;
+				data.count = craftedItem.count;
 			}
 
 			if(data.end.y < 3) {

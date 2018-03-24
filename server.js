@@ -834,7 +834,7 @@ function onMoveItem(data) {
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"' crafting='"+JSON.stringify(players[playerID].crafting)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
+				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {

@@ -796,6 +796,7 @@ function onMoveItem(data) {
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var playerID = players.indexOf(playerById(this.id));
 		var item;
+		util.log(data);
 		try {
 			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
@@ -833,7 +834,7 @@ function onMoveItem(data) {
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"' AND crafting='"+JSON.stringify(players[playerID].crafting)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
+				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"' crafting='"+JSON.stringify(players[playerID].crafting)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {

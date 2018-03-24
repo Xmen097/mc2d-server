@@ -903,7 +903,7 @@ function onMoveItem(data) {
 				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
 				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
 					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-			} else if(data.end.y != 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
+			} else if(data.start.y != 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
 				item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
@@ -928,8 +928,8 @@ function onMoveItem(data) {
 				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
 			} else if(data.end.y != 5){
-				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
-				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
+				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
+				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
 			} else {
 				players[playerID].crafting[data.end.x].item=item;
 				players[playerID].crafting[data.end.x].count+=data.count;

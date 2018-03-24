@@ -180,10 +180,9 @@ function checkSmallCraftingResult(playerCrafting) {
 				}
 			}
 			return new invSpace(a[4], a[5]);
-		} else {
-			return new invSpace(-1, 0);
-		}
+		} 
 	}
+	return new invSpace(-1, 0);
 }
 
 function drop(item1, count1, condition, item2, count2, activeItem) {

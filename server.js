@@ -917,7 +917,6 @@ function onMovePlayer(data) {
 function onMoveItem(data) {
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var item;
-		util.log(data);
 		playerID = players.indexOf(playerById(this.id));
 		try {
 			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
@@ -938,9 +937,8 @@ function onMoveItem(data) {
 			} else {
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
 				var craftingLimit=0;
-				util.log(playerID)
+				util.log(craftedItem);
 				while(craftingLimit<1000 && craftedItem.count != data.count) {
-					util.log(playerID)
 					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting); 
 					util.log(newCraftedItem);
 					if(newCraftedItem.item == craftedItem.item) {

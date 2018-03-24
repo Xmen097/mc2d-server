@@ -940,7 +940,7 @@ function onMoveItem(data) {
 				util.log(players[playerID].crafting)
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
 				var craftingLimit=0;
-				util.log(players[playerID].crafting)
+				util.log(craftedItem)
 				while(craftingLimit<10 && craftedItem.count != data.count) {
 					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting); 
 					util.log(newCraftedItem);

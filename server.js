@@ -182,7 +182,7 @@ function checkSmallCraftingResult(playerCrafting, playerID) {
 			return new invSpace(a[4], a[5]);
 		} 
 	}
-	return new invSpace(-1, 0);
+	return new invSpace(undefined, 0);
 }
 
 function drop(item1, count1, condition, item2, count2, activeItem) {
@@ -940,7 +940,7 @@ function onMoveItem(data) {
 				while(craftingLimit<1000 && craftedItem.count != data.count) {
 					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID); 
 					if(newCraftedItem.item == craftedItem.item) {
-						craftedItem.count += newCraftedItem;
+						craftedItem.count += newCraftedItem.count;
 						craftingLimit++;
 					} else
 						break;

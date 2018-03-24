@@ -142,7 +142,7 @@ function countItemsInRecipe(recipe) {
 	return count-2;
 }
 
-function checkSmallCraftingResult(playerCrafting) {
+function checkSmallCraftingResult(playerCrafting, playerID) {
 	for(var a of smallRecipes) {
 		var itemCount=0;
 		var item;
@@ -917,7 +917,7 @@ function onMovePlayer(data) {
 function onMoveItem(data) {
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var item;
-		playerID = players.indexOf(playerById(this.id));
+		var playerID = players.indexOf(playerById(this.id));
 		try {
 			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
@@ -935,11 +935,11 @@ function onMoveItem(data) {
 				if(players[playerID].crafting[data.start.x].count < 1)
 					players[playerID].crafting[data.start.x].item = undefined;
 			} else {
-				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
+				var craftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID);
 				var craftingLimit=0;
 				util.log(craftedItem);
 				while(craftingLimit<1000 && craftedItem.count != data.count) {
-					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting); 
+					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID); 
 					util.log(newCraftedItem);
 					if(newCraftedItem.item == craftedItem.item) {
 						craftedItem.count += newCraftedItem;

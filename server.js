@@ -920,7 +920,6 @@ function onMoveItem(data) {
 		util.log(data);
 		playerID = players.indexOf(playerById(this.id));
 		try {
-			util.log(playerID)
 			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
 				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
 				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;

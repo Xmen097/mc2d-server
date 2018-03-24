@@ -937,6 +937,7 @@ function onMoveItem(data) {
 				if(players[playerID].crafting[data.start.x].count < 1)
 					players[playerID].crafting[data.start.x].item = undefined;
 			} else {
+				util.log(players[playerID].crafting)
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting);
 				var craftingLimit=0;
 				util.log(players[playerID].crafting)

@@ -959,6 +959,7 @@ function onMoveItem(data) {
 				players[playerID].crafting[data.end.x].item=item;
 				players[playerID].crafting[data.end.x].count+=data.count;
 			}
+			util.log(players[playerID].crafting);
 		} catch(err) {
 			util.log("move item error: "+err);
 			return

@@ -154,29 +154,29 @@ function checkSmallCraftingResult(playerCrafting, playerID) {
 			}
 		}		
 		if(a.length == 3 && itemCount==1 && item.item==a[0]) {
-			for(var a=0;a<players[playerID].crafting.length;a++) {
-				if(players[playerID].crafting[a].count > 0) {
-					players[playerID].crafting[a].count--;
-					if(players[playerID].crafting[a].count == 0)
-						players[playerID].crafting[a].item = undefined;
+			for(var b=0;b<players[playerID].crafting.length;b++) {
+				if(players[playerID].crafting[b].count > 0) {
+					players[playerID].crafting[b].count--;
+					if(players[playerID].crafting[b].count == 0)
+						players[playerID].crafting[b].item = undefined;
 				}
 			}
 			return new invSpace(a[1], a[2])
 		} else if(a.length == 5 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2]) {
-			for(var a=0;a<players[playerID].crafting.length;a++) {
-				if(players[playerID].crafting[a].count > 0) {
-					players[playerID].crafting[a].count--;
-					if(players[playerID].crafting[a].count == 0)
-						players[playerID].crafting[a].item = undefined;
+			for(var b=0;b<players[playerID].crafting.length;b++) {
+				if(players[playerID].crafting[b].count > 0) {
+					players[playerID].crafting[b].count--;
+					if(players[playerID].crafting[b].count == 0)
+						players[playerID].crafting[b].item = undefined;
 				}
 			}
 			return new invSpace(a[3], a[4]);
 		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[3]) {
-			for(var a=0;a<players[playerID].crafting.length;a++) {
-				if(players[playerID].crafting[a].count > 0) {
-					players[playerID].crafting[a].count--;
-					if(players[playerID].crafting[a].count == 0)
-						players[playerID].crafting[a].item = undefined;
+			for(var b=0;b<players[playerID].crafting.length;b++) {
+				if(players[playerID].crafting[b].count > 0) {
+					players[playerID].crafting[b].count--;
+					if(players[playerID].crafting[b].count == 0)
+						players[playerID].crafting[b].item = undefined;
 				}
 			}
 			return new invSpace(a[4], a[5]);

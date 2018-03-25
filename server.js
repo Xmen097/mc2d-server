@@ -607,9 +607,15 @@ function onNewPlayer(data) {
 						}
         				client.emit("inventory", result.rows[0]);
         			} else {
+        				var role=1
+        				pgClient.query("SELECT name FROM users", function(err,result) {
+        					if(result.rows.length == 0) {
+        						role = 4;
+        					}
+        				}
 	            		util.log("Player "+validateString(data.name)+" is new here!");
         				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset), craftingtable: JSON.stringify(craftingTablePreset)});
-	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',1 ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
+	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',"+role+" ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
 	            			if(err) {
 	            				util.log("Failed creating player profile");
 	            				return;

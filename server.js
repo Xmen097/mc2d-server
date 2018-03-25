@@ -948,7 +948,7 @@ function onNewMessage(data) {
 				if(findPlayer && findPlayer.role > 2) {
 					if(targetPlayer) {
 						if(args.length == 3) {
-							count = args[2];
+							count = parseInt(args[2]);
 						} else if(args.length != 2) {
 							this.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
 							return;

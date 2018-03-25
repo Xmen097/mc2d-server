@@ -186,16 +186,7 @@ function checkSmallCraftingResult(playerCrafting, playerID) {
 }
 
 
-function checkBigCraftingResult() {
-	if(typeof craftingUI != "undefined") {
-		craftingTable[9].item = undefined;
-		craftingTable[9].count = 0;
-		craftingTable[9].reRender();
-	} else {
-		crafting[4].item = undefined;
-		crafting[4].count = 0;
-		crafting[4].reRender();
-	}
+function checkBigCraftingResult(playerCrafting, playerID) {
 	for(var a of smallRecipes) {
 		var itemCount=0;
 		var item;
@@ -216,7 +207,7 @@ function checkBigCraftingResult() {
 				}
 			}
 			return new invSpace(a[1], a[2])
-		} else if(a.length == 5 && itemCount==countItemsInRecipe(a) && item.item==a[0] && craftingTable[craftingTable.indexOf(item)+1] && craftingTable[craftingTable.indexOf(item)+1].item == a[1] && craftingTable[craftingTable.indexOf(item)+3] && craftingTable[craftingTable.indexOf(item)+3].item == a[2]) {
+		} else if(a.length == 5 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[2]) {
 			for(var b=0;b<players[playerID].craftingTable.length;b++) {
 				if(players[playerID].craftingTable[b].count > 0) {
 					players[playerID].craftingTable[b].count--;
@@ -225,7 +216,7 @@ function checkBigCraftingResult() {
 				}
 			}
 			return new invSpace(a[3], a[4])
-		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && craftingTable[craftingTable.indexOf(item)+1] && craftingTable[craftingTable.indexOf(item)+1].item == a[1] && craftingTable[craftingTable.indexOf(item)+3] && craftingTable[craftingTable.indexOf(item)+3].item == a[2] && craftingTable[craftingTable.indexOf(item)+4] && craftingTable[craftingTable.indexOf(item)+4].item == a[3]) {
+		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[2] && playerCrafting[playerCrafting.indexOf(item)+4] && playerCrafting[playerCrafting.indexOf(item)+4].item == a[3]) {
 			for(var b=0;b<players[playerID].craftingTable.length;b++) {
 				if(players[playerID].craftingTable[b].count > 0) {
 					players[playerID].craftingTable[b].count--;
@@ -247,7 +238,7 @@ function checkBigCraftingResult() {
 			}else if(m == undefined)
 				break;
 		}	
-		if(itemCount==countItemsInRecipe(a) && item.item==a[0] && (a[1] ? craftingTable[craftingTable.indexOf(item)+1] && craftingTable[craftingTable.indexOf(item)+1].item == a[1] : true) && (a[2] ? craftingTable[craftingTable.indexOf(item)+2] && craftingTable[craftingTable.indexOf(item)+2].item == a[2] : true) && (a[3] ? craftingTable[craftingTable.indexOf(item)+3] && craftingTable[craftingTable.indexOf(item)+3].item == a[3] : true) && (a[4] ? craftingTable[craftingTable.indexOf(item)+4] && craftingTable[craftingTable.indexOf(item)+4].item == a[4] : true) && (a[5] ? craftingTable[craftingTable.indexOf(item)+5] && craftingTable[craftingTable.indexOf(item)+5].item == a[5] : true) && (a[6] ? craftingTable[craftingTable.indexOf(item)+6] && craftingTable[craftingTable.indexOf(item)+6].item == a[6] : true) && (a[7] ? craftingTable[craftingTable.indexOf(item)+7] && craftingTable[craftingTable.indexOf(item)+7].item == a[7] : true) && (a[8] ? craftingTable[craftingTable.indexOf(item)+8] && craftingTable[craftingTable.indexOf(item)+8].item == a[8] : true)) {
+		if(itemCount==countItemsInRecipe(a) && item.item==a[0] && (a[1] ? playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] : true) && (a[2] ? playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2] : true) && (a[3] ? playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[3] : true) && (a[4] ? playerCrafting[playerCrafting.indexOf(item)+4] && playerCrafting[playerCrafting.indexOf(item)+4].item == a[4] : true) && (a[5] ? playerCrafting[playerCrafting.indexOf(item)+5] && playerCrafting[playerCrafting.indexOf(item)+5].item == a[5] : true) && (a[6] ? playerCrafting[playerCrafting.indexOf(item)+6] && playerCrafting[playerCrafting.indexOf(item)+6].item == a[6] : true) && (a[7] ? playerCrafting[playerCrafting.indexOf(item)+7] && playerCrafting[playerCrafting.indexOf(item)+7].item == a[7] : true) && (a[8] ? playerCrafting[playerCrafting.indexOf(item)+8] && playerCrafting[playerCrafting.indexOf(item)+8].item == a[8] : true)) {
 			for(var b=0;b<players[playerID].craftingTable.length;b++) {
 				if(players[playerID].craftingTable[b].count > 0) {
 					players[playerID].craftingTable[b].count--;
@@ -1035,10 +1026,10 @@ function onMoveItem(data) {
 					if(players[playerID].craftingTable[data.start.x].count < 1)
 						players[playerID].craftingTable[data.start.x].item = undefined;
 			} else if(data.start.y == 6) {
-				var craftedItem = checkBigCraftingResult(players[playerID].crafting, playerID);
+				var craftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID);
 				var craftingLimit=0;
 				while(craftingLimit<1000 && craftedItem.count != data.count) {
-					var newCraftedItem = checkBigCraftingResult(players[playerID].crafting, playerID); 
+					var newCraftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID); 
 					if(newCraftedItem.item == craftedItem.item) {
 						craftedItem.count += newCraftedItem.count;
 						craftingLimit++;

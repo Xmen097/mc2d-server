@@ -977,7 +977,7 @@ function onNewMessage(data) {
 									} else {
 										pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
 						        			if(result.rows[0]) {
-						        				client.emit("inventory", result.rows[0]);
+						        				targetPlayer.client.emit("inventory", result.rows[0]);
 												util.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
 												targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+item});
 											}

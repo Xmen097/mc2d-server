@@ -612,16 +612,16 @@ function onNewPlayer(data) {
         					util.log(result.rowCount)
         					if(result.rowCount == 0)
         						role = 4;
+	        				util.log(role)
+		            		util.log("Player "+validateString(data.name)+" is new here!");
+	        				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset), craftingtable: JSON.stringify(craftingTablePreset)});
+		            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',"+role+" ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
+		            			if(err) {
+		            				util.log("Failed creating player profile");
+		            				return;
+		            			}
+		            		})
         				});
-        					util.log(role)
-	            		util.log("Player "+validateString(data.name)+" is new here!");
-        				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset), craftingtable: JSON.stringify(craftingTablePreset)});
-	            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',"+role+" ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
-	            			if(err) {
-	            				util.log("Failed creating player profile");
-	            				return;
-	            			}
-	            		})
         			}
         			client.emit("new map", map)
 				    client.on("disconnect", onClientDisconnect);

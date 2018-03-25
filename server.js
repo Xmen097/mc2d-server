@@ -943,11 +943,10 @@ function onNewMessage(data) {
 				var findPlayer = playerById(sender.id);
 				var args = argument.split(" ");
 				var targetPlayer = playerByName(args[0]);
-				var item;
+				var item=-1;
 				var count=1;
 				if(findPlayer && findPlayer.role > 2) {
 					if(targetPlayer) {
-						util.log(args)
 						if(args.length == 3) {
 							count = args[2];
 						} else if(args.length != 2) {
@@ -958,15 +957,17 @@ function onNewMessage(data) {
 							item = parseInt(args[1]);
 						} else {
 							for(var a of items) {
-								if(a.name ==args[1]) {
+								if(a.name.toLowerCase() == args[1].toLowerCase()) {
 									item = items.indexOf(a);
 									break;
 								}
 							}
-							if(!item) {
+							if(item==-1) {
 								this.emit("new message", {name: "[SERVER]", message: "Unknown item"})
+								return;
 							}
 						}
+
 						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
 						if(process.env.DATABASE_URL)
 							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
@@ -979,7 +980,8 @@ function onNewMessage(data) {
 						        			if(result.rows[0]) {
 						        				targetPlayer.client.emit("inventory", result.rows[0]);
 												util.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
-												targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+item});
+												targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+items[item].name});
+												findPlayer.client.emit("new message", {name: "[SERVER]", message: "Successfully gived "+count+"x item "+items[item].name+" to player "+args[0]});
 											}
 										})
 									}

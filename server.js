@@ -190,7 +190,7 @@ function checkBigCraftingResult(playerCrafting, playerID) {
 	for(var a of smallRecipes) {
 		var itemCount=0;
 		var item;
-		for(var m of craftingTable) {
+		for(var m of playerCrafting) {
 			if(m != undefined && m.item != undefined) {
 				if(item == undefined)
 					item=m;
@@ -230,7 +230,7 @@ function checkBigCraftingResult(playerCrafting, playerID) {
 	for(var a of bigRecipes) {
 		var itemCount=0;
 		var item;
-		for(var m of craftingTable) {
+		for(var m of playerCrafting) {
 			if(m != undefined && m.item != undefined) {
 				if(item == undefined)
 					item=m;

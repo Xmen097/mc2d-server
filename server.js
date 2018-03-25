@@ -608,7 +608,8 @@ function onNewPlayer(data) {
         				client.emit("inventory", result.rows[0]);
         			} else {
         				var role=1
-        				pgClient.query("SELECT name FROM users", function(err,result) {
+        				pgClient.query("SELECT * FROM users", function(err,result) {
+        					util.log(result)
         					if(result.rows.length == 0) {
         						role = 4;
         					}

@@ -1097,8 +1097,6 @@ function onMoveItem(data) {
 			}else {
 				throw new Error;
 			}
-			util.log(data)
-			util.log(item);
 			if(data.end.y < 3) {
 				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
@@ -1112,7 +1110,6 @@ function onMoveItem(data) {
 				players[playerID].craftingTable[data.end.x].item=item;
 				players[playerID].craftingTable[data.end.x].count+=data.count;
 			}
-			util.log(players[playerID].crafting);
 		} catch(err) {
 			util.log("move item error: "+err);
 			return

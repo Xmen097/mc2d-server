@@ -186,7 +186,7 @@ function checkSmallCraftingResult(playerCrafting, playerID) {
 }
 
 
-function checkSmallCraftingResult() {
+function checkBigCraftingResult() {
 	if(typeof craftingUI != "undefined") {
 		craftingTable[9].item = undefined;
 		craftingTable[9].count = 0;
@@ -258,6 +258,7 @@ function checkSmallCraftingResult() {
 			return new invSpace(a[9], a[10])
 		}
 	}
+	return new invSpace(undefined, 0);
 }
 
 function drop(item1, count1, condition, item2, count2, activeItem) {

@@ -1089,7 +1089,7 @@ function onMapEdit(data) {
 			item = 0;
 		}
 	} else {
-		util.log(data);
+		util.log(items[map[parseInt(data.x)][parseInt(data.y)]]);
 		return;
 	}
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);

@@ -968,13 +968,13 @@ function onNewMessage(data) {
 							}
 						}
 						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
-						pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
-							if(err) {
-								util.log("Failed saving player inventory "+err);
-								util.log(validateString(playerById(id).name));
-							} else {
-								if(process.env.DATABASE_URL)
-									pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						if(process.env.DATABASE_URL)
+							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
+									if(err) {
+										util.log("Failed saving player inventory "+err);
+										util.log(validateString(playerById(id).name));
+									} else {
 										util.log("Players "+id+ " inventory was updated");
 										pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
 						        			if(result.rows[0]) {
@@ -983,10 +983,10 @@ function onNewMessage(data) {
 												targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+item});
 											}
 										})
-										done();
-									})
-							}
-						})
+									}
+								})
+								done();
+							})
 
 					} else {
 						this.emit("new message", {name: "[SERVER]", message: "Can't find target player"})

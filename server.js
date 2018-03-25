@@ -993,6 +993,7 @@ function onMapEdit(data) {
 			item = 0;
 		}
 	} else {
+		util.log(data);
 		return;
 	}
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);

@@ -975,7 +975,6 @@ function onNewMessage(data) {
 										util.log("Failed saving player inventory "+err);
 										util.log(validateString(playerById(id).name));
 									} else {
-										util.log("Players "+id+ " inventory was updated");
 										pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
 						        			if(result.rows[0]) {
 						        				client.emit("inventory", result.rows[0]);

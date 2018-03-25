@@ -725,7 +725,7 @@ function onNewMessage(data) {
 	if(data[0] == "/") {
 		var data = data.split("/")[1]
 		var command = data.split(" ")[0]
-		var argument = data.split(" ")[1]
+		var argument = data.split(" ").splice(1);
 		switch(command) {
 			case "ban":
 				if(playerById(sender.id).role > 2) {

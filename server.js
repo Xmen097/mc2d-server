@@ -772,7 +772,7 @@ function onNewMessage(data) {
 				}
 				break;
 			case "unban":
-				if(playerById(sender.id).role > 2) {
+				if(playerById(sender.id) && playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 							if(err) {

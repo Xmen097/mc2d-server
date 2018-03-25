@@ -931,17 +931,17 @@ function onMoveItem(data) {
 				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
 				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
 					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-			} else if(data.start.y != 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
+			} else if(data.start.y < 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
 				item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
 				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
 				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
 					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
-			} else if(data.start.x != 4 && players[playerID].crafting[data.start.x].count-data.count >= 0) {
+			} else if(data.start.y == 5 && data.start.x != 4 && players[playerID].crafting[data.start.x].count-data.count >= 0) {
 				players[playerID].crafting[data.start.x].count-=data.count;
 				item = players[playerID].crafting[data.start.x].item;
 				if(players[playerID].crafting[data.start.x].count < 1)
 					players[playerID].crafting[data.start.x].item = undefined;
-			} else {
+			} else if(data.start.y == 5){
 				var craftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID);
 				var craftingLimit=0;
 				while(craftingLimit<1000 && craftedItem.count != data.count) {
@@ -953,18 +953,28 @@ function onMoveItem(data) {
 						break;
 				}
 				item = craftedItem.item;
+			} else if(data.start.y == 6) {
+				players[playerID].craftingTable[data.start.x].count-=data.count;
+					item = players[playerID].craftingTable[data.start.x].item;
+					if(players[playerID].craftingTable[data.start.x].count < 1)
+						players[playerID].craftingTable[data.start.x].item = undefined;
+			} else {
+				throw new Error;
 			}
 			util.log(data)
 			util.log(item);
 			if(data.end.y < 3) {
 				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
-			} else if(data.end.y != 5){
+			} else if(data.end.y < 5){
 				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
 				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
-			} else {
+			} else if(data.end.y == 5){
 				players[playerID].crafting[data.end.x].item=item;
 				players[playerID].crafting[data.end.x].count+=data.count;
+			} else if(data.end.y == 6) {
+				players[playerID].craftingTable[data.end.x].item=item;
+				players[playerID].craftingTable[data.end.x].count+=data.count;
 			}
 			util.log(players[playerID].crafting);
 		} catch(err) {
@@ -975,7 +985,7 @@ function onMoveItem(data) {
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
+				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"', craftingTable='"+JSON.stringify(players[playerID].craftingTable)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {

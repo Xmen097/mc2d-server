@@ -947,6 +947,13 @@ function onNewMessage(data) {
 				var count=1;
 				if(findPlayer && findPlayer.role > 2) {
 					if(targetPlayer) {
+						util.log(args)
+						if(args.length == 3) {
+							count = args[2];
+						} else if(args.length != 2) {
+							this.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
+							return;
+						}
 						if(items[parseInt(args[1])]) {
 							item = parseInt(args[1]);
 						} else {
@@ -959,11 +966,6 @@ function onNewMessage(data) {
 							if(!item) {
 								this.emit("new message", {name: "[SERVER]", message: "Unknown item"})
 							}
-						} if(args.length == 3) {
-							count = args[2];
-						} else if(args.length != 2) {
-							this.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
-							return;
 						}
 						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
 						pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {

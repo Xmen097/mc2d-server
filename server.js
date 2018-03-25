@@ -361,53 +361,53 @@ var items = [
 	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel", drop: [5, 1, "scissors", 4]},							
 	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel", drop: [5]},											
 	{name: "bedrock", durability: Infinity, drop: [undefined]},																		
-	{name: "iron ore", durability: 700, stack: 64, x:3, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 7]},													
-	{name: "coal ore", durability: 600, stack: 64, x:0, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 51]},		 										
-	{name: "diamond ore", durability: 1000, stack: 64, x:1, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 50]},  										
-	{name: "gold ore", durability: 800, stack: 64, x:2, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 10]},			 										
-	{name: "wooden planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500, drop: [11]},								
-	{name: "crafting table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000, drop: [12]},			
+	{name: "iron_ore", durability: 700, stack: 64, x:3, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 7]},													
+	{name: "coal_ore", durability: 600, stack: 64, x:0, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 51]},		 										
+	{name: "diamond_ore", durability: 1000, stack: 64, x:1, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 50]},  										
+	{name: "gold_ore", durability: 800, stack: 64, x:2, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 10]},			 										
+	{name: "wooden_planks", durability: 200, stack: 64, x:5, favType: "axe", smelting: 500, drop: [11]},								
+	{name: "crafting_table", durability: 200, stack: 64, x:8, favType: "axe", active:"crafting", smelting: 1000, drop: [12]},			
 	{name: "furnace", durability: 500, stack: 64, x:4, favType: "pickaxe", active:"furnace", drop: [undefined, 0, "pickaxe", 13]},								
-	{name: "Leather helmet", stack: 1, x:0, y:0, durability: 200, type: "helmet"},
-	{name: "Chain helmet", stack: 1, x:1, y:0, durability: 400, type: "helmet"},
-	{name: "Iron helmet", stack: 1, x:2, y:0, durability: 600, type: "helmet"},
-	{name: "Diamond helmet", stack: 1, x:3, y:0, durability: 800, type: "helmet"},
-	{name: "Golden helmet", stack: 1, x:4, y:0, durability: 1000, type: "helmet"},
-	{name: "Leather chestplate", stack: 1, x:0, y:1, durability: 200, type: "chestplate"},
-	{name: "Chain chestplate", stack: 1, x:1, y:1, durability: 400, type: "chestplate"},
-	{name: "Iron chestplate", stack: 1, x:2, y:1, durability: 600, type: "chestplate"},
-	{name: "Diamond chestplate", stack: 1, x:3, y:1, durability: 800, type: "chestplate"},
-	{name: "Golden chestplate", stack: 1, x:4, y:1, durability: 1000, type: "chestplate"},
-	{name: "Leather trousers", stack: 1, x:0, y:2, durability: 200, type: "trousers"},
-	{name: "Chain trousers", stack: 1, x:1, y:2, durability: 400, type: "trousers"},
-	{name: "Iron trousers", stack: 1, x:2, y:2, durability: 600, type: "trousers"},
-	{name: "Diamond trousers", stack: 1, x:3, y:2, durability: 800, type: "trousers"},
-	{name: "Golden trousers", stack: 1, x:4, y:2, durability: 1000, type: "trousers"},
-	{name: "Leather shoes", stack: 1, x:0, y:3, durability: 200, type: "shoes"},
-	{name: "Chain shoes", stack: 1, x:1, y:3, durability: 400, type: "shoes"},
-	{name: "Iron shoes", stack: 1, x:2, y:3, durability: 600, type: "shoes"},
-	{name: "Diamond shoes", stack: 1, x:3, y:3, durability: 800, type: "shoes"},
-	{name: "Golden shoes", stack: 1, x:4, y:3, durability: 1000, type: "shoes"},
+	{name: "Leather_helmet", stack: 1, x:0, y:0, durability: 200, type: "helmet"},
+	{name: "Chain_helmet", stack: 1, x:1, y:0, durability: 400, type: "helmet"},
+	{name: "Iron_helmet", stack: 1, x:2, y:0, durability: 600, type: "helmet"},
+	{name: "Diamond_helmet", stack: 1, x:3, y:0, durability: 800, type: "helmet"},
+	{name: "Golden _helmet", stack: 1, x:4, y:0, durability: 1000, type: "helmet"},
+	{name: "Leather_chestplate", stack: 1, x:0, y:1, durability: 200, type: "chestplate"},
+	{name: "Chain_chestplate", stack: 1, x:1, y:1, durability: 400, type: "chestplate"},
+	{name: "Iron_chestplate", stack: 1, x:2, y:1, durability: 600, type: "chestplate"},
+	{name: "Diamond_chestplate", stack: 1, x:3, y:1, durability: 800, type: "chestplate"},
+	{name: "Golden_chestplate", stack: 1, x:4, y:1, durability: 1000, type: "chestplate"},
+	{name: "Leather_trousers", stack: 1, x:0, y:2, durability: 200, type: "trousers"},
+	{name: "Chain_trousers", stack: 1, x:1, y:2, durability: 400, type: "trousers"},
+	{name: "Iron_trousers", stack: 1, x:2, y:2, durability: 600, type: "trousers"},
+	{name: "Diamond_trousers", stack: 1, x:3, y:2, durability: 800, type: "trousers"},
+	{name: "Golden_trousers", stack: 1, x:4, y:2, durability: 1000, type: "trousers"},
+	{name: "Leather_shoes", stack: 1, x:0, y:3, durability: 200, type: "shoes"},
+	{name: "Chain_shoes", stack: 1, x:1, y:3, durability: 400, type: "shoes"},
+	{name: "Iron_shoes", stack: 1, x:2, y:3, durability: 600, type: "shoes"},
+	{name: "Diamond_shoes", stack: 1, x:3, y:3, durability: 800, type: "shoes"},
+	{name: "Golden_shoes", stack: 1, x:4, y:3, durability: 1000, type: "shoes"},
 	{name: "Scissors", stack:1, x:13, y:5, durability: 200, type: "scissors", multiplier:2},
-	{name: "Wood pickaxe", stack:1, x:0, y:6, durability: 500, type: "pickaxe", multiplier:6},
-	{name: "Stone pickaxe", stack:1, x:1, y:6, durability: 500, type: "pickaxe", multiplier:8},
-	{name: "Iron pickaxe", stack:1, x:2, y:6, durability: 500, type: "pickaxe", multiplier:10},
-	{name: "Diamond pickaxe", stack:1, x:3, y:6, durability: 500, type: "pickaxe", multiplier:12},
-	{name: "Gold pickaxe", stack:1, x:4, y:6, durability: 500, type: "pickaxe", multiplier:12},
-	{name: "Wood axe", stack:1, x:0, y:7, durability: 500, type: "axe", multiplier:3},
-	{name: "Stone axe", stack:1, x:1, y:7, durability: 500, type: "axe", multiplier:4},
-	{name: "Iron axe", stack:1, x:2, y:7, durability: 500, type: "axe", multiplier:5},
-	{name: "Diamond axe", stack:1, x:3, y:7, durability: 500, type: "axe", multiplier:6},
-	{name: "Gold axe", stack:1, x:4, y:7, durability: 500, type: "axe", multiplier:6},
-	{name: "Wooden shovel", stack:1, x:0, y:5, durability: 50, type: "shovel", multiplier:2},
-	{name: "Stone shovel", stack:1, x:1, y:5, durability: 200, type: "shovel", multiplier:3},
-	{name: "Iron shovel", stack:1, x:2, y:5, durability: 500, type: "shovel", multiplier:4},
-	{name: "Diamond shovel", stack:1, x:3, y:5, durability: 1000, type: "shovel", multiplier:5},
-	{name: "Gold shovel", stack:1, x:4, y:5, durability: 100, type: "shovel", multiplier:5},
+	{name: "Wood_pickaxe", stack:1, x:0, y:6, durability: 500, type: "pickaxe", multiplier:6},
+	{name: "Stone_pickaxe", stack:1, x:1, y:6, durability: 500, type: "pickaxe", multiplier:8},
+	{name: "Iron_pickaxe", stack:1, x:2, y:6, durability: 500, type: "pickaxe", multiplier:10},
+	{name: "Diamond_pickaxe", stack:1, x:3, y:6, durability: 500, type: "pickaxe", multiplier:12},
+	{name: "Gold_pickaxe", stack:1, x:4, y:6, durability: 500, type: "pickaxe", multiplier:12},
+	{name: "Wood_axe", stack:1, x:0, y:7, durability: 500, type: "axe", multiplier:3},
+	{name: "Stone_axe", stack:1, x:1, y:7, durability: 500, type: "axe", multiplier:4},
+	{name: "Iron_axe", stack:1, x:2, y:7, durability: 500, type: "axe", multiplier:5},
+	{name: "Diamond_axe", stack:1, x:3, y:7, durability: 500, type: "axe", multiplier:6},
+	{name: "Gold_axe", stack:1, x:4, y:7, durability: 500, type: "axe", multiplier:6},
+	{name: "Wooden_shovel", stack:1, x:0, y:5, durability: 50, type: "shovel", multiplier:2},
+	{name: "Stone_shovel", stack:1, x:1, y:5, durability: 200, type: "shovel", multiplier:3},
+	{name: "Iron_shovel", stack:1, x:2, y:5, durability: 500, type: "shovel", multiplier:4},
+	{name: "Diamond_shovel", stack:1, x:3, y:5, durability: 1000, type: "shovel", multiplier:5},
+	{name: "Gold_shovel", stack:1, x:4, y:5, durability: 100, type: "shovel", multiplier:5},
 	{name: "Diamond", stack: 64, x:7, y:3, type: "item"},
 	{name: "Coal", stack: 64, x:7, y:0, type: "item", smelting: 4000},
-	{name: "Iron ingot", stack: 64, x:7, y:1, type: "item"},
-	{name: "Gold ingot", stack: 64, x:7, y:2, type: "item"},
+	{name: "Iron_ingot", stack: 64, x:7, y:1, type: "item"},
+	{name: "Gold_ingot", stack: 64, x:7, y:2, type: "item"},
 	{name: "Stick", stack: 64, x:5, y:3, type: "item", smelting: 50},
 ]
 
@@ -934,6 +934,56 @@ function onNewMessage(data) {
 						}, 10000);
 					}else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})
+					}
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "give":
+				var findPlayer = playerById(sender.id);
+				var args = argument.split(" ");
+				var targetPlayer = playerByName(args[0]);
+				var item;
+				var count=1;
+				if(findPlayer && findPlayer.role > 2) {
+					if(targetPlayer) {
+						if(items[parseInt(args[1])]) {
+							item = parseInt(args[1]);
+						} else {
+							for(var a of items) {
+								if(a.name ==args[1]) {
+									item = items.indexOf(a);
+									break;
+								}
+							}
+							if(!item) {
+								this.emit("new message", {name: "[SERVER]", message: "Unknown item"})
+							}
+						} if(args.length == 3) {
+							count = args[2];
+						} else if(args.length != 2) {
+							this.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
+							return;
+						}
+						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
+						pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
+							if(err) {
+								util.log("Failed saving player inventory "+err);
+								util.log(validateString(playerById(id).name));
+							} else {
+								util.log("Players "+id+ " inventory was updated");
+								pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
+				        			if(result.rows[0]) {
+				        				client.emit("inventory", result.rows[0]);
+										util.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
+										targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+item});
+									}
+								})
+							}
+						})
+
+					} else {
+						this.emit("new message", {name: "[SERVER]", message: "Can't find target player"})
 					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

@@ -845,13 +845,13 @@ function onNewMessage(data) {
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
-									pgClient.query("UPDATE "+validateString(argument)+" SET id="+parseInt(result.rows[0].role-1)+" WHERE y=5", function(err) {
+									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role-1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
 										} else {
-											players[players.indexOf(playerByName(argument))].role--;
+											players[players.indexOf(playerByName(argument))].role++;
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully demoted "+argument})
-												sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was demoted by "+playerById(sender.id).name})
+											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was demoted by "+playerById(sender.id).name})
 										}
 									})
 								} else if(result) {

@@ -1089,7 +1089,7 @@ function onMapEdit(data) {
 			item = 0;
 		}
 	} else {
-		util.log(playerById(this.id).inventory.hotbar[parseInt(data.active)]);
+		util.log(parseInt(data.block) == -1);
 		return;
 	}
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);

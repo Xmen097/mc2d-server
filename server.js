@@ -1089,7 +1089,6 @@ function onMapEdit(data) {
 			item = 0;
 		}
 	} else {
-		util.log(parseInt(data.block) == -1 && typeof map[parseInt(data.x)][parseInt(data.y)] != "undefined" && items[map[parseInt(data.x)][parseInt(data.y)]] && playerById(this.id).inventory.hotbar[parseInt(data.active)]);
 		return;
 	}
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);

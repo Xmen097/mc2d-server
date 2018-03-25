@@ -910,7 +910,7 @@ function onNewMessage(data) {
 							}
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-									pgClient.query("TRUNCATE users")
+									pgClient.query("DELETE FROM users WHERE name!='"+validateString(findPlayer.name)+"'");
 								done();
 								})
 							init()
@@ -926,7 +926,7 @@ function onNewMessage(data) {
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 									pgClient.query("TRUNCATE map");
-									pgClient.query("TRUNCATE users");
+									pgClient.query("DELETE FROM users WHERE name!='"+validateString(findPlayer.name)+"'");
 								done();
 								})
 							init()

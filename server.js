@@ -676,7 +676,6 @@ function onNewPlayer(data) {
         			} else {
         				var role=1
         				pgClient.query("SELECT * FROM users", function(err,result) {
-        					util.log(result.rowCount)
         					if(result.rowCount == 0)
         						role = 4;
 	        				util.log(role)
@@ -736,8 +735,8 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
-								if(result){
-									if(result && result.rows[0].role < playerById(sender.id).role) {
+								if(result.rowCount){
+									if(result.rowCount && result.rows[0].role < playerById(sender.id).role) {
 										pgClient.query("UPDATE users SET role=0 WHERE name='"+validateString(argument)+"'", function(err) {
 											if(err) {
 												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -781,7 +780,7 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
-								if(result && result.rows[0].role == 0){
+								if(result.rowCount && result.rows[0].role == 0){
 									pgClient.query("UPDATE users SET role=1 WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -789,7 +788,7 @@ function onNewMessage(data) {
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
 										}
 									})
-								} else if(result) {
+								} else if(result.rowCount) {
 									sender.emit("new message", {name: "[SERVER]", message: "This player is not banned"})
 								}else {
 									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
@@ -811,7 +810,7 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
-								if(result && result.rows[0].role+1 < playerById(sender.id).role){
+								if(result.rowCount && result.rows[0].role+1 < playerById(sender.id).role){
 									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role+1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -821,7 +820,7 @@ function onNewMessage(data) {
 											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was promoted by "+playerById(sender.id).name})
 										}
 									})
-								} else if(result) {
+								} else if(result.rowCount) {
 									sender.emit("new message", {name: "[SERVER]", message: "You can't promote this player"})
 									return;
 								} else {
@@ -844,7 +843,7 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
-								if(result && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
+								if(result.rowCount && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
 									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role-1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
 											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
@@ -854,7 +853,7 @@ function onNewMessage(data) {
 											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was demoted by "+playerById(sender.id).name})
 										}
 									})
-								} else if(result) {
+								} else if(result.rowCount) {
 									sender.emit("new message", {name: "[SERVER]", message: "You can't demote this player"})
 									return;
 								} else {

@@ -286,6 +286,11 @@ var craftingTablePreset =[
 		new invSpace(),new invSpace(),new invSpace(),
 		new invSpace(),new invSpace(),new invSpace(),
 		new invSpace(),new invSpace(),new invSpace(), new invSpace()]
+var furnacePreset=[
+		new invSpace(),
+		new invSpace(), 
+		new invSpace()
+		]
 
 var smallRecipes=[[2, 11, 4],
 				 [11, 11, 11, 11, 12, 1],
@@ -1153,7 +1158,7 @@ function onMoveItem(data) {
 									result.rows[0].content = JSON.parse(result.rows[0].content)
 									result.rows[0].content[parseInt(data.end.z)].item = item;
 									result.rows[0].content[parseInt(data.end.z)].count += item;
-									pgClient.query("UPDATE storage SET content='"+result.rows[0].content+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+									pgClient.query("UPDATE storage SET content='"+JSON.stringify(result.rows[0].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 										if(err) {
 											util.log("Failed saving storage block");
 										} else {
@@ -1224,6 +1229,17 @@ function onMapEdit(data) {
 						util.log("Players "+id+ " inventory was updated");
 					}
 				})
+				if(items.indexOf(parseInt(data.block)) == 13) { // Is furnace
+					pgClient.query("SELECT * FROM storage", function(err, result) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(JSON.parse(result.rows[0].content).push(furnacePreset))+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+							if(err) {
+								util.log("Failed creating storage block");
+							} else {
+								util.log("Storage block creation sucess");
+							}
+						})
+					})
+				}
 			done();
 			})	
 		}

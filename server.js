@@ -1270,6 +1270,8 @@ function onShowBlockContent(data) {
 							this.emit("storage block", result.rows[0].content);
 						}
 					})	
+				} else {
+					util.log("Player  "+player.name+" tryed to acces storage block, but not in range")
 				}
 			done();
 			})	

@@ -1165,6 +1165,8 @@ function onMoveItem(data) {
 											util.log("Storage block saving sucess");
 										}
 									})
+								} else if(err) {
+									util.log(err)
 								}
 							})
 						})
@@ -1273,7 +1275,7 @@ function onShowBlockContent(data) {
 				} else {
 					util.log(player);
 					util.log(data);
-					util.log("Player  "+player.name+" tried to acces storage block, but not in range")
+					util.log("Player "+player.name+" tried to acces storage block, but not in range")
 				}
 			done();
 			})	

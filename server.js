@@ -1261,7 +1261,7 @@ function onShowBlockContent(data) {
 		var player = playerById(this.id);
 		if(process.env.DATABASE_URL)
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-				if(data.x*50 <= player.x+7 && data.x*50 >= player.x-7 && data.y*50 <= player.y+7 && data.y*50 >= player.y-7) {
+				if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
 					pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err, result) {
 						if(err) {
 							util.log("Failed to get storage block data: "+err)

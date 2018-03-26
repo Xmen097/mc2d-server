@@ -709,6 +709,7 @@ function onNewPlayer(data) {
 					    client.on("new message", onNewMessage);
 					    client.on("block breaking", onBlockBreaking);
 					    client.on("move item", onMoveItem);
+					    client.on("storage block", onShowBlockContent);
 						util.log("Player "+validateString(data.name)+" authorized successfully")
 						client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 						client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
@@ -1111,8 +1112,26 @@ function onMoveItem(data) {
 							break;
 					}
 					item = craftedItem.item;
-				}else {
-					throw new Error;
+				} else if(data.start.y >= 10) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+							pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err, result) {
+								if(result.rows[0]) {
+									result.rows[0].content = JSON.parse(result.rows[0].content)
+									result.rows[0].content-=data.count;
+									item = result.rows[0].content.item;
+									if(result.rows[0].content.count < 1)
+										result.rows[0].content.item = undefined;
+									pgClient.query("UPDATE storage SET content='"+result.rows[0].content+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
+										if(err) {
+											util.log("Failed saving storage block");
+										} else {
+											util.log("Storage block saving sucess");
+										}
+									})
+								}
+							})
+						})
 				}
 				if(data.end.y < 3) {
 					players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
@@ -1126,6 +1145,24 @@ function onMoveItem(data) {
 				} else if(data.end.y == 6) {
 					players[playerID].craftingTable[data.end.x].item=item;
 					players[playerID].craftingTable[data.end.x].count+=data.count;
+				} else if(data.end.y >= 10) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+							pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err, result) {
+								if(result.rows[0]) {
+									result.rows[0].content = JSON.parse(result.rows[0].content)
+									result.rows[0].content[parseInt(data.end.z)].item = item;
+									result.rows[0].content[parseInt(data.end.z)].count += item;
+									pgClient.query("UPDATE storage SET content='"+result.rows[0].content+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+										if(err) {
+											util.log("Failed saving storage block");
+										} else {
+											util.log("Storage block saving sucess");
+										}
+									})
+								}
+							})
+						})
 				}
 			} catch(err) {
 				util.log("move item error: "+err);
@@ -1200,6 +1237,28 @@ function onBlockBreaking(data) {
 		this.broadcast.emit("block breaking", {x: parseInt(data.x), y: parseInt(data.y), progress: parseInt(data.progress), id: this.id})
 	} catch (err) {
 		util.log(err)
+	}
+}
+
+function onShowBlockContent(data) {
+	try {				
+		var player = playerById(this.id);
+		if(process.env.DATABASE_URL)
+			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+				if(data.x*50 <= player.x+7 && data.x*50 >= player.x-7 && data.y*50 <= player.y+7 && data.y*50 >= player.y-7) {
+					pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err, result) {
+						if(err) {
+							util.log("Failed to get storage block data: "+err)
+						} else {
+							util.log("Player  "+player.name+" accesed storage block")
+							this.emit("storage block", result.rows[0].content);
+						}
+					})	
+				}
+			done();
+			})	
+	} catch(err) {
+		util.log(err);
 	}
 }
 

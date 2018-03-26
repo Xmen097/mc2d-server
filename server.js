@@ -1271,7 +1271,9 @@ function onShowBlockContent(data) {
 						}
 					})	
 				} else {
-					util.log("Player  "+player.name+" tryed to acces storage block, but not in range")
+					util.log(player);
+					util.log(data);
+					util.log("Player  "+player.name+" tried to acces storage block, but not in range")
 				}
 			done();
 			})	

@@ -1231,7 +1231,7 @@ function onMapEdit(data) {
 				})
 				if(parseInt(data.block) == 13) { // Is furnace
 					pgClient.query("SELECT * FROM storage", function(err, result) {
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(JSON.parse(result.rows[0].content).push(furnacePreset))+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+						pgClient.query("INSERT INTO storage(x, y, content) VALUES ('"+parseInt(data.y)+"',"+parseInt(data.x)+"', '"+JSON.stringify(JSON.parse(result.rows[0].content).push(furnacePreset))+"')", function(err) {
 							if(err) {
 								util.log("Failed creating storage block");
 							} else {

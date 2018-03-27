@@ -1158,7 +1158,7 @@ function onMoveItem(data) {
 								if(result.rows[0]) {
 									result.rows[0].content = JSON.parse(result.rows[0].content)
 									result.rows[0].content[parseInt(data.end.z)].item = item;
-									result.rows[0].content[parseInt(data.end.z)].count += count;
+									result.rows[0].content[parseInt(data.end.z)].count += data.count;
 									pgClient.query("UPDATE storage SET content='"+JSON.stringify(result.rows[0].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 										if(err) {
 											util.log("Failed saving storage block");

@@ -1268,8 +1268,8 @@ function onShowBlockContent(data) {
 					pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err, result) {
 						if(err) {
 							util.log("Failed to get storage block data: "+err)
-						} else {
-							util.log("Player  "+player.name+" accesed storage block")
+						} else if(result.rows[0]) {
+							util.log("Player "+player.name+" accesed storage block")
 							player.client.emit("storage block", result.rows[0].content);
 						}
 					})	

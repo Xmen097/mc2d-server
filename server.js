@@ -1270,7 +1270,7 @@ function onShowBlockContent(data) {
 							util.log("Failed to get storage block data: "+err)
 						} else {
 							util.log("Player  "+player.name+" accesed storage block")
-							this.emit("storage block", result.rows[0].content);
+							player.client.emit("storage block", result.rows[0].content);
 						}
 					})	
 				} else {

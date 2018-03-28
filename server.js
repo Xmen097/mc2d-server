@@ -982,9 +982,8 @@ function onNewMessage(data) {
 									return;
 								}
 							}
-							util.log(count + "  " + args);
+							util.log(count + "  " + item);
 							giveItemToBestInventoryPosition(item, count, targetPlayer.id);
-							util.log()
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 									pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {

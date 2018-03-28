@@ -100,32 +100,33 @@ function init() {
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
-	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {
-		if(playerById(id).inventory.hotbar[a].item == item) {
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].count += count;
+	var index = players.indexOf(playerById(id))
+	for(var a=0;a < players[index].inventory.hotbar.length; a++) {
+		if(players[index].inventory.hotbar[a].item == item) {
+			players[index].inventory.hotbar[a].count += count;
 			return;
 		}
 	}
-	for (var m=0;m < playerById(id).inventory.inventory.length; m++) {
+	for (var m=0;m < players[index].inventory.inventory.length; m++) {
 		for(var a=0; a< m.count;a++) {
-			if(playerById(id).inventory.inventory[m][a].item == item) {
-				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count += count;	
+			if(players[index].inventory.inventory[m][a].item == item) {
+				players[index].inventory.inventory[m][a].count += count;	
 				return;	
 			}
 		}				
 	}
-	for(var a=0;a < playerById(id).inventory.hotbar.length; a++) {
-		if(playerById(id).inventory.hotbar[a].item == undefined) {
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].count = count;
-			players[players.indexOf(playerById(id))].inventory.hotbar[a].item = item;
+	for(var a=0;a < players[index].inventory.hotbar.length; a++) {
+		if(players[index].inventory.hotbar[a].item == undefined) {
+			players[index].inventory.hotbar[a].count = count;
+			players[index].inventory.hotbar[a].item = item;
 			return;
 		}
 	}
-	for (var m=0;m < playerById(id).inventory.inventory.length; m++) {
+	for (var m=0;m < players[index].inventory.inventory.length; m++) {
 		for(var a=0; a< m.count;a++) {
-			if(playerById(id).inventory.inventory[m][a].item == undefined) {
-				players[players.indexOf(playerById(id))].inventory.inventory[m][a].count = count;
-				players[players.indexOf(playerById(id))].inventory.inventory[m][a].item = item;	
+			if(players[index].inventory.inventory[m][a].item == undefined) {
+				players[index].inventory.inventory[m][a].count = count;
+				players[index].inventory.inventory[m][a].item = item;	
 				return;	
 			}
 		}				

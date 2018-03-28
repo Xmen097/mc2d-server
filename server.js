@@ -996,7 +996,8 @@ function onNewMessage(data) {
 							        			if(result.rows[0]) {
 							        				targetPlayer.client.emit("inventory", result.rows[0]);
 													util.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
-													targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+items[item].name});
+													if(targetPlayer != findPlayer)
+														targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+items[item].name});
 													findPlayer.client.emit("new message", {name: "[SERVER]", message: "Successfully gived "+count+"x item "+items[item].name+" to player "+args[0]});
 												}
 											})

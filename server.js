@@ -131,6 +131,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			}
 		}				
 	}
+	util.log("Player's inventory full");
 }
 
 function invSpace(item, count) {

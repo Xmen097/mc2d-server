@@ -982,8 +982,9 @@ function onNewMessage(data) {
 									return;
 								}
 							}
-
+							util.log(count + "  " + args);
 							giveItemToBestInventoryPosition(item, count, targetPlayer.id);
+							util.log()
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 									pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
@@ -1069,7 +1070,6 @@ function onMovePlayer(data) {
 
 function onMoveItem(data) {
 	try {
-		util.log(data);
 		if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 			var item;
 			var playerID = players.indexOf(playerById(this.id));
@@ -1124,10 +1124,10 @@ function onMoveItem(data) {
 							pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err, result) {
 								if(result.rows[0]) {
 									result.rows[0].content = JSON.parse(result.rows[0].content)
-									result.rows[0].content[parseInt(data.end.z)].count-=data.count;
-									item = result.rows[0].content[parseInt(data.end.z)].item;
-									if(result.rows[0].content[parseInt(data.end.z)].count < 1)
-										result.rows[0].content[parseInt(data.end.z)].item = undefined;
+									result.rows[0].content[parseInt(data.start.z)].count-=data.count;
+									item = result.rows[0].content[parseInt(data.start.z)].item;
+									if(result.rows[0].content[parseInt(data.start.z)].count < 1)
+										result.rows[0].content[parseInt(data.start.z)].item = undefined;
 									pgClient.query("UPDATE storage SET content='"+JSON.stringify(result.rows[0].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
 										if(err) {
 											util.log("Failed saving storage block");
@@ -1286,4 +1286,3 @@ function onShowBlockContent(data) {
 }
 
 init();
-

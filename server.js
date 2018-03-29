@@ -1119,7 +1119,7 @@ function onMoveItem(data) {
 				})
 		}
 
-		
+
 		if(data.end.y < 3) {
 			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
 			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
@@ -1176,10 +1176,8 @@ function onMapEdit(data) {
 		giveItemToBestInventoryPosition(dropped.item, dropped.count, this.id);
 	} else if(playerById(this.id).inventory.hotbar[parseInt(data.active)] && playerById(this.id).inventory.hotbar[parseInt(data.active)].item == parseInt(data.block) && playerById(this.id).inventory.hotbar[parseInt(data.active)].count > 0) {
 		players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].count--;
-		var item = playerById(this.id).inventory.hotbar[parseInt(data.active)].item;
 		if(playerById(this.id).inventory.hotbar[parseInt(data.active)].count == 0) {
 			players[players.indexOf(playerById(this.id))].inventory.hotbar[parseInt(data.active)].item = undefined;	
-			item = 0;
 		}
 	} else {
 		return;

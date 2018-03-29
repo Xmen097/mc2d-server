@@ -2,7 +2,8 @@ var util = require("util"),
 	io = require("socket.io"),
 	pg = require('pg'), 
 	request = require("request"),
-	sha256 = require("sha256");
+	sha256 = require("sha256"),
+	levenshtein = require('fast-levenshtein');
 
 var socket, players;
 
@@ -949,6 +950,8 @@ function onNewMessage(data) {
 				var targetPlayer = playerByName(args[0]);
 				var item=-1;
 				var count=1;
+				var smallestDistance=Infinity;
+				var possibleItem=-1;
 				if(findPlayer && findPlayer.role > 2) {
 					if(targetPlayer) {
 						if(args.length == 3) {
@@ -964,10 +967,19 @@ function onNewMessage(data) {
 								if(a.name.toLowerCase() == args[1].toLowerCase()) {
 									item = items.indexOf(a);
 									break;
+								} else {
+									var itemParts = a.name.split('_');
+									for(var b of itemParts) {
+										var distance = levenshtein.get(args[1].toLowerCase(), itemParts.toLowerCase());
+										if(distance < smallestDistance) {
+											smallestDistance = distance;
+											possibleItem = a.name;
+										}
+									}
 								}
 							}
 							if(item==-1) {
-								this.emit("new message", {name: "[SERVER]", message: "Unknown item"})
+								this.emit("new message", {name: "[SERVER]", message: "Unknown item, did you mean: "+possibleItem})
 								return;
 							}
 						}

@@ -13,6 +13,7 @@
     "socket.io": "0.8.7",
     "pg": "6.0.1",
     "request": "2.81.0",
-    "sha256": "0.2.0"
+    "sha256": "0.2.0",
+    "fast-levenshtein"
   }
 }

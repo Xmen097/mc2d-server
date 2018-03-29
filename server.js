@@ -969,6 +969,8 @@ function onNewMessage(data) {
 									break;
 								} else {
 									var itemParts = a.name.split('_');
+									if(itemParts.length>1)
+										itemParts.push(a.name);
 									for(var b of itemParts) {
 										var distance = levenshtein.get(args[1].toLowerCase(), b.toLowerCase()) + (itemParts.length-1);
 										if(distance < smallestDistance) {

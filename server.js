@@ -970,7 +970,7 @@ function onNewMessage(data) {
 								} else {
 									var itemParts = a.name.split('_');
 									for(var b of itemParts) {
-										var distance = levenshtein.get(args[1].toLowerCase(), itemParts.toLowerCase());
+										var distance = levenshtein.get(args[1].toLowerCase(), b.toLowerCase());
 										if(distance < smallestDistance) {
 											smallestDistance = distance;
 											possibleItem = a.name;

@@ -101,7 +101,7 @@ function init() {
 					util.log("Failed loading furnaces "+err);
 				} else {
 					for(var a of result.rows) {
-						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})//ss
+						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 					}
 					util.log(furnaces);
 				}
@@ -1170,7 +1170,7 @@ function onMoveItem(data) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
-					util.log(furnaces[furnace].content);
+					util.log(furnaces + "  " + furnace);
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;

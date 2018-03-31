@@ -1169,6 +1169,7 @@ function onMoveItem(data) {
 		} else if(data.end.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+					util.log(data);
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;

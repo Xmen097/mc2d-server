@@ -96,7 +96,7 @@ function init() {
 	},60000);
 	if(process.env.DATABASE_URL)
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-			pgClient.query("SELECT * FROM storage", function(err) {
+			pgClient.query("SELECT * FROM storage", function(err, result) {
 				if(err) {
 					util.log("Failed loading furnaces "+err);
 				} else {

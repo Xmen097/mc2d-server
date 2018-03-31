@@ -103,6 +103,7 @@ function init() {
 					for(var a of result.rows) {
 						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 					}
+					util.log(furnaces);
 				}
 			})
 			done();
@@ -1262,7 +1263,7 @@ function onShowBlockContent(data) {
 				util.log(data);
 				player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)]);
 			} else {
-				util.log("Player "+player.name+" tried to acces storage block, but not in range")
+				util.log("Player "+player.name+" tried to access storage block, but not in range")
 			}
 		done();
 		})	

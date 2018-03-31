@@ -1169,7 +1169,7 @@ function onMoveItem(data) {
 		} else if(data.end.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					var furnace = furnaceByPosition(data.start.x, data.start.y-10)
+					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;

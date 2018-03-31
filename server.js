@@ -1258,7 +1258,9 @@ function onShowBlockContent(data) {
 	if(process.env.DATABASE_URL)
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 			if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
-				player.client.emit("storage block", furnaces[furnaceByPosition(data.x/50, data.y/50)]);
+				util.log(furnaces[furnaceByPosition(data.x, data.y)]);
+				util.log(data);
+				player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)]);
 			} else {
 				util.log("Player "+player.name+" tried to acces storage block, but not in range")
 			}

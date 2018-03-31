@@ -689,8 +689,6 @@ function onNewPlayer(data) {
 		if(err) {
 			util.log("Login server offline")
 		}
-		if(httpResponse) 
-			util.log(httpResponse);
 		if(body == "true" && !playerByName(validateString(data.name))) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        	 		if(err){

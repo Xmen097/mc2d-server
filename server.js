@@ -1242,7 +1242,7 @@ function onMapEdit(data) {
 					if(err) {
 						util.log("Failed creating storage block "+err);
 					} else {
-						furnaces.push({content: JSON.parse(furnacePreset), x:parseInt(data.x), y:parseInt(data.y), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						furnaces.push({content: furnacePreset, x:parseInt(data.x), y:parseInt(data.y), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 						util.log("Storage block creation sucess");
 					}
 				})

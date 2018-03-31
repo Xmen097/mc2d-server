@@ -1213,6 +1213,9 @@ function onMapEdit(data) {
 	} else {
 		return;
 	}
+	var goToFurnace=false;
+	if(map[parseInt(data.x)][parseInt(data.y)] == 13)
+		goToFurnace=true;
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);
 	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
@@ -1235,14 +1238,22 @@ function onMapEdit(data) {
 				}
 			})
 			if(parseInt(data.block) == 13) { // Is furnace
-				pgClient.query("SELECT * FROM storage", function(err, result) {
-					pgClient.query("INSERT INTO storage(x, y, content) VALUES ("+parseInt(data.y)+", "+parseInt(data.x)+", '"+JSON.stringify(furnacePreset)+"')", function(err) {
-						if(err) {
-							util.log("Failed creating storage block "+err);
-						} else {
-							util.log("Storage block creation sucess");
-						}
-					})
+				pgClient.query("INSERT INTO storage(x, y, content) VALUES ("+parseInt(data.y)+", "+parseInt(data.x)+", '"+JSON.stringify(furnacePreset)+"')", function(err) {
+					if(err) {
+						util.log("Failed creating storage block "+err);
+					} else {
+						furnaces.push({content: JSON.parse(furnacePreset), x:parseInt(data.x), y:parseInt(data.y), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						util.log("Storage block creation sucess");
+					}
+				})
+			} else if(goToFurnace) {
+				pgClient.query("DELETE FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err) {
+					if(err) {
+						util.log("Failed deleting storage block "+err);
+					} else {
+						furnaces = furnaces.splice(furnaceByPosition(data.x, data.y), 1);
+						util.log("Storage block deleting sucess");
+					}
 				})
 			}
 		done();

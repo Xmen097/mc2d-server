@@ -101,7 +101,7 @@ function init() {
 					util.log("Failed loading furnaces "+err);
 				} else {
 					for(var a of result.rows) {
-						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})//dd
+						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})//ss
 					}
 					util.log(furnaces);
 				}

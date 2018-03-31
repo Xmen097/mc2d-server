@@ -1142,7 +1142,7 @@ function onMoveItem(data) {
 						item = furnaces[furnace].content[parseInt(data.start.z)].item;
 						if(furnaces[furnace].content[parseInt(data.start.z)].count < 1)
 							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace])+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
 							if(err) {
 								util.log("Failed saving storage block");
 							} else {

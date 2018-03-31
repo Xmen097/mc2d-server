@@ -1171,7 +1171,6 @@ function onMoveItem(data) {
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 					var furnace = furnaceByPosition(data.start.x, data.start.y-10)
 					if(furnace != -1) {
-						furnaces[furnace].content = JSON.parse(result.rows[0].content)
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {

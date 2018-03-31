@@ -94,6 +94,20 @@ function init() {
 				players[a].messagesPerMinute=0;
 		}
 	},60000);
+	if(process.env.DATABASE_URL)
+		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+			pgClient.query("SELECT * FROM storage", function(err) {
+				if(err) {
+					util.log("Failed loading furnaces "+err);
+				} else {
+					for(var a of result.rows) {
+						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+					}
+				}
+			})
+			done();
+		})
+	furnaceSmeltCheck = setInterval(furnaceSmelting, 100);
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
@@ -362,6 +376,8 @@ var bigRecipes=[[1,1,1,
 				 undefined,54,undefined,
 				 44, 1]]
 
+var furnaces = [];
+
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
 	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},											
@@ -447,7 +463,7 @@ function mapGeneratorConstructor() {
 		}
 		var actionsHistory=[];
 		var adjustedTerain=0;
-		while(true){
+		while(adjustedTerain!=this.mapLength-1){
 			var areaLength=randomRange(5,10);
 			action = customChance(1,2,1);
 
@@ -478,8 +494,6 @@ function mapGeneratorConstructor() {
 				}
 			}
 			adjustedTerain+=areaLength
-			if(adjustedTerain==this.mapLength-1)
-				break;
 		}
 		map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 		for(var a=0; a<map.length;a++) {
@@ -632,6 +646,13 @@ function playerByName(name) {
     for (var i = 0; i < players.length; i++) {
         if (players[i].name == name)
             return players[i];
+    };
+}
+
+function furnaceByPosition(x, y) {
+    for (var i = 0; i < furnaces.length; i++) {
+        if (furnaces[i].x == x && furnaces[i].y == y)
+            return i;
     };
 }
 
@@ -1020,7 +1041,7 @@ function onNewMessage(data) {
 				break;
 		}
 	} else {
-		if(playerById(sender.id).messagesPerMinute < 20) {
+		if(playerById(sender.id).messagesPerMinute < 50) {
 			var role="";
 			switch(playerById(sender.id).role) {
 				case 2:
@@ -1039,10 +1060,10 @@ function onNewMessage(data) {
 			}
 			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: validateString(data)})
 			this.emit("new message", {name: "You", message: validateString(data)})
-		} else if(playerById(sender.id).messagesPerMinute < 25) {
+		} else if(playerById(sender.id).messagesPerMinute < 60) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
-		}else if(playerById(sender.id).messagesPerMinute == 25){
+		}else if(playerById(sender.id).messagesPerMinute == 60){
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
 			this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(sender.id).name+" was muted"})
@@ -1114,22 +1135,20 @@ function onMoveItem(data) {
 		} else if(data.start.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err, result) {
-						if(result.rows[0]) {
-							result.rows[0].content = JSON.parse(result.rows[0].content)
-							result.rows[0].content[parseInt(data.start.z)].count-=data.count;
-							item = result.rows[0].content[parseInt(data.start.z)].item;
-							if(result.rows[0].content[parseInt(data.start.z)].count < 1)
-								result.rows[0].content[parseInt(data.start.z)].item = undefined;
-							pgClient.query("UPDATE storage SET content='"+JSON.stringify(result.rows[0].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
-								if(err) {
-									util.log("Failed saving storage block");
-								} else {
-									util.log("Storage block saving sucess");
-								}
-							})
-						}
-					})
+					var furnace = furnaceByPosition(data.start.x, data.start.y-10)
+					if(furnace != -1) {
+						furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
+						item = furnaces[furnace].content[parseInt(data.start.z)].item;
+						if(furnaces[furnace].content[parseInt(data.start.z)].count < 1)
+							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace])+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
+							if(err) {
+								util.log("Failed saving storage block");
+							} else {
+								util.log("Storage block saving sucess");
+							}
+						})
+					}
 				})
 		}
 
@@ -1149,22 +1168,19 @@ function onMoveItem(data) {
 		} else if(data.end.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err, result) {
-						if(result.rows[0]) {
-							result.rows[0].content = JSON.parse(result.rows[0].content)
-							result.rows[0].content[parseInt(data.end.z)].item = item;
-							result.rows[0].content[parseInt(data.end.z)].count += data.count;
-							pgClient.query("UPDATE storage SET content='"+JSON.stringify(result.rows[0].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
-								if(err) {
-									util.log("Failed saving storage block");
-								} else {
-									util.log("Storage block saving sucess");
-								}
-							})
-						} else if(err) {
-							util.log(err)
-						}
-					})
+					var furnace = furnaceByPosition(data.start.x, data.start.y-10)
+					if(furnace != -1) {
+						furnaces[furnace].content = JSON.parse(result.rows[0].content)
+						furnaces[furnace].content[parseInt(data.end.z)].item = item;
+						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+							if(err) {
+								util.log("Failed saving storage block");
+							} else {
+								util.log("Storage block saving sucess");
+							}
+						})
+					}
 				})
 		}
 		
@@ -1242,14 +1258,7 @@ function onShowBlockContent(data) {
 	if(process.env.DATABASE_URL)
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 			if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
-				pgClient.query("SELECT * FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err, result) {
-					if(err) {
-						util.log("Failed to get storage block data: "+err)
-					} else if(result.rows[0]) {
-						util.log("Player "+player.name+" accesed storage block")
-						player.client.emit("storage block", result.rows[0].content);
-					}
-				})	
+				player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)]);
 			} else {
 				util.log(player);
 				util.log(data);
@@ -1257,6 +1266,10 @@ function onShowBlockContent(data) {
 			}
 		done();
 		})	
+}
+
+function furnaceSmelting() {
+		
 }
 
 init();

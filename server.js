@@ -1170,7 +1170,7 @@ function onMoveItem(data) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
-					if(furnace != -1) {
+					if(furnace) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
@@ -1242,6 +1242,7 @@ function onMapEdit(data) {
 						util.log("Failed creating storage block "+err);
 					} else {
 						furnaces.push({content: furnacePreset, x:parseInt(data.x), y:parseInt(data.y), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						util.log(furnaces);
 						util.log("Storage block creation sucess");
 					}
 				})
@@ -1261,7 +1262,7 @@ function onMapEdit(data) {
 }
 
 function onBlockBreaking(data) {
-		this.broadcast.emit("block breaking", {x: parseInt(data.x), y: parseInt(data.y), progress: parseInt(data.progress), id: this.id})
+	this.broadcast.emit("block breaking", {x: parseInt(data.x), y: parseInt(data.y), progress: parseInt(data.progress), id: this.id})
 }
 
 function onShowBlockContent(data) {

@@ -120,7 +120,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		}
 	}
 	for (var m=0;m < players[index].inventory.inventory.length; m++) {
-		for(var a=0; a< m.count;a++) {
+		for(var a=0; a< m.length;a++) {
 			if(players[index].inventory.inventory[m][a].item == item) {
 				players[index].inventory.inventory[m][a].count += count;	
 				return;	
@@ -135,7 +135,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 		}
 	}
 	for (var m=0;m < players[index].inventory.inventory.length; m++) {
-		for(var a=0; a< m.count;a++) {
+		for(var a=0; a< m.length;a++) {
 			if(players[index].inventory.inventory[m][a].item == undefined) {
 				players[index].inventory.inventory[m][a].count = count;
 				players[index].inventory.inventory[m][a].item = item;	

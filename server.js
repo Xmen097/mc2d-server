@@ -393,7 +393,7 @@ var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
 	{name: "cobblestone", durability: 500, stack: 64, x:7, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},											
 	{name: "wood", durability: 300, stack: 64, x:11, favType: "axe", smelting: 1000, drop: [2]},									
-	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 300, drop: [undefined, 0, "scissors", 3]},								
+	{name: "leaves", durability: 50, stack: 64, x:12, favType:"scissors", smelting: 250, drop: [undefined, 0, "scissors", 3]},								
 	{name: "grass", durability: 100, stack: 64, x:10, favType:"scissors", favType2: "shovel", drop: [5, 1, "scissors", 4]},							
 	{name: "dirt", durability: 100, stack: 64, x:9, favType:"shovel", drop: [5]},											
 	{name: "bedrock", durability: Infinity, drop: [undefined]},																		
@@ -1319,7 +1319,7 @@ function furnaceSmelting() {
 					}
 				}
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress == 0) {
-					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting;
+					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting+smeltingSpeed;
 					furnaces[a].maxFuel = items[furnaces[a].content[1].item].smelting;
 					furnaces[a].content[1].count--;
 					if(furnaces[a].content[1].count==0)

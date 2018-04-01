@@ -320,7 +320,7 @@ var smeltingSpeed = 50;
 var smallRecipes=[[2, 11, 4],
 				 [11, 11, 11, 11, 12, 1],
 				 [11,undefined ,11, 57, 4],
-				 [55, undefined, undefined, 55, 34, 1]] 
+				 [undefined, 55, 55, undefined, 34, 1]] 
 
 var bigRecipes=[[1,1,1,
 				 1,undefined,1,

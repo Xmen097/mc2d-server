@@ -311,7 +311,7 @@ var furnacePreset=[
 
 var furnaceRecipes=[[2, 51], [1, 0], [7, 52], [10, 53]]
 
-var smeltingTime=900;
+var smeltingTime=975;
 
 var smeltingSpeed = 25;
 
@@ -1305,7 +1305,6 @@ function furnaceSmelting() {
 						if(furnaces[a].content[0].count == 0)
 							furnaces[a].content[0].item=undefined;
 						furnaces[a].content[2].item=c[1];
-						util.log(furnaces[a].content);
 					}
 				}
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress == 0) {

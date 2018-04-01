@@ -1241,13 +1241,13 @@ function onMapEdit(data) {
 					if(err) {
 						util.log("Failed creating storage block "+err);
 					} else {
-						furnaces.push({content: furnacePreset, x:parseInt(data.x), y:parseInt(data.y), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 						util.log(furnaces);
 						util.log("Storage block creation sucess");
 					}
 				})
 			} else if(goToFurnace) {
-				pgClient.query("DELETE FROM storage WHERE y="+parseInt(data.y)+" AND x="+parseInt(data.x), function(err) {
+				pgClient.query("DELETE FROM storage WHERE y="+parseInt(data.x)+" AND x="+parseInt(data.y), function(err) {
 					if(err) {
 						util.log("Failed deleting storage block "+err);
 					} else {

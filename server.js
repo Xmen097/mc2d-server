@@ -307,6 +307,14 @@ var furnacePreset=[
 		new invSpace()
 		]
 
+
+
+var furnaceRecipes=[[2, 51], [1, 0], [7, 52], [10, 53]]
+
+var smeltingTime=998;
+
+
+
 var smallRecipes=[[2, 11, 4],
 				 [11, 11, 11, 11, 12, 1],
 				 [11,undefined ,11, 54, 4],
@@ -1279,7 +1287,41 @@ function onShowBlockContent(data) {
 }
 
 function furnaceSmelting() {
-		
+	for(var a=0; a < furnaces.length; a++) { 	
+		if(furnaces[a].fuelProgress != 0) {
+			furnaces[a].fuelProgress--;
+		}
+		for(var c of furnaceRecipes){
+			if(furnaces[a].content[0].item == c[0]){
+				if(furnaces[a].fuelProgress != 0) {
+					if(furnaces[a].content[2].item==undefined && furnaces[a].content[0].item == c[0] || furnaces[a].content[2].item==c[1] && furnaces[a].content[0].item == c[0])
+						furnaces[a].smeltProgress++;
+					if(furnaces[a].smeltProgress>=smeltingTime && furnaces[a].content[0].item == c[0]) {
+						furnaces[a].smeltProgress=0;
+						furnaces[a].content[2].count++;	
+						furnaces[a].content[0].count--;	
+						if(furnaces[a].content[0].count == 0)
+							furnaces[a].content[0].item=undefined;
+						furnaces[a].content[2].item=c[1];
+					}
+				}
+				if(a.content[0].item == c[0] && a.content[1].item != undefined && items[a.content[1].item].smelting != undefined && furnaces[a].fuel == 0) {
+					furnaces[a].fuelProgress = items[a.content[1].item].smelting;
+					furnaces[a].maxFuel = items[a.content[1].item].smelting;
+					furnaces[a].content[1].count--;
+					if(a.content[1].count==0)
+						furnaces[a].content[1].item = undefined;
+				}
+				if(furnaces[a].fuelProgress == 0 || a.content[0].item != c[0]) {
+					furnaces[a].smeltProgress=0;
+					if(furnaces[a].active) 
+						furnaceArrowUI.percent=0;
+				}
+				break;
+			}	
+		}
+	}	
+	util.log(furnaces);
 }
 
 init();

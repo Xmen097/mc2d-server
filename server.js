@@ -1181,6 +1181,7 @@ function onMoveItem(data) {
 							}
 						})
 					}
+					done();
 				})
 		}
 		var id=this.id;

@@ -311,7 +311,9 @@ var furnacePreset=[
 
 var furnaceRecipes=[[2, 51], [1, 0], [7, 52], [10, 53]]
 
-var smeltingTime=998;
+var smeltingTime=980;
+
+var smeltingSpeed = 10;
 
 
 
@@ -1289,13 +1291,13 @@ function onShowBlockContent(data) {
 function furnaceSmelting() {
 	for(var a=0; a < furnaces.length; a++) { 	
 		if(furnaces[a].fuelProgress != 0) {
-			furnaces[a].fuelProgress--;
+			furnaces[a].fuelProgress-=smeltingSpeed;
 		}
 		for(var c of furnaceRecipes){
 			if(furnaces[a].content[0].item == c[0]){
 				if(furnaces[a].fuelProgress != 0) {
 					if(furnaces[a].content[2].item==undefined && furnaces[a].content[0].item == c[0] || furnaces[a].content[2].item==c[1] && furnaces[a].content[0].item == c[0])
-						furnaces[a].smeltProgress++;
+						furnaces[a].smeltProgress+=smeltingSpeed;
 					if(furnaces[a].smeltProgress>=smeltingTime && furnaces[a].content[0].item == c[0]) {
 						furnaces[a].smeltProgress=0;
 						furnaces[a].content[2].count++;	

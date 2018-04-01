@@ -1259,8 +1259,7 @@ function onMapEdit(data) {
 					if(err) {
 						util.log("Failed deleting storage block "+err);
 					} else {
-						furnaces = furnaces.splice(furnaceByPosition(parseInt(data.y), parseInt(data.x)), 1);
-						util.log(furnaceByPosition(parseInt(data.y));
+						furnaces.splice(furnaceByPosition(parseInt(data.y), parseInt(data.x)), 1);
 						util.log("Storage block deleting sucess");
 					}
 				})
@@ -1322,6 +1321,7 @@ function furnaceSmelting() {
 			}	
 		}
 	}	
+	util.log(furnaces);
 }
 
 init();

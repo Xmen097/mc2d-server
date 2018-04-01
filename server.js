@@ -311,7 +311,7 @@ var furnacePreset=[
 
 var furnaceRecipes=[[2, 54], [1, 0], [7, 55], [10, 56]]
 
-var smeltingTime=1050;
+var smeltingTime=1000;
 
 var smeltingSpeed = 50;
 

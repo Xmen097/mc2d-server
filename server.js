@@ -108,7 +108,7 @@ function init() {
 			})
 			done();
 		})
-	furnaceSmeltCheck = setInterval(furnaceSmelting, 100);
+	furnaceSmeltCheck = setInterval(furnaceSmelting, 1000);
 }
 
 function giveItemToBestInventoryPosition(item, count, id) {
@@ -311,9 +311,9 @@ var furnacePreset=[
 
 var furnaceRecipes=[[2, 51], [1, 0], [7, 52], [10, 53]]
 
-var smeltingTime=980;
+var smeltingTime=900;
 
-var smeltingSpeed = 2;
+var smeltingSpeed = 25;
 
 
 
@@ -1305,6 +1305,7 @@ function furnaceSmelting() {
 						if(furnaces[a].content[0].count == 0)
 							furnaces[a].content[0].item=undefined;
 						furnaces[a].content[2].item=c[1];
+						util.log(furnaces[a].content);
 					}
 				}
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress == 0) {
@@ -1322,8 +1323,7 @@ function furnaceSmelting() {
 				break;
 			}	
 		}
-	}	
-	util.log(furnaces);
+	}
 }
 
 init();

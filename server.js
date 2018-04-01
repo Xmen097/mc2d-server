@@ -1167,6 +1167,7 @@ function onMoveItem(data) {
 			players[playerID].craftingTable[data.end.x].item=item;
 			players[playerID].craftingTable[data.end.x].count+=data.count;
 		} else if(data.end.y >= 10) {
+			util.log(data);
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)

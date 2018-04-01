@@ -1305,7 +1305,17 @@ function furnaceSmelting() {
 						if(furnaces[a].content[0].count == 0)
 							furnaces[a].content[0].item=undefined;
 						furnaces[a].content[2].item=c[1];
-						util.log(furnaces[a].content)
+						if(process.env.DATABASE_URL)
+							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+								pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
+									if(err) {
+										util.log("Failed saving storage smelting");
+									} else {
+										util.log("Storage smelting saving sucess");
+									}
+								})
+								done();
+							});
 					}
 				}
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress == 0) {
@@ -1314,6 +1324,17 @@ function furnaceSmelting() {
 					furnaces[a].content[1].count--;
 					if(furnaces[a].content[1].count==0)
 						furnaces[a].content[1].item = undefined;
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+							pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
+								if(err) {
+									util.log("Failed saving storage fuel consumption");
+								} else {
+									util.log("Storage fuel consumption sucess");
+								}
+							})
+							done();
+						});
 				}
 				if(furnaces[a].fuelProgress == 0 || furnaces[a].content[0].item != c[0]) {
 					furnaces[a].smeltProgress=0;

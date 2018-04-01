@@ -190,7 +190,7 @@ function checkSmallCraftingResult(playerCrafting, playerID) {
 				}
 			}
 			return new invSpace(a[3], a[4]);
-		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && playerCrafting[1].item==a[0] && playerCrafting[1].item == a[1] && playerCrafting[2].item == a[2] && playerCrafting[3].item == a[3]) {
+		} else if(a.length == 6 && itemCount==countItemsInRecipe(a) && item.item==a[0] && playerCrafting[playerCrafting.indexOf(item)+1] && playerCrafting[playerCrafting.indexOf(item)+1].item == a[1] && playerCrafting[playerCrafting.indexOf(item)+2] && playerCrafting[playerCrafting.indexOf(item)+2].item == a[2] && playerCrafting[playerCrafting.indexOf(item)+3] && playerCrafting[playerCrafting.indexOf(item)+3].item == a[3]) {
 			for(var b=0;b<players[playerID].crafting.length;b++) {
 				if(players[playerID].crafting[b].count > 0) {
 					players[playerID].crafting[b].count--;
@@ -320,7 +320,7 @@ var smeltingSpeed = 50;
 var smallRecipes=[[2, 11, 4],
 				 [11, 11, 11, 11, 12, 1],
 				 [11,undefined ,11, 57, 4],
-				 [undefined, 55, 55, undefined, 34, 1]] 
+				 [55, undefined, undefined, 55, 34, 1]] 
 
 var bigRecipes=[[1,1,1,
 				 1,undefined,1,

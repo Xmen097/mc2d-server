@@ -1167,14 +1167,12 @@ function onMoveItem(data) {
 			players[playerID].craftingTable[data.end.x].item=item;
 			players[playerID].craftingTable[data.end.x].count+=data.count;
 		} else if(data.end.y >= 10) {
-			util.log(data);
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
-					if(furnace) {
+					if(typeof furnace == "Number") {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
-						util.log(furnaces[furnace].content);
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 							if(err) {
 								util.log("Failed saving storage block");

@@ -1305,14 +1305,14 @@ function furnaceSmelting() {
 						furnaces[a].content[2].item=c[1];
 					}
 				}
-				if(a.content[0].item == c[0] && a.content[1].item != undefined && items[a.content[1].item].smelting != undefined && furnaces[a].fuel == 0) {
-					furnaces[a].fuelProgress = items[a.content[1].item].smelting;
-					furnaces[a].maxFuel = items[a.content[1].item].smelting;
+				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuel == 0) {
+					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting;
+					furnaces[a].maxFuel = items[furnaces[a].content[1].item].smelting;
 					furnaces[a].content[1].count--;
-					if(a.content[1].count==0)
+					if(furnaces[a].content[1].count==0)
 						furnaces[a].content[1].item = undefined;
 				}
-				if(furnaces[a].fuelProgress == 0 || a.content[0].item != c[0]) {
+				if(furnaces[a].fuelProgress == 0 || furnaces[a].content[0].item != c[0]) {
 					furnaces[a].smeltProgress=0;
 					if(furnaces[a].active) 
 						furnaceArrowUI.percent=0;
@@ -1321,7 +1321,7 @@ function furnaceSmelting() {
 			}	
 		}
 	}	
-	util.log(furnaces);
+	util.log(furnaces)
 }
 
 init();

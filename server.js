@@ -1319,7 +1319,7 @@ function furnaceSmelting() {
 					}
 				}
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress == 0) {
-					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting+smeltingSpeed;
+					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting;
 					furnaces[a].maxFuel = items[furnaces[a].content[1].item].smelting;
 					furnaces[a].content[1].count--;
 					if(furnaces[a].content[1].count==0)

@@ -1259,7 +1259,7 @@ function onMapEdit(data) {
 					if(err) {
 						util.log("Failed deleting storage block "+err);
 					} else {
-						furnaces = furnaces.splice(furnaceByPosition(data.x, data.y), 1);
+						furnaces = furnaces.splice(furnaceByPosition(data.y, data.x), 1);
 						util.log("Storage block deleting sucess");
 					}
 				})

@@ -1289,6 +1289,7 @@ function onShowBlockContent(data) {
 }
 
 function furnaceSmelting() {
+	util.log(process.hrtime());
 	for(var a=0; a < furnaces.length; a++) { 	
 		if(furnaces[a].fuelProgress != 0) {
 			furnaces[a].fuelProgress-=smeltingSpeed;

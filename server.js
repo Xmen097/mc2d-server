@@ -1278,7 +1278,7 @@ function onMapEdit(data) {
 					if(err) {
 						util.log("Failed creating storage block "+err);
 					} else {
-						furnaces.push({content: chestPreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						chests.push({content: chestPreset, x: parseInt(data.y), y: parseInt(data.x)})
 						util.log("Chest block creation sucess");
 					}
 				})

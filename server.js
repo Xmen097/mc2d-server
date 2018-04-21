@@ -19,7 +19,6 @@ function init() {
 	var port = process.env.PORT-1 || 8079;
 	port++;//workaround for server port bug
 
-
 	if(process.env.DATABASE_URL) { // DB 
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
         if(err){
@@ -306,7 +305,9 @@ var furnacePreset=[
 		new invSpace(), 
 		new invSpace()
 		]
-
+var chestPreset = [new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(),
+		 new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(),
+		 new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace(), new invSpace()]
 
 
 var furnaceRecipes=[[2, 54], [1, 0], [7, 55], [10, 56]]
@@ -326,6 +327,10 @@ var bigRecipes=[[1,1,1,
 				 1,undefined,1,
 				 1,1,1,
 				 13, 1],
+				[11,11,11,
+				 11,undefined,11,
+				 11,11,11,
+				 58, 1],
 				[11,undefined,undefined,
 				 57,undefined,undefined,
 				 57,undefined,undefined,
@@ -388,6 +393,7 @@ var bigRecipes=[[1,1,1,
 				 45, 1]]
 
 var furnaces = [];
+var chests = [];
 
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    
@@ -448,6 +454,7 @@ var items = [
 	{name: "Iron_ingot", stack: 64, x:7, y:1, type: "item"},
 	{name: "Gold_ingot", stack: 64, x:7, y:2, type: "item"},
 	{name: "Stick", stack: 64, x:5, y:3, type: "item", smelting: 50},
+	{name: "Chest", durability: 300, stack: 64, x:14, favType: "axe", active:"chest", drop: [58]},	
 ]
 
 //map generator start
@@ -663,6 +670,13 @@ function playerByName(name) {
 function furnaceByPosition(x, y) {
     for (var i = 0; i < furnaces.length; i++) {
         if (furnaces[i].x == x && furnaces[i].y == y)
+            return i;
+    };
+}
+
+function chestByPosition(x, y) {
+    for (var i = 0; i < chests.length; i++) {
+        if (chests[i].x == x && chests[i].y == y)
             return i;
     };
 }
@@ -1222,9 +1236,12 @@ function onMapEdit(data) {
 	} else {
 		return;
 	}
-	var goToFurnace=false;
-	if(map[parseInt(data.x)][parseInt(data.y)] == 13)
-		goToFurnace=true;
+	var destroyBlock=0;
+	if(map[parseInt(data.x)][parseInt(data.y)] == 13) {
+		destroyBlock=1;
+	} else if(map[parseInt(data.x)][parseInt(data.y)] == 58) {
+		destroyBlock=2;
+	}
 	map[parseInt(data.x)][parseInt(data.y)] = parseInt(data.block);
 	this.broadcast.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: parseInt(data.block)})
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
@@ -1253,15 +1270,27 @@ function onMapEdit(data) {
 					} else {
 						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 						util.log(furnaces);
-						util.log("Storage block creation sucess");
+						util.log("Furnace block creation sucess");
 					}
 				})
-			} else if(goToFurnace) {
+			} else if(parseInt(data.block) == 58) { // Is chest
+				pgClient.query("INSERT INTO storage(x, y, content) VALUES ("+parseInt(data.y)+", "+parseInt(data.x)+", '"+JSON.stringify(chestPreset)+"')", function(err) {
+					if(err) {
+						util.log("Failed creating storage block "+err);
+					} else {
+						furnaces.push({content: chestPreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						util.log("Chest block creation sucess");
+					}
+				})
+			} else if(destroyBlock) {
 				pgClient.query("DELETE FROM storage WHERE y="+parseInt(data.x)+" AND x="+parseInt(data.y), function(err) {
 					if(err) {
 						util.log("Failed deleting storage block "+err);
-					} else {
+					} else if(destroyBlock==1) {
 						furnaces.splice(furnaceByPosition(parseInt(data.y), parseInt(data.x)), 1);
+						util.log("Storage block deleting sucess");
+					} else if(destroyBlock==2) {
+						chests.splice(chestByPosition(parseInt(data.y), parseInt(data.x)), 1);
 						util.log("Storage block deleting sucess");
 					}
 				})
@@ -1277,19 +1306,14 @@ function onBlockBreaking(data) {
 
 function onShowBlockContent(data) {
 	var player = playerById(this.id);
-	if(process.env.DATABASE_URL)
-		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-			if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
-				player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)]);
-			} else {
-				util.log("Player "+player.name+" tried to access storage block, but not in range")
-			}
-		done();
-		})	
+	if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
+		player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)] || chests[chestByPosition(data.x, data.y)]);
+	} else {
+		util.log("Player "+player.name+" tried to access storage block, but not in range")
+	}
 }
 
 function furnaceSmelting() {
-	util.log(process.hrtime());
 	for(var a=0; a < furnaces.length; a++) { 	
 		if(furnaces[a].fuelProgress != 0) {
 			furnaces[a].fuelProgress-=smeltingSpeed;

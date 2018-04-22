@@ -935,8 +935,9 @@ function onNewMessage(data) {
 				break;
 			case "reset":
 				var findPlayer = playerById(sender.id);
+				argument = argument.split(" ");
 				if(findPlayer && findPlayer.role > 3) {
-					if(argument == "map") {
+					if(argument[0] == "map") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
 						clearTimeout(resetTimer);
@@ -951,8 +952,8 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, 10000);
-					} else if (argument == "players") {
+						}, argument[1]=="now" ? 0 : 10000);
+					} else if (argument[0] == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
 						clearTimeout(resetTimer);
@@ -966,8 +967,8 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, 10000);
-					} else if(argument == "all") {
+						}, argument[1]=="now" ? 0 : 10000);
+					} else if(argument[0] == "all") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
 						clearTimeout(resetTimer);
@@ -982,9 +983,19 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, 10000);
-					}else {
-						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map" or "/reset all"'})
+						}, argument[1]=="now" ? 0 : 10000);
+					} else if(argument[0] == "server") {
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will restart in 10 seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Server will restart in 10 seconds!"})
+						clearTimeout(resetTimer);
+						resetTimer = setTimeout(function () {
+							for(var a of players) {
+								a.client.emit("disconnect", "Server was restarted");
+							}
+							init()
+						}, argument[1]=="now" ? 0 : 10000);
+					} else {
+						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map", "/reset all" or "/reset server"'})
 					}
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

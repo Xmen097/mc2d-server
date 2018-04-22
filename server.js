@@ -936,7 +936,7 @@ function onNewMessage(data) {
 			case "reset":
 				var findPlayer = playerById(sender.id);
 				argument = argument.split(" ");
-				time = typeof argument[0]=="number" || time = typeof argument[0]=="string" ?  argument[0] : 10;
+				time = (typeof argument[0]=="number" || typeof argument[0]=="string") ?  argument[0] : 10;
 				if(findPlayer && findPlayer.role > 3) {
 					if(argument[0] == "map") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})

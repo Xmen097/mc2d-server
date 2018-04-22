@@ -936,10 +936,11 @@ function onNewMessage(data) {
 			case "reset":
 				var findPlayer = playerById(sender.id);
 				argument = argument.split(" ");
+				time = typeof argument[0]=="number" || time = typeof argument[0]=="string" ?  argument[0] : 10;
 				if(findPlayer && findPlayer.role > 3) {
 					if(argument[0] == "map") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in 10 seconds!"})
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -952,10 +953,10 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, argument[1]=="now" ? 0 : 10000);
+						}, time=="now" ? 0 : time*1000);
 					} else if (argument[0] == "players") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in 10 seconds!"})
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -967,10 +968,10 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, argument[1]=="now" ? 0 : 10000);
+						}, time=="now" ? 0 : time*1000);
 					} else if(argument[0] == "all") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in 10 seconds!"})
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -983,17 +984,17 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, argument[1]=="now" ? 0 : 10000);
+						}, time=="now" ? 0 : time*1000);
 					} else if(argument[0] == "server") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will restart in 10 seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Server will restart in 10 seconds!"})
+						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
+						this.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
 								a.client.emit("disconnect", "Server was restarted");
 							}
 							init()
-						}, argument[1]=="now" ? 0 : 10000);
+						}, time=="now" ? 0 : time*1000);
 					} else {
 						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map", "/reset all" or "/reset server"'})
 					}

@@ -102,7 +102,6 @@ function init() {
 					for(var a of result.rows) {
 						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
 					}
-					util.log(furnaces);
 				}
 			})
 			done();
@@ -142,8 +141,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			}
 		}				
 	}
-	util.log("Player's inventory full");
-	util.log(players[index].inventory.inventory);
+	util.log("Player "+playerById(id)+" inventory is full");
 }
 
 function invSpace(item, count) {
@@ -736,7 +734,6 @@ function onNewPlayer(data) {
         				pgClient.query("SELECT * FROM users", function(err,result) {
         					if(result.rowCount == 0)
         						role = 4;
-	        				util.log(role)
 		            		util.log("Player "+validateString(data.name)+" is new here!");
 	        				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset), craftingtable: JSON.stringify(craftingTablePreset)});
 		            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',"+role+" ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
@@ -779,7 +776,7 @@ function onNewPlayer(data) {
 
 function onNewMessage(data) {
 	var sender = this;
-	util.log(data);
+	util.log("Player "+playerById(sender.id)+" said: "+data);
 	if(data[0] == "/") {
 		var data = data.split("/")[1]
 		var command = data.split(" ")[0]
@@ -1043,7 +1040,6 @@ function onNewMessage(data) {
 								return;
 							}
 						}
-						util.log(count + "  " + item);
 						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
 						if(process.env.DATABASE_URL)
 							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
@@ -1181,8 +1177,6 @@ function onMoveItem(data) {
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
 							if(err) {
 								util.log("Failed saving storage block");
-							} else {
-								util.log("Storage block saving sucess");
 							}
 						})
 					}
@@ -1213,8 +1207,6 @@ function onMoveItem(data) {
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 							if(err) {
 								util.log("Failed saving storage block");
-							} else {
-								util.log("Storage block saving sucess");
 							}
 						})
 					}
@@ -1228,7 +1220,7 @@ function onMoveItem(data) {
 					if(err) {
 						util.log("Failed saving player inventory "+err);
 					} else {
-						util.log("Players "+id+ " inventory was updated");
+						util.log("Player "+playerById(id).name+ " inventory was updated");
 					}
 				})
 			done();
@@ -1265,7 +1257,7 @@ function onMapEdit(data) {
 				if(err) {
 					util.log("Failed map edit "+err)
 				} else {
-					util.log("Player "+id+ " edited map")
+					util.log("Player "+playerById(id).name+ " edited map")
 				}
 			})
 			pgClient.query("UPDATE users SET inventory='"+JSON.stringify(playerById(id).inventory)+"' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
@@ -1273,7 +1265,7 @@ function onMapEdit(data) {
 					util.log("Failed saving player inventory "+err);
 					util.log(validateString(playerById(id).name));
 				} else {
-					util.log("Players "+id+ " inventory was updated");
+					util.log("Players "+playerById(id).name+ " inventory was updated");
 				}
 			})
 			if(parseInt(data.block) == 13) { // Is furnace
@@ -1282,7 +1274,6 @@ function onMapEdit(data) {
 						util.log("Failed creating storage block "+err);
 					} else {
 						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
-						util.log(furnaces);
 						util.log("Furnace block creation sucess");
 					}
 				})

@@ -1,5 +1,4 @@
-var util = require("util"),
-	io = require("socket.io"),
+var io = require("socket.io"),
 	pg = require('pg'), 
 	request = require("request"),
 	sha256 = require("sha256"),
@@ -22,15 +21,15 @@ function init() {
 	if(process.env.DATABASE_URL) { // DB 
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
         if(err){
-            util.log("Not able to connect: "+ err);
+            console.log("Not able to connect: "+ err);
         } 
         pgClient.query('SELECT * FROM map', function(err,result) {
             if(err || result.rows.length<10){
             	if(err)
-                	util.log(err);
+                	console.log(err);
 		 		mapGenerator.generate();
 		 		if(map) {
-					util.log("Map was generated ")
+					console.log("Map was generated ")
 					for(var a=0;a<map.length;a++) {
 						var columnsStack="(y";
 						for(var x=0;x<1000;x++) {
@@ -46,18 +45,18 @@ function init() {
 
 						pgClient.query("INSERT INTO map "+columnsStack+" VALUES"+queryStack, function(err) {
 							if(err) {
-								util.log("FAILED writing map part to database: " + err)
+								console.log("FAILED writing map part to database: " + err)
 							} else {
-								util.log("Writen map part to database")
+								console.log("Writen map part to database")
 							}
 						})
 					}	
 				}
             } else {
-            	util.log("Started map loading")
+            	console.log("Started map loading")
 	          	pgClient.query("SELECT * FROM map", function(err, result) {
 					if(err) {
-						util.log("FAILED writing map part to database: " + err)
+						console.log("FAILED writing map part to database: " + err)
 					} else if(result) {
 						map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 						
@@ -65,9 +64,9 @@ function init() {
 							for (var b=0; b<1000;b++) {
 								map[result.rows[a].y][b]=result.rows[a]["_"+b];
 							}
-							util.log("Loaded map part")
+							console.log("Loaded map part")
 						}
-						util.log("Map was loaded successfully")
+						console.log("Map was loaded successfully")
 					}
 				})
             }
@@ -97,7 +96,7 @@ function init() {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 			pgClient.query("SELECT * FROM storage", function(err, result) {
 				if(err) {
-					util.log("Failed loading furnaces "+err);
+					console.log("Failed loading furnaces "+err);
 				} else {
 					for(var a of result.rows) {
 						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
@@ -141,7 +140,7 @@ function giveItemToBestInventoryPosition(item, count, id) {
 			}
 		}				
 	}
-	util.log("Player "+playerById(id)+" inventory is full");
+	console.log("Player "+playerById(id)+" inventory is full");
 }
 
 function invSpace(item, count) {
@@ -680,18 +679,18 @@ function chestByPosition(x, y) {
 }
 
 function onSocketConnection(client) {
-    util.log("New player has connected: "+client.id);
+    console.log("New player has connected: "+client.id);
 	client.salt=sha256(Math.random()+"");
 	client.emit("salt", client.salt)
     client.on("new player", onNewPlayer);
 };
 
 function onClientDisconnect() {
-    util.log("Player has disconnected: "+this.id);
+    console.log("Player has disconnected: "+this.id);
 	var removePlayer = playerById(this.id);
 
 	if (!removePlayer) {
-	    util.log("Player not found: "+this.id);
+	    console.log("Player not found: "+this.id);
 	    return;
 	};
 
@@ -706,15 +705,15 @@ function onNewPlayer(data) {
     var newCraftingTable = copyArr(craftingTablePreset);
 	var role=1;
 	var client=this;
-	util.log("Player "+validateString(data.name)+" send authorization token")
+	console.log("Player "+validateString(data.name)+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: validateString(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
-			util.log("Login server offline")
+			console.log("Login server offline")
 		}
 		if(body == "true" && !playerByName(validateString(data.name))) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        	 		if(err){
-            		util.log("Not able to connect: "+ err);
+            		console.log("Not able to connect: "+ err);
             		return;
         		} 
         		pgClient.query("SELECT * FROM users WHERE name='"+validateString(data.name)+"'", function(err,result) {
@@ -724,7 +723,7 @@ function onNewPlayer(data) {
         				newCrafting = JSON.parse(result.rows[0].crafting);
         				newCraftingTable = JSON.parse(result.rows[0].craftingtable);
         				if(role == 0) {
-							util.log("Player "+validateString(data.name)+" is banned");
+							console.log("Player "+validateString(data.name)+" is banned");
 							client.emit("disconnect", "You are banned")
 							return;
 						}
@@ -734,11 +733,11 @@ function onNewPlayer(data) {
         				pgClient.query("SELECT * FROM users", function(err,result) {
         					if(result.rowCount == 0)
         						role = 4;
-		            		util.log("Player "+validateString(data.name)+" is new here!");
+		            		console.log("Player "+validateString(data.name)+" is new here!");
 	        				client.emit("inventory", {name: validateString(data.name), role: 1, inventory: JSON.stringify(inventoryPreset), crafting: JSON.stringify(craftingPreset), craftingtable: JSON.stringify(craftingTablePreset)});
 		            		pgClient.query("INSERT INTO users(name, role, inventory, crafting, craftingTable) VALUES ('"+validateString(data.name)+"',"+role+" ,'"+JSON.stringify(inventoryPreset)+"', '"+JSON.stringify(craftingPreset)+"', '"+JSON.stringify(craftingTablePreset)+"')", function(err) {
 		            			if(err) {
-		            				util.log("Failed creating player profile");
+		            				console.log("Failed creating player profile");
 		            				return;
 		            			}
 		            		})
@@ -752,7 +751,7 @@ function onNewPlayer(data) {
 				    client.on("block breaking", onBlockBreaking);
 				    client.on("move item", onMoveItem);
 				    client.on("storage block", onShowBlockContent);
-					util.log("Player "+validateString(data.name)+" authorized successfully")
+					console.log("Player "+validateString(data.name)+" authorized successfully")
 					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
 					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client, newCrafting, newCraftingTable);
@@ -767,7 +766,7 @@ function onNewPlayer(data) {
 			done();
         	})
 		} else {
-			util.log("Player "+validateString(data.name)+" authorization failed")
+			console.log("Player "+validateString(data.name)+" authorization failed")
 			client.emit("disconnect", "Your token is invalid(If the problem persist, try restarting the game)")
 			client.disconnect(0)
 		}
@@ -776,7 +775,7 @@ function onNewPlayer(data) {
 
 function onNewMessage(data) {
 	var sender = this;
-	util.log("Player "+playerById(sender.id)+" said: "+data);
+	console.log("Player "+playerById(sender.id)+" said: "+data);
 	if(data[0] == "/") {
 		var data = data.split("/")[1]
 		var command = data.split(" ")[0]
@@ -1045,13 +1044,13 @@ function onNewMessage(data) {
 							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 								pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
 									if(err) {
-										util.log("Failed saving player inventory "+err);
-										util.log(validateString(playerById(id).name));
+										console.log("Failed saving player inventory "+err);
+										console.log(validateString(playerById(id).name));
 									} else {
 										pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
 						        			if(result.rows[0]) {
 						        				targetPlayer.client.emit("inventory", result.rows[0]);
-												util.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
+												console.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
 												if(targetPlayer != findPlayer)
 													targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+items[item].name});
 												findPlayer.client.emit("new message", {name: "[SERVER]", message: "Successfully gived "+count+"x item "+items[item].name+" to player "+args[0]});
@@ -1108,7 +1107,7 @@ function onMovePlayer(data) {
 	var movePlayer = playerById(this.id);
 
 	if (!movePlayer) {
-	    util.log("Player not found: "+this.id);
+	    console.log("Player not found: "+this.id);
 	    return;
 	};
 
@@ -1176,7 +1175,7 @@ function onMoveItem(data) {
 							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
 							if(err) {
-								util.log("Failed saving storage block");
+								console.log("Failed saving storage block");
 							}
 						})
 					}
@@ -1206,7 +1205,7 @@ function onMoveItem(data) {
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 							if(err) {
-								util.log("Failed saving storage block");
+								console.log("Failed saving storage block");
 							}
 						})
 					}
@@ -1218,9 +1217,9 @@ function onMoveItem(data) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"', craftingTable='"+JSON.stringify(players[playerID].craftingTable)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
-						util.log("Failed saving player inventory "+err);
+						console.log("Failed saving player inventory "+err);
 					} else {
-						util.log("Player "+playerById(id).name+ " inventory was updated");
+						console.log("Player "+playerById(id).name+ " inventory was updated");
 					}
 				})
 			done();
@@ -1255,47 +1254,47 @@ function onMapEdit(data) {
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 			pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
 				if(err) {
-					util.log("Failed map edit "+err)
+					console.log("Failed map edit "+err)
 				} else {
-					util.log("Player "+playerById(id).name+ " edited map")
+					console.log("Player "+playerById(id).name+ " edited map")
 				}
 			})
 			pgClient.query("UPDATE users SET inventory='"+JSON.stringify(playerById(id).inventory)+"' WHERE name='"+validateString(playerById(id).name)+"'", function(err) {
 				if(err) {
-					util.log("Failed saving player inventory "+err);
-					util.log(validateString(playerById(id).name));
+					console.log("Failed saving player inventory "+err);
+					console.log(validateString(playerById(id).name));
 				} else {
-					util.log("Players "+playerById(id).name+ " inventory was updated");
+					console.log("Players "+playerById(id).name+ " inventory was updated");
 				}
 			})
 			if(parseInt(data.block) == 13) { // Is furnace
 				pgClient.query("INSERT INTO storage(x, y, content) VALUES ("+parseInt(data.y)+", "+parseInt(data.x)+", '"+JSON.stringify(furnacePreset)+"')", function(err) {
 					if(err) {
-						util.log("Failed creating storage block "+err);
+						console.log("Failed creating storage block "+err);
 					} else {
 						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
-						util.log("Furnace block creation sucess");
+						console.log("Furnace block creation sucess");
 					}
 				})
 			} else if(parseInt(data.block) == 58) { // Is chest
 				pgClient.query("INSERT INTO storage(x, y, content) VALUES ("+parseInt(data.y)+", "+parseInt(data.x)+", '"+JSON.stringify(chestPreset)+"')", function(err) {
 					if(err) {
-						util.log("Failed creating storage block "+err);
+						console.log("Failed creating storage block "+err);
 					} else {
 						chests.push({content: chestPreset, x: parseInt(data.y), y: parseInt(data.x)})
-						util.log("Chest block creation sucess");
+						console.log("Chest block creation sucess");
 					}
 				})
 			} else if(destroyBlock) {
 				pgClient.query("DELETE FROM storage WHERE y="+parseInt(data.x)+" AND x="+parseInt(data.y), function(err) {
 					if(err) {
-						util.log("Failed deleting storage block "+err);
+						console.log("Failed deleting storage block "+err);
 					} else if(destroyBlock==1) {
 						furnaces.splice(furnaceByPosition(parseInt(data.y), parseInt(data.x)), 1);
-						util.log("Storage block deleting sucess");
+						console.log("Storage block deleting sucess");
 					} else if(destroyBlock==2) {
 						chests.splice(chestByPosition(parseInt(data.y), parseInt(data.x)), 1);
-						util.log("Storage block deleting sucess");
+						console.log("Storage block deleting sucess");
 					}
 				})
 			}
@@ -1313,7 +1312,7 @@ function onShowBlockContent(data) {
 	if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
 		player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)] || chests[chestByPosition(data.x, data.y)]);
 	} else {
-		util.log("Player "+player.name+" tried to access storage block, but not in range")
+		console.log("Player "+player.name+" tried to access storage block, but not in range")
 	}
 }
 
@@ -1334,9 +1333,9 @@ function furnaceSmelting() {
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 							pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
 								if(err) {
-									util.log("Failed saving storage fuel consumption");
+									console.log("Failed saving storage fuel consumption");
 								} else {
-									util.log("Storage fuel consumption sucess");
+									console.log("Storage fuel consumption sucess");
 								}
 							})
 							done();
@@ -1356,9 +1355,9 @@ function furnaceSmelting() {
 							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 								pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
 									if(err) {
-										util.log("Failed saving storage smelting");
+										console.log("Failed saving storage smelting");
 									} else {
-										util.log("Storage smelting saving sucess");
+										console.log("Storage smelting saving sucess");
 									}
 								})
 								done();
@@ -1379,7 +1378,7 @@ process.on('uncaughtException', function (error) {
 	try {
 		pg.end()	
 	} catch(err) {
-		util.log(err);
+		console.log(err);
 	}
-   util.log(error.stack);
+   console.log(error.stack);
 });

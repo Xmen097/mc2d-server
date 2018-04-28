@@ -775,7 +775,7 @@ function onNewPlayer(data) {
 
 function onNewMessage(data) {
 	var sender = this;
-	console.log("Player "+playerById(sender.id)+" said: "+data);
+	console.log("Player "+playerById(sender.id).name+" said: "+data);
 	if(data[0] == "/") {
 		var data = data.split("/")[1]
 		var command = data.split(" ")[0]
@@ -1050,7 +1050,7 @@ function onNewMessage(data) {
 										pgClient.query("SELECT * FROM users WHERE name='"+validateString(args[0])+"'", function(err,result) {
 						        			if(result.rows[0]) {
 						        				targetPlayer.client.emit("inventory", result.rows[0]);
-												console.log("Players "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
+												console.log("Player "+findPlayer.name+ " gived "+count+"x item "+item+" to player "+args[0]);
 												if(targetPlayer != findPlayer)
 													targetPlayer.client.emit("new message", {name: "[SERVER]", message: "Players "+findPlayer.name+ " gived you "+count+"x item "+items[item].name});
 												findPlayer.client.emit("new message", {name: "[SERVER]", message: "Successfully gived "+count+"x item "+items[item].name+" to player "+args[0]});
@@ -1264,7 +1264,7 @@ function onMapEdit(data) {
 					console.log("Failed saving player inventory "+err);
 					console.log(validateString(playerById(id).name));
 				} else {
-					console.log("Players "+playerById(id).name+ " inventory was updated");
+					console.log("Player "+playerById(id).name+ " inventory was updated");
 				}
 			})
 			if(parseInt(data.block) == 13) { // Is furnace

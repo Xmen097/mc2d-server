@@ -64,7 +64,6 @@ function init() {
 							for (var b=0; b<1000;b++) {
 								map[result.rows[a].y][b]=result.rows[a]["_"+b];
 							}
-							console.log("Loaded map part")
 						}
 						console.log("Map was loaded successfully")
 					}

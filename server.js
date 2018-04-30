@@ -685,13 +685,12 @@ function onSocketConnection(client) {
 };
 
 function onClientDisconnect() {
-    console.log("Player has disconnected: "+this.id);
 	var removePlayer = playerById(this.id);
-
 	if (!removePlayer) {
 	    console.log("Player not found: "+this.id);
 	    return;
 	};
+    console.log("Player "+removePlayer.name+" has disconnected");
 
 	this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(this.id).name+" has disconnected"})
 	players.splice(players.indexOf(removePlayer), 1);

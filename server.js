@@ -753,7 +753,7 @@ function onNewPlayer(data) {
 					client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+data.name+" connected to the server"})
 					client.emit("new message", {name: "[SERVER]", message: "Welcome to the server"})
 					var newPlayer = new Player(0, 0, client.id, validateString(data.name), newInv, role, client, newCrafting, newCraftingTable);
-					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: validateString(newPlayer.name)});
+					client.broadcast.emit("new player", {id: parseInt(newPlayer.id), x: parseInt(newPlayer.x), y: parseInt(newPlayer.y), name: validateString(newPlayer.name), slot:newInv.hotbar[4]});
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
 				    	existingPlayer = players[i];
@@ -1111,7 +1111,7 @@ function onMovePlayer(data) {
 
 	movePlayer.x = parseInt(data.x);
 	movePlayer.y = parseInt(data.y);
-	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture)});
+	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture), slot: parseInt(movePlayer.inventory.hotbar[data.slot].item)});
 }
 
 function onMoveItem(data) {

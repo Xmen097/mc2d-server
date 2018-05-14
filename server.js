@@ -627,6 +627,7 @@ function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting, gtC
 	this.client = gtClient;
 	this.crafting = gtCrafting;
 	this.craftingTable = gtCraftingTable;
+	this.slot = 4;
 
 }
 
@@ -757,7 +758,7 @@ function onNewPlayer(data) {
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
 				    	existingPlayer = players[i];
-				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: validateString(existingPlayer.name)});
+				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: parseInt(existingPlayer.x), y: parseInt(existingPlayer.y), name: validateString(existingPlayer.name), slot:existingPlayer.inventory.hotbar[existingPlayer.slot].item});
 					};
 					players.push(newPlayer);
         		})
@@ -1111,6 +1112,7 @@ function onMovePlayer(data) {
 
 	movePlayer.x = parseInt(data.x);
 	movePlayer.y = parseInt(data.y);
+	movePlayer.slot = parseInt(data.slot);
 	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture), slot: parseInt(movePlayer.inventory.hotbar[data.slot].item)});
 }
 

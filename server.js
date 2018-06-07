@@ -951,7 +951,7 @@ function onNewMessage(data) {
 							}
 							if(process.env.DATABASE_URL)
 								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-								pgClient.query("TRUNCATE map")
+								pgClient.query("TRUNCATE map, storage")
 								done();
 								})
 							init()
@@ -1082,6 +1082,7 @@ function onNewMessage(data) {
 				} else {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
+				break;
 			default:
 				this.emit("new message", {name: "[SERVER]", message: "Unknown command"})
 				break;

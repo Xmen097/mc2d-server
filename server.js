@@ -1074,6 +1074,14 @@ function onNewMessage(data) {
 					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
+			case "eval":
+				var findPlayer = playerById(sender.id);
+				if(findPlayer && findPlayer.role > 3) {
+					eval(argument);
+					this.emit("new message", {name: "[SERVER]", message: "Successfully executed command"})
+				} else {
+					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
 			default:
 				this.emit("new message", {name: "[SERVER]", message: "Unknown command"})
 				break;
@@ -1096,8 +1104,8 @@ function onNewMessage(data) {
 					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 			}
-			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: validateString(data)})
-			this.emit("new message", {name: "You", message: validateString(data)})
+			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: data})
+			this.emit("new message", {name: "You", message: data})
 		} else if(playerById(sender.id).messagesPerMinute < 60) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})

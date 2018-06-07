@@ -76,7 +76,6 @@ function init() {
 		mapGenerator.generate();
 	}
 
-
 	socket = io.listen(port, ip, function() {
     	console.log('Server is listening on port '+port);
 	});
@@ -93,6 +92,8 @@ function init() {
 	},60000);
 	if(process.env.DATABASE_URL)
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+			var furnaces = [];
+			var chests = [];
 			pgClient.query("SELECT * FROM storage", function(err, result) {
 				if(err) {
 					console.log("Failed loading furnaces "+err);
@@ -392,9 +393,6 @@ var bigRecipes=[[1,1,1,
 				 56,57,undefined,
 				 undefined,57,undefined,
 				 45, 1]]
-
-var furnaces = [];
-var chests = [];
 
 var items = [
 	{name: "stone", durability: 500, stack: 64, x:13, favType:"pickaxe", drop: [undefined, 0, "pickaxe", 1]},                            					    

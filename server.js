@@ -98,7 +98,12 @@ function init() {
 					console.log("Failed loading furnaces "+err);
 				} else {
 					for(var a of result.rows) {
-						furnaces.push({content: JSON.parse(a.content), x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						var content = JSON.parse(a.content);
+						if(content.length == 3) {
+							furnaces.push({content: content, x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						} else {
+							chests.push({content: content, x:a.x, y:a.y})
+						}
 					}
 				}
 			})
@@ -669,6 +674,7 @@ function furnaceByPosition(x, y) {
         if (furnaces[i].x == x && furnaces[i].y == y)
             return i;
     };
+    return -1
 }
 
 function chestByPosition(x, y) {
@@ -676,6 +682,7 @@ function chestByPosition(x, y) {
         if (chests[i].x == x && chests[i].y == y)
             return i;
     };
+    return -1;
 }
 
 function onSocketConnection(client) {
@@ -1200,7 +1207,7 @@ function onMoveItem(data) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
-					if(typeof furnace == "number") {
+					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
@@ -1290,11 +1297,20 @@ function onMapEdit(data) {
 					if(err) {
 						console.log("Failed deleting storage block "+err);
 					} else if(destroyBlock==1) {
-						furnaces.splice(furnaceByPosition(parseInt(data.y), parseInt(data.x)), 1);
-						console.log("Storage block deleting sucess");
+						var furnace = furnaceByPosition(parseInt(data.y), parseInt(data.x));
+						if(furnace != -1) {
+							furnaces.splice(furnace, 1);
+							console.log("Storage block deleting sucess");
+						} else 
+							console.log("Storage block deleting failed");
 					} else if(destroyBlock==2) {
-						chests.splice(chestByPosition(parseInt(data.y), parseInt(data.x)), 1);
-						console.log("Storage block deleting sucess");
+						var chest = chestByPosition(parseInt(data.y), parseInt(data.x));
+						if(chest != -1)
+						{
+							chests.splice(chest, 1);
+							console.log("Storage block deleting sucess");
+						} else 
+							console.log("Storage block deleting failed");
 					}
 				})
 			}
@@ -1310,7 +1326,7 @@ function onBlockBreaking(data) {
 function onShowBlockContent(data) {
 	var player = playerById(this.id);
 	if(data.x*50 <= player.x+350 && data.x*50 >= player.x-350 && data.y*50 <= player.y+350 && data.y*50 >= player.y-350) {
-		player.client.emit("storage block", furnaces[furnaceByPosition(data.x, data.y)] || chests[chestByPosition(data.x, data.y)]);
+		player.client.emit("storage block", furnaceByPosition(data.x, data.y) ? furnaces[furnaceByPosition(data.x, data.y)] : chestByPosition(data.x, data.y) ? chests[chestByPosition(data.x, data.y)] : null);
 	} else {
 		console.log("Player "+player.name+" tried to access storage block, but not in range")
 	}
@@ -1321,7 +1337,7 @@ function furnaceSmelting() {
 		if(furnaces[a].fuelProgress != 0) {
 			furnaces[a].fuelProgress-=smeltingSpeed;
 		}
-		for(var c of furnaceRecipes){
+		for(var c of furnaceRecipes) {
 			if(furnaces[a].content[0].item == c[0]){
 				if(furnaces[a].content[0].item == c[0] && furnaces[a].content[1].item != undefined && items[furnaces[a].content[1].item].smelting != undefined && furnaces[a].fuelProgress <= 0) {
 					furnaces[a].fuelProgress = items[furnaces[a].content[1].item].smelting;

@@ -1332,8 +1332,8 @@ function onBlockBreaking(data) {
 
 function onShowBlockContent(data) {
 	var player = playerById(this.id);
-	if(data.x*100 <= player.x+750 && data.x*100 >= player.x-750 && data.y*100 <= player.y+750 && data.y*100 >= player.y-750) {
-		player.client.emit("storage block", furnaceByPosition(data.x, data.y) ? furnaces[furnaceByPosition(data.x, data.y)] : chestByPosition(data.x, data.y) ? chests[chestByPosition(data.x, data.y)] : null);
+	if(data.x <= player.x+7.5 && data.x >= player.x-7.5 && data.y <= player.y+7.5 && data.y >= player.y-7.5) {
+		player.client.emit("storage block", furnaceByPosition(data.x, data.y) != -1 ? furnaces[furnaceByPosition(data.x, data.y)] : chestByPosition(data.x, data.y) != -1 ? chests[chestByPosition(data.x, data.y)] : null);
 	} else {
 		console.log("Player "+player.name+" tried to access storage block, but not in range")
 	}

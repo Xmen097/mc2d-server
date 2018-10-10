@@ -1127,7 +1127,7 @@ function onMovePlayer(data) {
 	movePlayer.x = parseInt(data.x);
 	movePlayer.y = parseInt(data.y);
 	movePlayer.slot = parseInt(data.slot);
-	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: parseInt(movePlayer.x), y: parseInt(movePlayer.y), texture: parseInt(data.texture), slot: parseInt(movePlayer.inventory.hotbar[data.slot].item)});
+	this.broadcast.emit("move player", {id: parseInt(movePlayer.id), x: movePlayer.x, y: movePlayer.y, texture: parseInt(data.texture), slot: parseInt(movePlayer.inventory.hotbar[data.slot].item)});
 }
 
 function onMoveItem(data) {

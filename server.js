@@ -21,7 +21,7 @@ function init() {
 	if(process.env.DATABASE_URL) { // DB 
 		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
         if(err){
-            console.log("Not able to connect: "+ err);
+            throw new Error("Not able to connect: "+ err);
         } 
         pgClient.query('SELECT * FROM map', function(err,result) {
             if(err || result.rows.length<10){
@@ -46,6 +46,13 @@ function init() {
 						pgClient.query("INSERT INTO map "+columnsStack+" VALUES"+queryStack, function(err) {
 							if(err) {
 								console.log("FAILED writing map part to database: " + err)
+								pgClient.query("INSERT INTO map "+columnsStack+" VALUES"+queryStack, function(err) {
+									if(err) {
+										throw new Error("FAILED writing map part to database: " + err)
+									} else {
+										console.log("Writen map part to database after error")
+									}
+								})
 							} else {
 								console.log("Writen map part to database")
 							}
@@ -57,6 +64,20 @@ function init() {
 	          	pgClient.query("SELECT * FROM map", function(err, result) {
 					if(err) {
 						console.log("FAILED writing map part to database: " + err)
+			          	pgClient.query("SELECT * FROM map", function(err, result) {
+							if(err) {
+								throw new Error("FAILED writing map part to database: " + err)
+							} else if(result) {
+								map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+								
+								for(var a=0; a<result.rows.length; a++) {
+									for (var b=0; b<1000;b++) {
+										map[result.rows[a].y][b]=result.rows[a]["_"+b];
+									}
+								}
+								console.log("Map was loaded successfully after error")
+							}
+						})
 					} else if(result) {
 						map = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 						
@@ -96,7 +117,21 @@ function init() {
 			chests = [];
 			pgClient.query("SELECT * FROM storage", function(err, result) {
 				if(err) {
-					console.log("Failed loading furnaces "+err);
+					console.log("Failed loading storages "+err);
+					pgClient.query("SELECT * FROM storage", function(err, result) {
+						if(err) {
+							throw new Error("Failed loading storages "+err);
+						} else {
+							for(var a of result.rows) {
+								var content = JSON.parse(a.content);
+								if(content.length == 3) {
+									furnaces.push({content: content, x:a.x, y:a.y, fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+								} else {
+									chests.push({content: content, x:a.x, y:a.y})
+								}
+							}
+						}
+					})
 				} else {
 					for(var a of result.rows) {
 						var content = JSON.parse(a.content);
@@ -712,12 +747,12 @@ function onNewPlayer(data) {
 	console.log("Player "+validateString(data.name)+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: validateString(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){
 		if(err) {
-			console.log("Login server offline")
+			throw new Error("Login server offline")
 		}
 		if(body == "true" && !playerByName(validateString(data.name))) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        	 		if(err){
-            		console.log("Not able to connect: "+ err);
+            		throw new Error("Not able to connect: "+ err);
             		return;
         		} 
         		pgClient.query("SELECT * FROM users WHERE name='"+validateString(data.name)+"'", function(err,result) {
@@ -794,11 +829,11 @@ function onNewMessage(data) {
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
-								if(result.rowCount){
+								if(result.rowCount) {
 									if(result.rowCount && result.rows[0].role < playerById(sender.id).role) {
 										pgClient.query("UPDATE users SET role=0 WHERE name='"+validateString(argument)+"'", function(err) {
 											if(err) {
-												sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+												sender.emit("new message", {name: "[SERVER]", message: "Error "+err})
 											} else {
 												if(playerByName(argument)){
 													playerByName(argument).client.emit("disconnect", "You were kicked from the server")
@@ -828,14 +863,14 @@ function onNewMessage(data) {
 					if(process.env.DATABASE_URL)
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 							if(err) {
-								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								sender.emit("new message", {name: "[SERVER]", message: "Error "+ err});
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result.rowCount && result.rows[0].role == 0){
 									pgClient.query("UPDATE users SET role=1 WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
-											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+											sender.emit("new message", {name: "[SERVER]", message: "Error "+err})
 										} else {
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully unbanned "+argument})
 										}
@@ -858,14 +893,14 @@ function onNewMessage(data) {
 					if(process.env.DATABASE_URL)
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 							if(err) {
-								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								sender.emit("new message", {name: "[SERVER]", message: "Error "+err});
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result.rowCount && result.rows[0].role+1 < playerById(sender.id).role){
 									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role+1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
-											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+											sender.emit("new message", {name: "[SERVER]", message: "Error"+err})
 										} else {
 											players[players.indexOf(playerByName(argument))].role++;
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully promoted "+argument})
@@ -891,14 +926,14 @@ function onNewMessage(data) {
 					if(process.env.DATABASE_URL)
 						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
 							if(err) {
-								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								sender.emit("new message", {name: "[SERVER]", message: "Error"+err});
 								return;
 							}
 							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
 								if(result.rowCount && result.rows[0].role < playerById(sender.id).role && result.rows[0].role>1 && playerById(sender.id).name != argument){
 									pgClient.query("UPDATE users SET role="+parseInt(result.rows[0].role-1)+" WHERE name='"+validateString(argument)+"'", function(err) {
 										if(err) {
-											sender.emit("new message", {name: "[SERVER]", message: "Unknown error"})
+											sender.emit("new message", {name: "[SERVER]", message: "Error"+err})
 										} else {
 											players[players.indexOf(playerByName(argument))].role++;
 											sender.emit("new message", {name: "[SERVER]", message: "Successfully demoted "+argument})
@@ -1178,6 +1213,27 @@ function onMoveItem(data) {
 					break;
 			}
 			item = craftedItem.item;
+		} else if(data.start.y >= 20) {
+			if(process.env.DATABASE_URL)
+				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+					var chest = chestByPosition(data.start.x, data.start.y-20)
+					if(chest != -1) {
+						chests[chest].content[parseInt(data.start.z)].count-=data.count;
+						item = chests[chest].content[parseInt(data.start.z)].item;
+						if(chests[chest].content[parseInt(data.start.z)].count < 1) {
+							chests[chest].content[parseInt(data.start.z)].item = undefined;
+							chests[chest].content[parseInt(data.start.z)].count=0;
+						}
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y-20)+" AND x="+parseInt(data.start.x), function(err) {
+							if(err) {
+								console.log("Failed updating chest inventory");
+							} else {
+								console.log("Successfully updated chest inventory on "+data.start.x+","+data.start.y);
+							}
+						})
+					}
+					done();
+				})
 		} else if(data.start.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
@@ -1185,11 +1241,15 @@ function onMoveItem(data) {
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
 						item = furnaces[furnace].content[parseInt(data.start.z)].item;
-						if(furnaces[furnace].content[parseInt(data.start.z)].count < 1)
+						if(furnaces[furnace].content[parseInt(data.start.z)].count < 1){
 							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
+							furnaces[furnace].content[parseInt(data.start.z)].count=0;
+						}
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
 							if(err) {
-								console.log("Failed saving storage block");
+								console.log("Failed updating furnace inventory");
+							} else {
+								console.log("Successfully updated furnace inventory on "+data.start.x+","+data.start.y);
 							}
 						})
 					}
@@ -1210,6 +1270,23 @@ function onMoveItem(data) {
 		} else if(data.end.y == 6) {
 			players[playerID].craftingTable[data.end.x].item=item;
 			players[playerID].craftingTable[data.end.x].count+=data.count;
+		} else if(data.end.y >= 20) {
+			if(process.env.DATABASE_URL)
+				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+					var chest = chestByPosition(data.end.x, data.end.y-20)
+					if(chest != -1) {
+						chests[chest].content[parseInt(data.end.z)].item = item;
+						chests[chest].content[parseInt(data.end.z)].count += data.count;
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+							if(err) {
+								console.log("Failed updating chest inventory");
+							} else {
+								console.log("Successfully updated chest inventory on "+data.end.x+","+data.end.y);
+							}
+						})
+					}
+					done();
+				})
 		} else if(data.end.y >= 10) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
@@ -1219,7 +1296,9 @@ function onMoveItem(data) {
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
 							if(err) {
-								console.log("Failed saving storage block");
+								console.log("Failed updating furnace inventory");
+							} else {
+								console.log("Successfully updated furnace inventory on "+data.end.x+","+data.end.y);
 							}
 						})
 					}
@@ -1232,6 +1311,13 @@ function onMoveItem(data) {
 				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"', craftingTable='"+JSON.stringify(players[playerID].craftingTable)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
 						console.log("Failed saving player inventory "+err);
+						pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"', craftingTable='"+JSON.stringify(players[playerID].craftingTable)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
+							if(err) {
+								throw new Error("Failed saving player inventory "+err);
+							} else {
+								console.log("Player "+playerById(id).name+ " inventory was updated after error");
+							}
+						})
 					} else {
 						console.log("Player "+playerById(id).name+ " inventory was updated");
 					}
@@ -1307,17 +1393,17 @@ function onMapEdit(data) {
 						var furnace = furnaceByPosition(parseInt(data.y), parseInt(data.x));
 						if(furnace != -1) {
 							furnaces.splice(furnace, 1);
-							console.log("Storage block deleting sucess");
+							console.log("Furnace block deleting sucess");
 						} else 
-							console.log("Storage block deleting failed");
+							console.log("Furnace block deleting failed");
 					} else if(destroyBlock==2) {
 						var chest = chestByPosition(parseInt(data.y), parseInt(data.x));
 						if(chest != -1)
 						{
 							chests.splice(chest, 1);
-							console.log("Storage block deleting sucess");
+							console.log("Chest block deleting sucess");
 						} else 
-							console.log("Storage block deleting failed");
+							console.log("Chest block deleting failed");
 					}
 				})
 			}

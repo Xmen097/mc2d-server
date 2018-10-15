@@ -988,7 +988,7 @@ function onNewMessage(data) {
 								done();
 								})
 							init()
-						}, time=="now" ? 0 : time*1000);
+						}, time*1000);
 					} else if (argument[0] == "players") {
 						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
 						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})

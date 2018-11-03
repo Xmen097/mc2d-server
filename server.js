@@ -1213,10 +1213,10 @@ function onMoveItem(data) {
 					break;
 			}
 			item = craftedItem.item;
-		} else if(data.start.y >= 20) {
+		} else if(data.start.x >= 100) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					var chest = chestByPosition(data.start.x, data.start.y-20)
+					var chest = chestByPosition(data.start.x-100, data.start.y)
 					if(chest != -1) {
 						chests[chest].content[parseInt(data.start.z)].count-=data.count;
 						item = chests[chest].content[parseInt(data.start.z)].item;
@@ -1224,20 +1224,20 @@ function onMoveItem(data) {
 							chests[chest].content[parseInt(data.start.z)].item = undefined;
 							chests[chest].content[parseInt(data.start.z)].count=0;
 						}
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y-20)+" AND x="+parseInt(data.start.x), function(err) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y)+" AND x="+parseInt(data.start.x-100), function(err) {
 							if(err) {
 								console.log("Failed updating chest inventory");
 							} else {
-								console.log("Successfully updated chest inventory on "+data.start.x+","+data.start.y);
+								console.log("Successfully updated chest inventory on "+data.start.x-100+","+data.start.y);
 							}
 						})
 					}
 					done();
 				})
-		} else if(data.start.y >= 10) {
+		} else if(data.start.y >= 100) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					var furnace = furnaceByPosition(data.start.x, data.start.y-10)
+					var furnace = furnaceByPosition(data.start.x, data.start.y-100)
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
 						item = furnaces[furnace].content[parseInt(data.start.z)].item;
@@ -1245,11 +1245,11 @@ function onMoveItem(data) {
 							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
 							furnaces[furnace].content[parseInt(data.start.z)].count=0;
 						}
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-10)+" AND x="+parseInt(data.start.x), function(err) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-100)+" AND x="+parseInt(data.start.x), function(err) {
 							if(err) {
 								console.log("Failed updating furnace inventory");
 							} else {
-								console.log("Successfully updated furnace inventory on "+data.start.x+","+data.start.y);
+								console.log("Successfully updated furnace inventory on "+data.start.x+","+data.start.y-100);
 							}
 						})
 					}
@@ -1281,7 +1281,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating chest inventory");
 							} else {
-								console.log("Successfully updated chest inventory on "+data.end.x+","+data.end.y);
+								console.log("Successfully updated chest inventory on "+data.end.x-100+","+data.end.y);
 							}
 						})
 					}
@@ -1298,7 +1298,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating furnace inventory");
 							} else {
-								console.log("Successfully updated furnace inventory on "+data.end.x+","+data.end.y);
+								console.log("Successfully updated furnace inventory on "+data.end.x+","+data.end.y-100);
 							}
 						})
 					}

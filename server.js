@@ -1270,14 +1270,14 @@ function onMoveItem(data) {
 		} else if(data.end.y == 6) {
 			players[playerID].craftingTable[data.end.x].item=item;
 			players[playerID].craftingTable[data.end.x].count+=data.count;
-		} else if(data.end.y >= 20) {
+		} else if(data.end.x >= 100) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-					var chest = chestByPosition(data.end.x, data.end.y-20)
+					var chest = chestByPosition(data.end.x-100, data.end.y)
 					if(chest != -1) {
 						chests[chest].content[parseInt(data.end.z)].item = item;
 						chests[chest].content[parseInt(data.end.z)].count += data.count;
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.end.y)+" AND x="+parseInt(data.end.x-100), function(err) {
 							if(err) {
 								console.log("Failed updating chest inventory");
 							} else {
@@ -1287,14 +1287,14 @@ function onMoveItem(data) {
 					}
 					done();
 				})
-		} else if(data.end.y >= 10) {
+		} else if(data.end.y >= 100) {
 			if(process.env.DATABASE_URL)
 				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-					var furnace = furnaceByPosition(data.end.x, data.end.y-10)
+					var furnace = furnaceByPosition(data.end.x, data.end.y-100)
 					if(furnace != -1) {
 						furnaces[furnace].content[parseInt(data.end.z)].item = item;
 						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-10)+" AND x="+parseInt(data.end.x), function(err) {
+						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-100)+" AND x="+parseInt(data.end.x), function(err) {
 							if(err) {
 								console.log("Failed updating furnace inventory");
 							} else {

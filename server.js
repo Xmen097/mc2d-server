@@ -747,7 +747,7 @@ function onNewPlayer(data) {
 	var newInv = copyArr(inventoryPreset);
     var newCrafting = copyArr(craftingPreset);
     var newCraftingTable = copyArr(craftingTablePreset);
-	var role=1;
+	var role=1;//delete diz
 	var client=this;
 	console.log("Player "+validateString(data.name)+" send authorization token")
 	request.post({url:'http://mc2d.herokuapp.com/index.php', form: {name: validateString(data.name), token: data.token, salt: this.salt}}, function(err,httpResponse,body){

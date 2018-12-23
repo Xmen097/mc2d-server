@@ -6,6 +6,11 @@ var io = require("socket.io"),
 
 var socket, players;
 
+
+const MAX_MESSAGES = 20;
+
+
+
 function validateString(str) {
 	return JSON.stringify(str).replace(/[^A-Za-z0-9]/g, '')
 }
@@ -879,7 +884,7 @@ function onNewMessage(data) {
 								if(result.rowCount) {
 									if(result.rowCount && result.rows[0].role < playerById(sender.id).role) {
 										if(players.indexOf(playerByName(argument)) != -1) {
-											players[players.indexOf(playerByName(argument))].messagesPerMinute=21;
+											players[players.indexOf(playerByName(argument))].messagesPerMinute=MAX_MESSAGES+1;
 											playerByName(argument).client.emit("new message", {name: "[SERVER]", message: "You were muted by "+playerById(sender.id).name})
 											playerByName(argument).client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerByName(argument).name+" was muted by "+playerById(sender.id).name})
 										} else {
@@ -1182,14 +1187,14 @@ function onNewMessage(data) {
 			}
 			sender.broadcast.emit("new message", {name: role+playerById(sender.id).name, message: data})
 			sender.emit("new message", {name: "You", message: data})
-		} else if(playerById(sender.id).messagesPerMinute < 20) {
+		} else if(playerById(sender.id).messagesPerMinute < MAX_MESSAGES) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			sender.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
-		} else if(playerById(sender.id).messagesPerMinute == 20) {
+		} else if(playerById(sender.id).messagesPerMinute == MAX_MESSAGES) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 			sender.emit("new message", {name: "[SERVER]", message: "You were muted!"})
 			sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(sender.id).name+" was muted"})
-		} else if(playerById(sender.id).messagesPerMinute > 20) {
+		} else if(playerById(sender.id).messagesPerMinute > MAX_MESSAGES) {
 			sender.emit("new message", {name: "[SERVER]", message: "You are muted, rejoin if you want to speak again"})
 		}
 	}		

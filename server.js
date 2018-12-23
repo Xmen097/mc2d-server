@@ -754,7 +754,22 @@ function onNewPlayer(data) {
 		if(err) {
 			throw new Error("Login server offline")
 		}
-		if(body == "true" && !playerByName(validateString(data.name))) {
+		var alreadyConnected = false;
+		if(playerByName(validateString(data.name))) {
+			if(playerByName(validateString(data.name)).disconnected) {
+				var removePlayer = playerById(this.id);
+				if (!removePlayer) {
+				    console.log("Player not found: "+this.id);
+					client.emit("disconnect", "Error. Please try again later")
+				    return;
+				};
+				players.splice(players.indexOf(removePlayer), 1);
+				this.broadcast.emit("remove player", {id: this.id});
+			} else{
+				alreadyConnected=true;
+			}
+		}
+		if(body == "true" && !alreadyConnected) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
        	 		if(err){
             		throw new Error("Not able to connect: "+ err);

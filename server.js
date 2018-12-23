@@ -879,7 +879,7 @@ function onNewMessage(data) {
 								if(result.rowCount) {
 									if(result.rowCount && result.rows[0].role < playerById(sender.id).role) {
 										if(players.indexOf(playerByName(argument)) != -1) {
-											players[players.indexOf(playerByName(argument))].messagesPerMinute++;
+											players[players.indexOf(playerByName(argument))].messagesPerMinute=21;
 											playerByName(argument).client.emit("new message", {name: "[SERVER]", message: "You were muted by "+playerById(sender.id).name})
 											playerByName(argument).client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerByName(argument).name+" was muted by "+playerById(sender.id).name})
 										} else {

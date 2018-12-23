@@ -836,7 +836,7 @@ function onNewMessage(data) {
 												sender.emit("new message", {name: "[SERVER]", message: "Error "+err})
 											} else {
 												if(playerByName(argument)){
-													playerByName(argument).client.emit("disconnect", "You were kicked from the server")
+													playerByName(argument).client.emit("disconnect", "You were banned from the server")
 													playerByName(argument).client.broadcast.emit("remove player", {id: playerByName(argument).id});
 													playerByName(argument).client.disconnect(0);
 													sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+argument+" was banned"})
@@ -846,6 +846,48 @@ function onNewMessage(data) {
 										})
 									} else {
 										sender.emit("new message", {name: "[SERVER]", message: "You can't ban this player"})	
+									}
+								} else {
+									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
+									return;
+								}
+							});
+						done();
+						})
+				} else {
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "name":
+				if(playerById(sender.id).role > 3) {
+					playerById(sender.id).name = argument;
+					this.broadcast.emit("remove player", {id: sender.id});
+					this.broadcast.emit("new player", {id: parseInt(sender.id), x: sender.x, y: sender.y, name: validateString(sender.name), slot:sender.inventory.hotbar[sender.slot].item});
+				} else {
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+				}
+				break;
+			case "mute":
+				if(playerById(sender.id).role > 2) {
+					if(process.env.DATABASE_URL)
+						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+							if(err) {
+								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
+								return;
+							}
+							pgClient.query("SELECT role FROM users WHERE name='"+validateString(argument)+"'", function(err, result) { 
+								if(result.rowCount) {
+									if(result.rowCount && result.rows[0].role < playerById(sender.id).role) {
+										if(players.indexOf(playerByName(argument)) != -1) {
+											players[players.indexOf(playerByName(argument))].messagesPerMinute++;
+											playerByName(argument).client.emit("new message", {name: "[SERVER]", message: "You were muted by "+playerById(sender.id).name})
+											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerByName(argument).name+" was muted by "+playerById(sender.id).name})
+										} else {
+											sender.emit("new message", {name: "[SERVER]", message: "Player is offline"})	
+										}
+
+									} else {
+										sender.emit("new message", {name: "[SERVER]", message: "You can't mute this player"})	
 									}
 								} else {
 									sender.emit("new message", {name: "[SERVER]", message: "This player doesn't exist"})
@@ -885,7 +927,7 @@ function onNewMessage(data) {
 						done();
 						})
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "promote":
@@ -918,7 +960,7 @@ function onNewMessage(data) {
 						done();
 						})
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "demote":
@@ -951,7 +993,7 @@ function onNewMessage(data) {
 						done();
 						})
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "kick":
@@ -962,10 +1004,10 @@ function onNewMessage(data) {
 						playerByName(argument).client.broadcast.emit("remove player", {id: playerByName(argument).id});
 						playerByName(argument).client.disconnect(0);
 					} else {
-						this.emit("new message", {name: "[SERVER]", message: "You can't kick this player"})
+						sender.emit("new message", {name: "[SERVER]", message: "You can't kick this player"})
 					}
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "reset":
@@ -974,8 +1016,8 @@ function onNewMessage(data) {
 				time = (typeof argument[1]=="number" || typeof argument[1]=="string") ?  argument[1] : 10;
 				if(findPlayer && findPlayer.role > 3) {
 					if(argument[0] == "map") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
+						sender.broadcast.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
+						sender.emit("new message", {name: "[SERVER]", message: "Map will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -990,8 +1032,8 @@ function onNewMessage(data) {
 							init()
 						}, time*1000);
 					} else if (argument[0] == "players") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
+						sender.broadcast.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
+						sender.emit("new message", {name: "[SERVER]", message: "Inventories will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -1005,8 +1047,8 @@ function onNewMessage(data) {
 							init()
 						}, time=="now" ? 0 : time*1000);
 					} else if(argument[0] == "all") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
+						sender.broadcast.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
+						sender.emit("new message", {name: "[SERVER]", message: "Server will be deleted in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -1021,8 +1063,8 @@ function onNewMessage(data) {
 							init()
 						}, time=="now" ? 0 : time*1000);
 					} else if(argument[0] == "server") {
-						this.broadcast.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
-						this.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
+						sender.broadcast.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
+						sender.emit("new message", {name: "[SERVER]", message: "Server will restart in "+time+" seconds!"})
 						clearTimeout(resetTimer);
 						resetTimer = setTimeout(function () {
 							for(var a of players) {
@@ -1031,10 +1073,10 @@ function onNewMessage(data) {
 							init()
 						}, time=="now" ? 0 : time*1000);
 					} else {
-						this.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map", "/reset all" or "/reset server"'})
+						sender.emit("new message", {name: "[SERVER]", message: 'Please use "/reset players", "/reset map", "/reset all" or "/reset server"'})
 					}
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "give":
@@ -1045,12 +1087,12 @@ function onNewMessage(data) {
 				var count=1;
 				var smallestDistance=Infinity;
 				var possibleItem=-1;
-				if(findPlayer && findPlayer.role > 2) {
+				if(findPlayer && findPlayer.role > 1) {
 					if(targetPlayer) {
 						if(args.length == 3 && parseInt(args[2]) == args[2]) {
 							count = parseInt(args[2]);
 						} else if(args.length != 2) {
-							this.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
+							sender.emit("new message", {name: "[SERVER]", message: "Unsupported command format"})
 							return;
 						}
 						if(items[parseInt(args[1])]) {
@@ -1074,7 +1116,7 @@ function onNewMessage(data) {
 								}
 							}
 							if(item==-1) {
-								this.emit("new message", {name: "[SERVER]", message: "Unknown item, did you mean: "+possibleItem})
+								sender.emit("new message", {name: "[SERVER]", message: "Unknown item, did you mean: "+possibleItem})
 								return;
 							}
 						}
@@ -1101,27 +1143,27 @@ function onNewMessage(data) {
 							})
 
 					} else {
-						this.emit("new message", {name: "[SERVER]", message: "Can't find target player"})
+						sender.emit("new message", {name: "[SERVER]", message: "Can't find target player"})
 					}
 				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			case "eval":
 				var findPlayer = playerById(sender.id);
 				if(findPlayer && findPlayer.role > 3) {
 					eval(argument);
-					this.emit("new message", {name: "[SERVER]", message: "Successfully executed command"})
-				} else {
-					this.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
+					sender.emit("new message", {name: "[SERVER]", message: "Successfully executed command"})
+				} else {f
+					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
 				break;
 			default:
-				this.emit("new message", {name: "[SERVER]", message: "Unknown command"})
+				sender.emit("new message", {name: "[SERVER]", message: "Unknown command"})
 				break;
 		}
 	} else {
-		if(playerById(sender.id).messagesPerMinute < 50) {
+		if(playerById(sender.id).messagesPerMinute < 18) {
 			var role="";
 			switch(playerById(sender.id).role) {
 				case 2:
@@ -1138,15 +1180,17 @@ function onNewMessage(data) {
 					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 			}
-			this.broadcast.emit("new message", {name: role+playerById(this.id).name, message: data})
-			this.emit("new message", {name: "You", message: data})
-		} else if(playerById(sender.id).messagesPerMinute < 60) {
+			sender.broadcast.emit("new message", {name: role+playerById(sender.id).name, message: data})
+			sender.emit("new message", {name: "You", message: data})
+		} else if(playerById(sender.id).messagesPerMinute < 20) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
-			this.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
-		}else if(playerById(sender.id).messagesPerMinute == 60){
+			sender.emit("new message", {name: "[SERVER]", message: "Please stop spamming or you will be muted!"})
+		} else if(playerById(sender.id).messagesPerMinute == 20) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
-			this.emit("new message", {name: "[SERVER]", message: "You were muted!"})
-			this.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(sender.id).name+" was muted"})
+			sender.emit("new message", {name: "[SERVER]", message: "You were muted!"})
+			sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerById(sender.id).name+" was muted"})
+		} else if(playerById(sender.id).messagesPerMinute > 20) {
+			sender.emit("new message", {name: "[SERVER]", message: "You are muted, rejoin if you want to speak again"})
 		}
 	}		
 }
@@ -1227,7 +1271,7 @@ function onMoveItem(data) {
 						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y)+" AND x="+parseInt(data.start.x-100), function(err) {
 							if(err) {
 								console.log("Failed updating chest inventory");
-							} else {
+							} else { 
 								console.log("Successfully updated chest inventory on "+data.start.x-100+","+data.start.y);
 							}
 						})
@@ -1372,7 +1416,7 @@ function onMapEdit(data) {
 					if(err) {
 						console.log("Failed creating storage block "+err);
 					} else {
-						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0})
+						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0});
 						console.log("Furnace block creation sucess");
 					}
 				})

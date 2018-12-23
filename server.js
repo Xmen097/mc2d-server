@@ -880,8 +880,8 @@ function onNewMessage(data) {
 				break;
 			case "name":
 				if(playerById(sender.id).role > 3) {
-					playerById(sender.id).name = argument;
-					this.broadcast.emit("remove player", {id: sender.id});
+					players[players.indexOf(playerById(sender.id))].name = argument;
+					this.broadcast.emit("remove player", {id: parseInt(sender.id)});
 					this.broadcast.emit("new player", {id: parseInt(sender.id), x: sender.x, y: sender.y, name: validateString(sender.name), slot:sender.inventory.hotbar[sender.slot].item});
 				} else {
 					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})

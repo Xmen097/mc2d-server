@@ -881,7 +881,7 @@ function onNewMessage(data) {
 										if(players.indexOf(playerByName(argument)) != -1) {
 											players[players.indexOf(playerByName(argument))].messagesPerMinute++;
 											playerByName(argument).client.emit("new message", {name: "[SERVER]", message: "You were muted by "+playerById(sender.id).name})
-											sender.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerByName(argument).name+" was muted by "+playerById(sender.id).name})
+											playerByName(argument).client.broadcast.emit("new message", {name: "[SERVER]", message: "Player "+playerByName(argument).name+" was muted by "+playerById(sender.id).name})
 										} else {
 											sender.emit("new message", {name: "[SERVER]", message: "Player is offline"})	
 										}

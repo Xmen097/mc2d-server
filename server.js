@@ -12,7 +12,7 @@ const MAX_MESSAGES = 20;
 
 
 function validateString(str) {
-	return JSON.stringify(str).replace(/[^A-Za-z0-9]/g, '')
+	return str ? JSON.stringify(str).replace(/[^A-Za-z0-9]/g, '') : ""
 }
 
 

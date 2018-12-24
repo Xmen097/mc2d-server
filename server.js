@@ -663,6 +663,7 @@ function Player(gtX, gtY, gtID, gtName, gtInv, gtRole, gtClient, gtCrafting, gtC
 	this.id = gtID,
 	this.name = gtName,
 	this.x = gtX,
+	this.fakeName;
 	this.y = gtY;
 	this.inventory = gtInv;
 	this.messagesPerMinute=0;
@@ -818,7 +819,7 @@ function onNewPlayer(data) {
 					var existingPlayer;
 					for (var i = 0; i < players.length; i++) {
 				    	existingPlayer = players[i];
-				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: existingPlayer.x, y: existingPlayer.y, name: validateString(existingPlayer.name), slot:existingPlayer.inventory.hotbar[existingPlayer.slot].item});
+				    	client.emit("new player", {id: parseInt(existingPlayer.id), x: existingPlayer.x, y: existingPlayer.y, name: existingPlayer.fakeName || validateString(existingPlayer.name), slot:existingPlayer.inventory.hotbar[existingPlayer.slot].item});
 					};
 					players.push(newPlayer);
         		})
@@ -880,9 +881,9 @@ function onNewMessage(data) {
 				break;
 			case "name":
 				if(playerById(sender.id).role > 3) {
-					players[players.indexOf(playerById(sender.id))].name = argument;
+					players[players.indexOf(playerById(sender.id))].fakeName = argument;
 					sender.broadcast.emit("remove player", {id: parseInt(sender.id)});
-					sender.broadcast.emit("new player", {id: parseInt(sender.id), x: playerById(sender.id).x, y: playerById(sender.id).y, name: playerById(sender.id).name, slot:playerById(sender.id).inventory.hotbar[playerById(sender.id).slot].item});
+					sender.broadcast.emit("new player", {id: parseInt(sender.id), x: playerById(sender.id).x, y: playerById(sender.id).y, name: playerById(sender.id).fakeName, slot:playerById(sender.id).inventory.hotbar[playerById(sender.id).slot].item});
 				} else {
 					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}
@@ -1194,13 +1195,14 @@ function onNewMessage(data) {
 					role="[MODERATOR] "
 					break;
 				case 4:
-					role="[ADMIN] "
+					if(!playerById(sender.id).fakeName)
+						role="[ADMIN] "
 					break;
 				default:
 					players[players.indexOf(playerById(sender.id))].messagesPerMinute++;
 					break;
 			}
-			sender.broadcast.emit("new message", {name: role+playerById(sender.id).name, message: data})
+			sender.broadcast.emit("new message", {name: role+(playerById(sender.id).fakeName || playerById(sender.id).name), message: data})
 			sender.emit("new message", {name: "You", message: data})
 		} else if(playerById(sender.id).messagesPerMinute < MAX_MESSAGES) {
 			players[players.indexOf(playerById(sender.id))].messagesPerMinute++;

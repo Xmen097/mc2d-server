@@ -883,7 +883,7 @@ function onNewMessage(data) {
 				if(playerById(sender.id).role > 3) {
 					players[players.indexOf(playerById(sender.id))].fakeName = argument;
 					sender.broadcast.emit("remove player", {id: parseInt(sender.id)});
-					sender.broadcast.emit("new player", {id: parseInt(sender.id), x: playerById(sender.id).x, y: playerById(sender.id).y, name: playerById(sender.id).fakeName, slot:playerById(sender.id).inventory.hotbar[playerById(sender.id).slot].item});
+					sender.broadcast.emit("new player", {id: parseInt(sender.id), x: playerById(sender.id).x, y: playerById(sender.id).y, name: playerById(sender.id).fakeName || playerById(sender.id).name, slot:playerById(sender.id).inventory.hotbar[playerById(sender.id).slot].item});
 				} else {
 					sender.emit("new message", {name: "[SERVER]", message: "You don't have permission to execute this command"})
 				}

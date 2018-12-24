@@ -112,7 +112,7 @@ function init() {
     socket.sockets.on("connection", onSocketConnection);
 	resetMessagesPerMinutes = setInterval(function() {
 		for(var a=0;a<players.length;a++) {
-			if(players[a].messagesPerMinute < 25)
+			if(players[a].messagesPerMinute < MAX_MESSAGES+1)
 				players[a].messagesPerMinute=0;
 		}
 	},60000);
@@ -1239,142 +1239,152 @@ function onMoveItem(data) {
 	if(typeof data.count == "number" && typeof data.start.x == "number" && typeof data.start.y == "number" && typeof data.end.x == "number" && typeof data.end.y == "number") {
 		var item;
 		var playerID = players.indexOf(playerById(this.id));
-		if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
-			players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
-			item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
-			if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
-				players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
-		} else if(data.start.y < 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
-			item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
-			players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
-			if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
-				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
-		} else if(data.start.y == 5 && data.start.x != 4 && players[playerID].crafting[data.start.x].count-data.count >= 0) {
-			players[playerID].crafting[data.start.x].count-=data.count;
-			item = players[playerID].crafting[data.start.x].item;
-			if(players[playerID].crafting[data.start.x].count < 1)
-				players[playerID].crafting[data.start.x].item = undefined;
-		} else if(data.start.y == 5){
-			var craftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID);
-			var craftingLimit=0;
-			while(craftingLimit<1000 && craftedItem.count != data.count) {
-				var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID); 
-				if(newCraftedItem.item == craftedItem.item) {
-					craftedItem.count += newCraftedItem.count;
-					craftingLimit++;
-				} else
-					break;
-			}
-			item = craftedItem.item;
-		} else if(data.start.y == 6 && data.start.x != 9) {
-			players[playerID].craftingTable[data.start.x].count-=data.count;
-				item = players[playerID].craftingTable[data.start.x].item;
-				if(players[playerID].craftingTable[data.start.x].count < 1)
-					players[playerID].craftingTable[data.start.x].item = undefined;
-		} else if(data.start.y == 6) {
-			var craftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID);
-			var craftingLimit=0;
-			while(craftingLimit<1000 && craftedItem.count != data.count) {
-				var newCraftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID); 
-				if(newCraftedItem.item == craftedItem.item) {
-					craftedItem.count += newCraftedItem.count;
-					craftingLimit++;
-				} else
-					break;
-			}
-			item = craftedItem.item;
-		} else if(data.start.x >= 100) {
-			if(process.env.DATABASE_URL)
-				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					var chest = chestByPosition(data.start.x-100, data.start.y)
-					if(chest != -1) {
-						chests[chest].content[parseInt(data.start.z)].count-=data.count;
-						item = chests[chest].content[parseInt(data.start.z)].item;
-						if(chests[chest].content[parseInt(data.start.z)].count < 1) {
-							chests[chest].content[parseInt(data.start.z)].item = undefined;
-							chests[chest].content[parseInt(data.start.z)].count=0;
-						}
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y)+" AND x="+parseInt(data.start.x-100), function(err) {
-							if(err) {
-								console.log("Failed updating chest inventory");
-							} else { 
-								console.log("Successfully updated chest inventory on "+(data.start.x-100)+","+data.start.y);
+		if(typeof data.start.z != "number") {
+			if(data.start.y < 3 && players[playerID].inventory.inventory[data.start.y][data.start.x].count-data.count >= 0) {
+				players[playerID].inventory.inventory[data.start.y][data.start.x].count-=data.count;
+				item = players[playerID].inventory.inventory[data.start.y][data.start.x].item;
+				if(players[playerID].inventory.inventory[data.start.y][data.start.x].count < 1)
+					players[playerID].inventory.inventory[data.start.y][data.start.x].item = undefined;
+			} else if(data.start.y < 5 && players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-data.count >= 0) {
+				item = players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item;
+				players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count-=data.count;
+				if(players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].count < 1)
+					players[playerID].inventory[data.start.y== 4 ? "armor" : "hotbar"][data.start.x].item = undefined;
+			} else if(data.start.y == 5 && data.start.x != 4 && players[playerID].crafting[data.start.x].count-data.count >= 0) {
+				players[playerID].crafting[data.start.x].count-=data.count;
+				item = players[playerID].crafting[data.start.x].item;
+				if(players[playerID].crafting[data.start.x].count < 1)
+					players[playerID].crafting[data.start.x].item = undefined;
+			} else if(data.start.y == 5){
+				var craftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID);
+				var craftingLimit=0;
+				while(craftingLimit<1000 && craftedItem.count != data.count) {
+					var newCraftedItem = checkSmallCraftingResult(players[playerID].crafting, playerID); 
+					if(newCraftedItem.item == craftedItem.item) {
+						craftedItem.count += newCraftedItem.count;
+						craftingLimit++;
+					} else
+						break;
+				}
+				item = craftedItem.item;
+			} else if(data.start.y == 6 && data.start.x != 9) {
+				players[playerID].craftingTable[data.start.x].count-=data.count;
+					item = players[playerID].craftingTable[data.start.x].item;
+					if(players[playerID].craftingTable[data.start.x].count < 1)
+						players[playerID].craftingTable[data.start.x].item = undefined;
+			} else if(data.start.y == 6) {
+				var craftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID);
+				var craftingLimit=0;
+				while(craftingLimit<1000 && craftedItem.count != data.count) {
+					var newCraftedItem = checkBigCraftingResult(players[playerID].craftingTable, playerID); 
+					if(newCraftedItem.item == craftedItem.item) {
+						craftedItem.count += newCraftedItem.count;
+						craftingLimit++;
+					} else
+						break;
+				}
+				item = craftedItem.item;
+			} 
+		} else {
+			if(data.start.y >= 100) {
+				if(process.env.DATABASE_URL)
+					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+						var furnace = furnaceByPosition(data.start.x, data.start.y-100)
+						if(furnace != -1) {
+							furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
+							item = furnaces[furnace].content[parseInt(data.start.z)].item;
+							if(furnaces[furnace].content[parseInt(data.start.z)].count < 1){
+								furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
+								furnaces[furnace].content[parseInt(data.start.z)].count=0;
 							}
-						})
-					}
-					done();
-				})
-		} else if(data.start.y >= 100) {
-			if(process.env.DATABASE_URL)
-				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
-					var furnace = furnaceByPosition(data.start.x, data.start.y-100)
-					if(furnace != -1) {
-						furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
-						item = furnaces[furnace].content[parseInt(data.start.z)].item;
-						if(furnaces[furnace].content[parseInt(data.start.z)].count < 1){
-							furnaces[furnace].content[parseInt(data.start.z)].item = undefined;
-							furnaces[furnace].content[parseInt(data.start.z)].count=0;
+							pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-100)+" AND x="+parseInt(data.start.x), function(err) {
+								if(err) {
+									console.log("Failed updating furnace inventory");
+								} else {
+									console.log("Successfully updated furnace inventory on "+data.start.x+","+(data.start.y-100));
+								}
+							})
 						}
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.start.y-100)+" AND x="+parseInt(data.start.x), function(err) {
-							if(err) {
-								console.log("Failed updating furnace inventory");
-							} else {
-								console.log("Successfully updated furnace inventory on "+data.start.x+","+(data.start.y-100));
+						done();
+					})
+			}else if(data.start.x >= 100) {
+				if(process.env.DATABASE_URL)
+					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+						var chest = chestByPosition(data.start.x-100, data.start.y)
+						if(chest != -1) {
+							chests[chest].content[parseInt(data.start.z)].count-=data.count;
+							item = chests[chest].content[parseInt(data.start.z)].item;
+							if(chests[chest].content[parseInt(data.start.z)].count < 1) {
+								chests[chest].content[parseInt(data.start.z)].item = undefined;
+								chests[chest].content[parseInt(data.start.z)].count=0;
 							}
-						})
-					}
-					done();
-				})
+							pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.start.y)+" AND x="+parseInt(data.start.x-100), function(err) {
+								if(err) {
+									console.log("Failed updating chest inventory");
+								} else { 
+									console.log("Successfully updated chest inventory on "+(data.start.x-100)+","+data.start.y);
+								}
+							})
+						}
+						done();
+					})
+			}
 		}
 
 
-		if(data.end.y < 3) {
-			players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
-			players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
-		} else if(data.end.y < 5){
-			players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
-			players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
-		} else if(data.end.y == 5){
-			players[playerID].crafting[data.end.x].item=item;
-			players[playerID].crafting[data.end.x].count+=data.count;
-		} else if(data.end.y == 6) {
-			players[playerID].craftingTable[data.end.x].item=item;
-			players[playerID].craftingTable[data.end.x].count+=data.count;
-		} else if(data.end.x >= 100) {
-			if(process.env.DATABASE_URL)
-				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-					var chest = chestByPosition(data.end.x-100, data.end.y)
-					if(chest != -1) {
-						chests[chest].content[parseInt(data.end.z)].item = item;
-						chests[chest].content[parseInt(data.end.z)].count += data.count;
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.end.y)+" AND x="+parseInt(data.end.x-100), function(err) {
-							if(err) {
-								console.log("Failed updating chest inventory");
-							} else {
-								console.log("Successfully updated chest inventory on "+(data.end.x-100)+","+data.end.y);
-							}
-						})
-					}
-					done();
-				})
-		} else if(data.end.y >= 100) {
-			if(process.env.DATABASE_URL)
-				pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
-					var furnace = furnaceByPosition(data.end.x, data.end.y-100)
-					if(furnace != -1) {
-						furnaces[furnace].content[parseInt(data.end.z)].item = item;
-						furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
-						pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-100)+" AND x="+parseInt(data.end.x), function(err) {
-							if(err) {
-								console.log("Failed updating furnace inventory");
-							} else {
-								console.log("Successfully updated furnace inventory on "+data.end.x+","+(data.end.y-100));
-							}
-						})
-					}
-					done();
-				})
+		if(typeof data.end.z != "number") {
+			if(data.end.y < 3) {
+				players[playerID].inventory.inventory[data.end.y][data.end.x].item=item;
+				players[playerID].inventory.inventory[data.end.y][data.end.x].count+=data.count;
+			} else if(data.end.y < 5){
+				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].item=item;
+				players[playerID].inventory[data.end.y== 4 ? "armor" : "hotbar"][data.end.x].count+=data.count;
+			} else if(data.end.y == 5){
+				players[playerID].crafting[data.end.x].item=item;
+				players[playerID].crafting[data.end.x].count+=data.count;
+			} else if(data.end.y == 6) {
+				players[playerID].craftingTable[data.end.x].item=item;
+				players[playerID].craftingTable[data.end.x].count+=data.count;
+			}
+		} else {
+			if(data.end.y >= 100) {
+				if(process.env.DATABASE_URL)
+					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						var furnace = furnaceByPosition(data.end.x, data.end.y-100)
+						if(furnace != -1) {
+							furnaces[furnace].content[parseInt(data.end.z)].item = item;
+							furnaces[furnace].content[parseInt(data.end.z)].count += data.count;
+							pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[furnace].content)+"' WHERE y="+parseInt(data.end.y-100)+" AND x="+parseInt(data.end.x), function(err) {
+								if(err) {
+									console.log("Failed updating furnace inventory");
+								} else {
+									console.log("Successfully updated furnace inventory on "+data.end.x+","+(data.end.y-100));
+								}
+							})
+						}
+						done();
+					})
+			} else if(data.end.x >= 100) {
+				if(process.env.DATABASE_URL)
+					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						var chest = chestByPosition(data.end.x-100, data.end.y)
+						if(chest != -1) {
+							chests[chest].content[parseInt(data.end.z)].item = item;
+							chests[chest].content[parseInt(data.end.z)].count += data.count;
+							pgClient.query("UPDATE storage SET content='"+JSON.stringify(chests[chest].content)+"' WHERE y="+parseInt(data.end.y)+" AND x="+parseInt(data.end.x-100), function(err) {
+								if(err) {
+									console.log("Failed updating chest inventory");
+								} else {
+									console.log("Successfully updated chest inventory on "+(data.end.x-100)+","+data.end.y);
+								}
+							})
+						}
+						done();
+					})
+			}  
 		}
+
+
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
 			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 

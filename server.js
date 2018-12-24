@@ -1298,7 +1298,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating chest inventory");
 							} else { 
-								console.log("Successfully updated chest inventory on "+data.start.x-100+","+data.start.y);
+								console.log("Successfully updated chest inventory on "+(data.start.x-100)+","+data.start.y);
 							}
 						})
 					}
@@ -1319,7 +1319,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating furnace inventory");
 							} else {
-								console.log("Successfully updated furnace inventory on "+data.start.x+","+data.start.y-100);
+								console.log("Successfully updated furnace inventory on "+data.start.x+","+(data.start.y-100));
 							}
 						})
 					}
@@ -1351,7 +1351,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating chest inventory");
 							} else {
-								console.log("Successfully updated chest inventory on "+data.end.x-100+","+data.end.y);
+								console.log("Successfully updated chest inventory on "+(data.end.x-100)+","+data.end.y);
 							}
 						})
 					}
@@ -1368,7 +1368,7 @@ function onMoveItem(data) {
 							if(err) {
 								console.log("Failed updating furnace inventory");
 							} else {
-								console.log("Successfully updated furnace inventory on "+data.end.x+","+data.end.y-100);
+								console.log("Successfully updated furnace inventory on "+data.end.x+","+(data.end.y-100));
 							}
 						})
 					}

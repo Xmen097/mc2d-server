@@ -1307,11 +1307,12 @@ function onMoveItem(data) {
 						}
 						done();
 					})
-			}else if(data.start.x >= 100) {
+			} else if(data.start.x >= 100) {
 				if(process.env.DATABASE_URL)
 					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
 						var chest = chestByPosition(data.start.x-100, data.start.y)
 						if(chest != -1) {
+							console.log(chest)
 							chests[chest].content[parseInt(data.start.z)].count-=data.count;
 							item = chests[chest].content[parseInt(data.start.z)].item;
 							if(chests[chest].content[parseInt(data.start.z)].count < 1) {

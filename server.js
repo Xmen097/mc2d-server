@@ -1453,7 +1453,7 @@ function onMapEdit(data) {
 					if(err) {
 						console.log("Failed creating storage block "+err);
 					} else {
-						furnaces.push({content: furnacePreset, x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0});
+						furnaces.push({content: copyArr(furnacePreset), x: parseInt(data.y), y: parseInt(data.x), fuelProgress: 0, smeltProgress: 0, maxFuel: 0});
 						console.log("Furnace block creation sucess");
 					}
 				})
@@ -1462,7 +1462,7 @@ function onMapEdit(data) {
 					if(err) {
 						console.log("Failed creating storage block "+err);
 					} else {
-						chests.push({content: chestPreset, x: parseInt(data.y), y: parseInt(data.x)})
+						chests.push({content: copyArr(chestPreset), x: parseInt(data.y), y: parseInt(data.x)})
 						console.log("Chest block creation sucess");
 					}
 				})

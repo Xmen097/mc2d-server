@@ -117,7 +117,7 @@ function init() {
 		}
 	},60000);
 	if(process.env.DATABASE_URL)
-		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+		pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 			furnaces = [];
 			chests = [];
 			pgClient.query("SELECT * FROM storage", function(err, result) {
@@ -771,7 +771,7 @@ function onNewPlayer(data) {
 			}
 		}
 		if(body == "true" && !alreadyConnected) {
-			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+			pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
        	 		if(err){
             		throw new Error("Not able to connect: "+ err);
             		return;
@@ -844,7 +844,7 @@ function onNewMessage(data) {
 			case "ban":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 							if(err) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
@@ -895,7 +895,7 @@ function onNewMessage(data) {
 			case "mute":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 							if(err) {
 								sender.emit("new message", {name: "[SERVER]", message: "Something went wrong, please try again later"});
 								return;
@@ -928,7 +928,7 @@ function onNewMessage(data) {
 			case "unban":
 				if(playerById(sender.id) && playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 							if(err) {
 								sender.emit("new message", {name: "[SERVER]", message: "Error "+ err});
 								return;
@@ -958,7 +958,7 @@ function onNewMessage(data) {
 			case "promote":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 							if(err) {
 								sender.emit("new message", {name: "[SERVER]", message: "Error "+err});
 								return;
@@ -991,7 +991,7 @@ function onNewMessage(data) {
 			case "demote":
 				if(playerById(sender.id).role > 2) {
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 							if(err) {
 								sender.emit("new message", {name: "[SERVER]", message: "Error"+err});
 								return;
@@ -1050,7 +1050,7 @@ function onNewMessage(data) {
 								a.client.disconnect(0);
 							}
 							if(process.env.DATABASE_URL)
-								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 								pgClient.query("TRUNCATE map, storage")
 								done();
 								})
@@ -1065,7 +1065,7 @@ function onNewMessage(data) {
 								a.client.emit("disconnect", "Server was restarted");
 							}
 							if(process.env.DATABASE_URL)
-								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 									pgClient.query("DELETE FROM users WHERE name!='"+validateString(findPlayer.name)+"'");
 								done();
 								})
@@ -1080,7 +1080,7 @@ function onNewMessage(data) {
 								a.client.emit("disconnect", "Server was restarted");
 							}
 							if(process.env.DATABASE_URL)
-								pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+								pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 									pgClient.query("TRUNCATE map");
 									pgClient.query("DELETE FROM users WHERE name!='"+validateString(findPlayer.name)+"'");
 								done();
@@ -1147,7 +1147,7 @@ function onNewMessage(data) {
 						}
 						giveItemToBestInventoryPosition(item, count, targetPlayer.id);
 						if(process.env.DATABASE_URL)
-							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+							pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 								pgClient.query("UPDATE users SET inventory='"+JSON.stringify(targetPlayer.inventory)+"' WHERE name='"+validateString(args[0])+"'", function(err) {
 									if(err) {
 										console.log("Failed saving player inventory "+err);
@@ -1288,7 +1288,7 @@ function onMoveItem(data) {
 		} else {
 			if(data.start.y >= 100) {
 				if(process.env.DATABASE_URL)
-					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+					pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 						var furnace = furnaceByPosition(data.start.x, data.start.y-100)
 						if(furnace != -1) {
 							furnaces[furnace].content[parseInt(data.start.z)].count-=data.count;
@@ -1309,7 +1309,7 @@ function onMoveItem(data) {
 					})
 			} else if(data.start.x >= 100) {
 				if(process.env.DATABASE_URL)
-					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+					pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 						var chest = chestByPosition(data.start.x-100, data.start.y)
 						if(chest != -1) {
 							console.log(chest)
@@ -1350,7 +1350,7 @@ function onMoveItem(data) {
 		} else {
 			if(data.end.y >= 100) {
 				if(process.env.DATABASE_URL)
-					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+					pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 						var furnace = furnaceByPosition(data.end.x, data.end.y-100)
 						if(furnace != -1) {
 							furnaces[furnace].content[parseInt(data.end.z)].item = item;
@@ -1367,7 +1367,7 @@ function onMoveItem(data) {
 					})
 			} else if(data.end.x >= 100) {
 				if(process.env.DATABASE_URL)
-					pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+					pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
 						var chest = chestByPosition(data.end.x-100, data.end.y)
 						if(chest != -1) {
 							chests[chest].content[parseInt(data.end.z)].item = item;
@@ -1388,7 +1388,7 @@ function onMoveItem(data) {
 
 		var id=this.id;
 		if(process.env.DATABASE_URL) {
-			pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+			pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 				pgClient.query("UPDATE users SET inventory='"+JSON.stringify(players[playerID].inventory)+"', crafting='"+JSON.stringify(players[playerID].crafting)+"', craftingTable='"+JSON.stringify(players[playerID].craftingTable)+"' WHERE name='"+validateString(players[playerID].name)+"'", function(err) {
 					if(err) {
 						console.log("Failed saving player inventory "+err);
@@ -1432,7 +1432,7 @@ function onMapEdit(data) {
 	this.emit("map edit", {x: parseInt(data.x), y: parseInt(data.y), block: data.block});
 	var id=this.id;
 	if(process.env.DATABASE_URL) {
-		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+		pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 			pgClient.query("UPDATE map SET _"+parseInt(data.y)+"="+parseInt(data.block)+" WHERE y="+parseInt(data.x), function(err) {
 				if(err) {
 					console.log("Failed map edit "+err)
@@ -1520,7 +1520,7 @@ function furnaceSmelting() {
 					if(furnaces[a].content[1].count==0)
 						furnaces[a].content[1].item = undefined;
 					if(process.env.DATABASE_URL)
-						pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+						pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 							pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
 								if(err) {
 									console.log("Failed saving storage fuel consumption");
@@ -1542,7 +1542,7 @@ function furnaceSmelting() {
 							furnaces[a].content[0].item=undefined;
 						furnaces[a].content[2].item=c[1];
 						if(process.env.DATABASE_URL)
-							pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) { 
+							pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) { 
 								pgClient.query("UPDATE storage SET content='"+JSON.stringify(furnaces[a].content)+"' WHERE y="+parseInt(furnaces[a].y)+" AND x="+parseInt(furnaces[a].x), function(err) {
 									if(err) {
 										console.log("Failed saving storage smelting");

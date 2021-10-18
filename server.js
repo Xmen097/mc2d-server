@@ -24,7 +24,7 @@ function init() {
 	port++;//workaround for server port bug
 
 	if(process.env.DATABASE_URL) { // DB 
-		pg.connect(process.env.DATABASE_URL,function(err,pgClient,done) {
+		pg.connect(process.env.DATABASE_URL+"?ssl=true",function(err,pgClient,done) {
         if(err){
             throw new Error("Not able to connect: "+ err);
         } 
